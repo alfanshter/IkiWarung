@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "110009922026",
+    "firebase_url": "https://ikijekpandaan-3bb02.firebaseio.com",
+    "project_id": "ikijekpandaan-3bb02",
+    "storage_bucket": "ikijekpandaan-3bb02.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110009922026:android:0333d18e3ba0c8460e4293",
+        "android_client_info": {
+          "package_name": "com.alfanshter.gofoodresto"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "110009922026-5st2kcp77rt5jgqdk7eq8137ccck76q4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alfanshter.gofoodresto",
+            "certificate_hash": "7dc8b1766b7cec7ee2d7b7147c5885732fedff42"
+          }
+        },
+        {
+          "client_id": "110009922026-cjsmidp5j1br60lug2a0vgsk620crpr1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCchCKE6GVqzM2GISup9vppbK_-7LQBrQ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110009922026-cjsmidp5j1br60lug2a0vgsk620crpr1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

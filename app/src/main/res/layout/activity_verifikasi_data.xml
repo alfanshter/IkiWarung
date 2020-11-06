@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".VerifikasiData">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/rv_verfikasi1"
+
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="62dp"
+                    android:layout_marginTop="36.7dp"
+                    android:layout_marginRight="62dp"
+                    android:background="@drawable/blue_border_rounded_cornwe">
+
+                    <!-- INPUT -->
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edt_namatoko"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/username_icon"
+                        android:background="@android:color/transparent"
+                        android:hint="Nama Toko"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:paddingLeft="17dp"
+                        android:paddingTop="15dp"
+                        android:paddingBottom="15dp"
+                        android:textCursorDrawable="@drawable/cursor_color"
+                        android:textSize="12sp" />
+
+                    <!-- ICON -->
+                    <ImageView
+                        android:id="@+id/username_icon"
+                        android:layout_width="14.7dp"
+                        android:layout_height="10.3dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="17dp"
+                        android:src="@drawable/email" />
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="62dp"
+                    android:layout_marginTop="36.7dp"
+                    android:layout_marginRight="62dp"
+                    android:background="@drawable/blue_border_rounded_cornwe">
+
+                    <!-- INPUT -->
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edt_namapemilik"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/edt_email"
+                        android:background="@android:color/transparent"
+                        android:hint="Nama Pemilik"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:paddingLeft="17dp"
+                        android:paddingTop="15dp"
+                        android:paddingBottom="15dp"
+                        android:textCursorDrawable="@drawable/cursor_color"
+                        android:textSize="12sp" />
+
+                    <!-- ICON -->
+                    <ImageView
+                        android:id="@+id/edt_email"
+                        android:layout_width="14.7dp"
+                        android:layout_height="10.3dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="17dp"
+                        android:src="@drawable/email" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="62dp"
+                    android:layout_marginTop="36.7dp"
+                    android:layout_marginRight="62dp"
+                    android:background="@drawable/blue_border_rounded_cornwe">
+
+                    <!-- INPUT -->
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/edt_lokasitoko"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@+id/icon_paswd"
+                        android:background="@android:color/transparent"
+                        android:paddingLeft="17dp"
+                        android:text="Masukan Lokasi Toko disini"
+                        android:paddingTop="15dp"
+                        android:paddingBottom="15dp"
+                        android:textCursorDrawable="@drawable/cursor_color"
+                        android:textSize="12sp" />
+
+                    <!-- ICON -->
+                    <ImageView
+                        android:id="@+id/icon_paswd"
+                        android:layout_width="14.7dp"
+                        android:layout_height="10.3dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="17dp"
+                        android:src="@drawable/email" />
+
+                </RelativeLayout>
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="62dp"
+                    android:layout_marginTop="36.7dp"
+                    android:layout_marginRight="62dp"
+                    android:background="@drawable/blue_border_rounded_cornwe"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Batal" />
+
+                    <Button
+                        android:id="@+id/btn_konfirm"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Konfirm" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/rv_verfikasi2"
+            >
+
+            <LinearLayout
+                android:id="@+id/ll_lokasi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/txt_lokasitoko"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:text="Klik untuk menentukan lokasi toko anda"
+                    android:textSize="18dp"/>
+
+
+
+            </LinearLayout>
+
+            <fragment
+                android:id="@+id/pilihmaps"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_below="@+id/ll_lokasi"
+                tools:context=".VerifikasiData"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                />
+
+            <Button
+                android:id="@+id/btn_konfirmlokasi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:text="KONFIRM"
+                android:layout_below="@id/pilihmaps"
+                />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+</ScrollView>

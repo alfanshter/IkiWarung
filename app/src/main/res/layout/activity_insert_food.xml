@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:backgroundTint="@color/white"
+        app:cardElevation="4dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="20dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_nama"
+                android:hint="Name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/black"
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="34sp"
+                android:inputType="textPersonName"
+                />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_harga"
+                android:hint="Harga"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/black"
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                android:inputType="numberDecimal"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Kategori"
+                android:layout_marginTop="10dp"
+                />
+            <RadioGroup
+                android:id="@+id/radioGroup_kategori"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true">
+                <RadioButton
+                    android:id="@+id/radio_makanan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="Makanan" />
+                <RadioButton
+                    android:id="@+id/radio_minuman"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Minuman" />
+            </RadioGroup>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Jenis Makanan"
+                android:layout_marginTop="10dp"
+
+                />
+
+            <RadioGroup
+                android:id="@+id/radioGroup_jenis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true">
+                <RadioButton
+                    android:id="@+id/radio_diet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="Makanan Diet" />
+                <RadioButton
+                    android:id="@+id/radio_enak"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Makanan Enak" />
+            </RadioGroup>
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:id="@+id/gambar_makanan"
+                />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_keterangan"
+                android:hint="Keterangan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/black"
+                android:text=""
+                android:textColor="@color/black"
+                android:layout_marginTop="10dp"
+                android:textSize="24sp"
+                android:inputType="textMultiLine"
+                />
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2"
+
+                >
+
+                <info.hoang8f.widget.FButton
+                    android:id="@+id/btn_foto"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_alignParentBottom="true"
+                    android:text="Foto Makanan"
+                    android:textColor="@android:color/white"
+                    app:fButtonColor="@color/purple"
+                    app:cornerRadius="4dp"
+                    app:shadowColor="@android:color/black"
+                    app:shadowEnabled="true"
+                    app:shadowHeight="5dp" />
+
+                <info.hoang8f.widget.FButton
+                    android:id="@+id/btnUpload"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_alignParentBottom="true"
+                    android:text="UPLOAD"
+                    android:textColor="@android:color/white"
+                    app:fButtonColor="@color/purple"
+                    app:cornerRadius="4dp"
+                    app:shadowColor="@android:color/black"
+                    app:shadowEnabled="true"
+                    app:shadowHeight="5dp" />
+
+
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+
+</ScrollView>
+
+</RelativeLayout>
