@@ -8,6 +8,117 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:110009922026:android:0963396846c498610e4293",
+        "android_client_info": {
+          "package_name": "com.alfanshter.IKICostumer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "110009922026-9lrou6j4gu7ssbkffm9emhucrv6v7f2p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alfanshter.IKICostumer",
+            "certificate_hash": "7dc8b1766b7cec7ee2d7b7147c5885732fedff42"
+          }
+        },
+        {
+          "client_id": "110009922026-cjsmidp5j1br60lug2a0vgsk620crpr1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCchCKE6GVqzM2GISup9vppbK_-7LQBrQ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110009922026-cjsmidp5j1br60lug2a0vgsk620crpr1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110009922026:android:3e61105e18efe5740e4293",
+        "android_client_info": {
+          "package_name": "com.alfanshter.IKI_Warung"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "110009922026-1uupc0oer84jrb51pm95n28gtkrksu09.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alfanshter.IKI_Warung",
+            "certificate_hash": "7dc8b1766b7cec7ee2d7b7147c5885732fedff42"
+          }
+        },
+        {
+          "client_id": "110009922026-cjsmidp5j1br60lug2a0vgsk620crpr1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCchCKE6GVqzM2GISup9vppbK_-7LQBrQ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110009922026-cjsmidp5j1br60lug2a0vgsk620crpr1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110009922026:android:19985ef695bcd0790e4293",
+        "android_client_info": {
+          "package_name": "com.alfanshter.gofoodpandaan"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "110009922026-pgnh34igbivrdb6gadegmqslq88aeomt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alfanshter.gofoodpandaan",
+            "certificate_hash": "7dc8b1766b7cec7ee2d7b7147c5885732fedff42"
+          }
+        },
+        {
+          "client_id": "110009922026-cjsmidp5j1br60lug2a0vgsk620crpr1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCchCKE6GVqzM2GISup9vppbK_-7LQBrQ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110009922026-cjsmidp5j1br60lug2a0vgsk620crpr1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:110009922026:android:0333d18e3ba0c8460e4293",
         "android_client_info": {
           "package_name": "com.alfanshter.gofoodresto"
@@ -19,6 +130,228 @@
           "client_type": 1,
           "android_info": {
             "package_name": "com.alfanshter.gofoodresto",
+            "certificate_hash": "7dc8b1766b7cec7ee2d7b7147c5885732fedff42"
+          }
+        },
+        {
+          "client_id": "110009922026-cjsmidp5j1br60lug2a0vgsk620crpr1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCchCKE6GVqzM2GISup9vppbK_-7LQBrQ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110009922026-cjsmidp5j1br60lug2a0vgsk620crpr1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110009922026:android:26698d4fd480e8300e4293",
+        "android_client_info": {
+          "package_name": "com.alfanshter.ikimobil_driver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "110009922026-miurjtv2jdkjtpuogmp091l8aks2v03p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alfanshter.ikimobil_driver",
+            "certificate_hash": "7dc8b1766b7cec7ee2d7b7147c5885732fedff42"
+          }
+        },
+        {
+          "client_id": "110009922026-cjsmidp5j1br60lug2a0vgsk620crpr1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCchCKE6GVqzM2GISup9vppbK_-7LQBrQ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110009922026-cjsmidp5j1br60lug2a0vgsk620crpr1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110009922026:android:4dce3b02de4830840e4293",
+        "android_client_info": {
+          "package_name": "com.alfanshter.ikiojek"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "110009922026-k7ots9km64shgafld54nd6al27b55r20.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alfanshter.ikiojek",
+            "certificate_hash": "7dc8b1766b7cec7ee2d7b7147c5885732fedff42"
+          }
+        },
+        {
+          "client_id": "110009922026-cjsmidp5j1br60lug2a0vgsk620crpr1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCchCKE6GVqzM2GISup9vppbK_-7LQBrQ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110009922026-cjsmidp5j1br60lug2a0vgsk620crpr1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110009922026:android:21bd3c230aa1b6780e4293",
+        "android_client_info": {
+          "package_name": "com.alfanshter.umkm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "110009922026-32ldepgiu7te8us44gfadt5gvp1bi1bk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alfanshter.umkm",
+            "certificate_hash": "7dc8b1766b7cec7ee2d7b7147c5885732fedff42"
+          }
+        },
+        {
+          "client_id": "110009922026-cjsmidp5j1br60lug2a0vgsk620crpr1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCchCKE6GVqzM2GISup9vppbK_-7LQBrQ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110009922026-cjsmidp5j1br60lug2a0vgsk620crpr1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110009922026:android:5f09d1eeafd8c9750e4293",
+        "android_client_info": {
+          "package_name": "com.anshdeep.kotlinmessenger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "110009922026-2efat6hrk5ca9rf47berr31e3che1hq5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.anshdeep.kotlinmessenger",
+            "certificate_hash": "7dc8b1766b7cec7ee2d7b7147c5885732fedff42"
+          }
+        },
+        {
+          "client_id": "110009922026-cjsmidp5j1br60lug2a0vgsk620crpr1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCchCKE6GVqzM2GISup9vppbK_-7LQBrQ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110009922026-cjsmidp5j1br60lug2a0vgsk620crpr1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110009922026:android:63a6c802911e59450e4293",
+        "android_client_info": {
+          "package_name": "com.example.gofooddriver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "110009922026-tujddqk62fqnfksnvo74942qsfn9dp3h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.gofooddriver",
+            "certificate_hash": "7dc8b1766b7cec7ee2d7b7147c5885732fedff42"
+          }
+        },
+        {
+          "client_id": "110009922026-cjsmidp5j1br60lug2a0vgsk620crpr1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCchCKE6GVqzM2GISup9vppbK_-7LQBrQ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110009922026-cjsmidp5j1br60lug2a0vgsk620crpr1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110009922026:android:cc9e590a9b99f42a0e4293",
+        "android_client_info": {
+          "package_name": "com.example.ikimobil_driver"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "110009922026-svqhgciig12uc76j203uvphs34f23q5o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ikimobil_driver",
             "certificate_hash": "7dc8b1766b7cec7ee2d7b7147c5885732fedff42"
           }
         },

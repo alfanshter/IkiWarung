@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.alfanshter.gofoodresto">
+    package="com.alfanshter.IKI_Warung">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -8,12 +8,22 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ikiwarung"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ikiwarung"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Ui.DetailActivity"></activity>
+        <activity android:name=".EditActivity"></activity>
+        <activity android:name=".firstaddfoodActivity" />
+        <activity android:name=".SplashScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".jarakterdekat" />
+        <activity android:name=".Ui.DetailActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -21,13 +31,7 @@
 
         <activity android:name=".Ui.InsertFoodActivity" />
         <activity android:name=".MainActivity" />
-        <activity android:name=".auth.LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".auth.LoginActivity" />
     </application>
 
 </manifest>
