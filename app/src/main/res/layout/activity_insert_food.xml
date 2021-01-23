@@ -74,6 +74,7 @@
                 android:background="@drawable/kotakisi"
                 android:layout_marginTop="10dp"
                 android:paddingLeft="10dp"
+                android:text="0"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:inputType="numberDecimal"
@@ -137,39 +138,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Minuman" />
-
-            </RadioGroup>
-
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/baris3"
-            android:layout_below="@id/baris2"
-            android:layout_margin="20dp"
-            >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Jenis Makanan"
-                android:textSize="14dp"
-                android:fontFamily="@font/aleo_bold"
-                />
-            <RadioGroup
-                android:id="@+id/radio_jenismakanan"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true">
-                <RadioButton
-                    android:id="@+id/radio_sehat"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="Valid" />
 
             </RadioGroup>
 

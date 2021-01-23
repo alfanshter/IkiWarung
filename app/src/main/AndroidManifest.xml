@@ -13,7 +13,9 @@
         android:roundIcon="@mipmap/ikiwarung"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EditActivity"></activity>
+        <activity android:name=".Ui.Riwayat.DetailRiwayatActivity"></activity>
+        <activity android:name=".EditRestoActivity" />
+        <activity android:name=".EditActivity" />
         <activity android:name=".firstaddfoodActivity" />
         <activity android:name=".SplashScreen">
             <intent-filter>

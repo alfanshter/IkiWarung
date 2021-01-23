@@ -74,9 +74,6 @@ class InsertFoodActivity : AppCompatActivity() {
             radiokategori = findViewById(intSelectkategori)
             kategori = radiokategori.text.toString()
 
-            val intSelectJenis: Int = radio_jenismakanan!!.checkedRadioButtonId
-            radiojenis = findViewById(intSelectJenis)
-            jenis = radiojenis.text.toString()
 
             var hargamakanan = edt_harga.text.toString().toInt()
             var hargappn = ((hargamakanan *15 )/100)
@@ -124,10 +121,10 @@ class InsertFoodActivity : AppCompatActivity() {
                                 usermap["harga_ppn"] = hargappn.toString()
                                 usermap["harga_total"] = harga.toString()
                                 usermap["kategori"] = radiokategori.text.toString()
-                                usermap["jenis"] = radiojenis.text.toString()
                                 usermap["nama"] = edt_nama.text.toString()
                                 usermap["id"] = key.toString()
                                 usermap["keterangan"] = edt_keterangan.text.toString()
+                                usermap["kode_makanan"] = kode
                                 mDatabase!!.child("Pandaan")
                                     .child("Resto_Detail").child(userID.toString()).child(key.toString())
                                     .setValue(usermap)
@@ -186,10 +183,10 @@ class InsertFoodActivity : AppCompatActivity() {
                                 usermap["harga_ppn"] = hargappn.toString()
                                 usermap["harga_total"] = harga.toString()
                                 usermap["kategori"] = radiokategori.text.toString()
-                                usermap["jenis"] = radiojenis.text.toString()
                                 usermap["nama"] = edt_nama.text.toString()
                                 usermap["id"] = key.toString()
                                 usermap["keterangan"] = edt_keterangan.text.toString()
+                                usermap["kode_makanan"] = kode
                                 mDatabase!!.child("Pandaan")
                                     .child("Resto_Detail").child(userID.toString()).child(key.toString())
                                     .setValue(usermap)
@@ -232,6 +229,17 @@ class InsertFoodActivity : AppCompatActivity() {
 
     }
 
+    fun kodeorder(): String {
+        val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+        val outputStrLength = (20..26).shuffled().first()
+
+        return (1..outputStrLength)
+            .map { kotlin.random.Random.nextInt(0, charPool.size) }
+            .map(charPool::get)
+            .joinToString("")
+    }
+
+    val kode = kodeorder()
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {

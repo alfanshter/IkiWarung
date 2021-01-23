@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.google.gms.google-services'
-
+apply plugin: 'com.google.firebase.crashlytics'
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.1"
@@ -11,8 +11,8 @@ android {
         applicationId "com.alfanshter.IKI_Warung"
         minSdkVersion 17
         targetSdkVersion 30
-        versionCode 5
-        versionName "1.4"
+        versionCode 9
+        versionName "1.8"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -63,6 +63,11 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.gms:play-services-places:17.0.0'
+
+    //analytic
+    implementation platform('com.google.firebase:firebase-bom:26.1.0')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
 
     implementation 'com.google.firebase:firebase-storage:19.2.0'
     testImplementation 'junit:junit:4.12'

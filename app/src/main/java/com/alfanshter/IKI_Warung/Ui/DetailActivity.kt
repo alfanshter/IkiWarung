@@ -85,7 +85,7 @@ class DetailActivity : AppCompatActivity(), AnkoLogger {
             startActivity<EditActivity>("firebase_keywarung" to keywarung.toString())
         }
         btn_back.setOnClickListener {
-            startActivity<MainActivity>()
+            finish()
         }
         switch()
         getswitch()
@@ -106,6 +106,7 @@ class DetailActivity : AppCompatActivity(), AnkoLogger {
                     usermap["latitude"] = latitude
                     usermap["longitude"] = longitude
                     usermap["kode_sales"] = kodesales
+                    usermap["status"] = "Tutup"
 
 
 

@@ -14,10 +14,9 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.alfanshter.IKI_Warung.MainActivity
+import com.alfanshter.IKI_Warung.*
 import com.alfanshter.IKI_Warung.R
 import com.alfanshter.IKI_Warung.auth.UserModel
-import com.alfanshter.IKI_Warung.firstaddfoodActivity
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -26,6 +25,7 @@ import com.google.firebase.database.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_detail.*
 import kotlinx.android.synthetic.main.activity_insert_food.*
+import kotlinx.android.synthetic.main.fragment_menu.view.*
 import kotlinx.android.synthetic.main.list_item.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.find
@@ -41,7 +41,7 @@ class MenuFragment : Fragment(), AnkoLogger {
     var dialog_bidding: Dialog? = null
     private lateinit var rvMakanan: RecyclerView
     private lateinit var rvMinuman: RecyclerView
-    lateinit var refinfo: DatabaseReference
+     var refinfo: DatabaseReference? = null
     var image_list: HashMap<String, String>? = null
     lateinit var reference: DatabaseReference
     lateinit var root: View
@@ -69,6 +69,17 @@ class MenuFragment : Fragment(), AnkoLogger {
             startActivity<InsertFoodActivity>()
         }
 
+        root.rv_menu2.setOnClickListener {
+            startActivity<EditRestoActivity>()
+        }
+
+        if (auth==null){
+            userID = null
+            startActivity<SplashScreen>()
+            activity!!.finish()
+        }
+
+
         makanan()
         minuman()
         switch()
@@ -78,7 +89,7 @@ class MenuFragment : Fragment(), AnkoLogger {
     }
     private fun switch(){
         refinfo = FirebaseDatabase.getInstance().reference.child("Pandaan")
-        refinfo.child("Resto").child(userID.toString()).addValueEventListener(object :ValueEventListener{
+        refinfo!!.child("Resto").child(userID.toString()).addValueEventListener(object :ValueEventListener{
             override fun onCancelled(error: DatabaseError) {
 
             }
@@ -89,12 +100,12 @@ class MenuFragment : Fragment(), AnkoLogger {
                         if (isChecked) {
                             switch.text = "Buka"
                             // The switch is enabled/checked
-                            refinfo.child("Resto").child(userID.toString()).child("status")
+                            refinfo!!.child("Resto").child(userID.toString()).child("status")
                                 .setValue("Buka")
                             // Change the app background color
                         } else {
                             switch.text = "Tutup"
-                            refinfo.child("Resto").child(userID.toString()).child("status")
+                            refinfo!!.child("Resto").child(userID.toString()).child("status")
                                 .setValue("Tutup")
                         }
                     }
@@ -129,7 +140,7 @@ class MenuFragment : Fragment(), AnkoLogger {
             }
 
         }
-        refinfo.child("Resto").child(userID.toString()).addValueEventListener(getswitchlistener)
+        refinfo!!.child("Resto").child(userID.toString()).addValueEventListener(getswitchlistener)
 
     }
 
@@ -170,7 +181,7 @@ class MenuFragment : Fragment(), AnkoLogger {
                 ) {
 
                     refid = getRef(position).key.toString()
-                    refinfo.child(refid!!).addListenerForSingleValueEvent(object : ValueEventListener {
+                    refinfo!!.child(refid!!).addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onCancelled(p0: DatabaseError) {
 
                         }
@@ -183,7 +194,7 @@ class MenuFragment : Fragment(), AnkoLogger {
 
                             }
                             else{
-                                Picasso.get().load(R.drawable.warung_habis).fit().centerCrop().into(holder.mimage)
+                                Picasso.get().load(R.drawable.makanan_habis).fit().centerCrop().into(holder.mimage)
 
                             }
                             val status = p0.child("status").value.toString()
@@ -245,7 +256,7 @@ class MenuFragment : Fragment(), AnkoLogger {
                 ) {
 
                     refid = getRef(position).key.toString()
-                    refinfo.child(refid!!).addListenerForSingleValueEvent(object : ValueEventListener {
+                    refinfo!!.child(refid!!).addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onCancelled(p0: DatabaseError) {
 
                         }
@@ -378,7 +389,9 @@ class MenuFragment : Fragment(), AnkoLogger {
 
     override fun onDestroy() {
         super.onDestroy()
-        refinfo.removeEventListener(getswitchlistener)
+        if (refinfo!=null){
+            refinfo!!.removeEventListener(getswitchlistener)
+        }
 
     }
 }

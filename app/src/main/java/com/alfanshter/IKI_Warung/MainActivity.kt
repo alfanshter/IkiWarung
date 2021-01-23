@@ -2,28 +2,25 @@ package com.alfanshter.IKI_Warung
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import com.alfanshter.IKI_Warung.Ui.History.HistoryFragment
 import com.alfanshter.IKI_Warung.Ui.MenuFragment
 import com.alfanshter.IKI_Warung.Ui.ProfilFragment
-import com.alfanshter.IKI_Warung.Ui.RiwayatFragment
+import com.alfanshter.IKI_Warung.Ui.Riwayat.RiwayatFragment
 import com.alfanshter.udinlelangfix.Session.SessionManager
-import com.firebase.geofire.GeoFire
-import com.firebase.geofire.GeoLocation
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import org.jetbrains.anko.*
-import org.jetbrains.anko.support.v4.startActivity
-import org.jetbrains.anko.support.v4.toast
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),AnkoLogger {
     lateinit var refbaru : DatabaseReference
     lateinit var refbarulistener : ValueEventListener
 
-    lateinit var auth :FirebaseAuth
+     var auth :FirebaseAuth? = null
     var UserID : String? = null
+
+
     lateinit var sessionManager: SessionManager
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
@@ -68,11 +65,19 @@ class MainActivity : AppCompatActivity() {
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
         navView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
-
         auth = FirebaseAuth.getInstance()
-        UserID = auth.currentUser!!.uid
-        moveToFragment(MenuFragment())
-        getdata()
+
+        UserID = auth!!.currentUser!!.uid
+        info { "alfan ${UserID.toString()}" }
+        if (auth==null){
+            UserID = null
+            sessionManager.setLogin(false)
+            startActivity<SplashScreen>()
+            finish()
+        }
+
+            moveToFragment(MenuFragment())
+            getdata()
 
     }
 
@@ -92,23 +97,20 @@ class MainActivity : AppCompatActivity() {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()){
-                    toast("yeri gendeng")
 
                 }
                 else{
-                    startActivity<firstaddfoodActivity>()
+                    startActivity(intentFor<firstaddfoodActivity>().clearTask().newTask())
+                    finish()
                 }
             }
 
         }
 
-        refbaru.addValueEventListener(refbarulistener)
+        refbaru.addListenerForSingleValueEvent(refbarulistener)
 
 
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        refbaru.removeEventListener(refbarulistener)
-    }
+
 }

@@ -1,7 +1,9 @@
 package com.alfanshter.IKI_Warung
 
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.app.ProgressDialog
+import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -10,7 +12,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.TextUtils
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.RadioButton
+import android.widget.Spinner
 import com.alfanshter.udinlelangfix.Session.SessionManager
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.OnCompleteListener
@@ -32,12 +38,14 @@ import kotlinx.android.synthetic.main.activity_firstaddfood.edt_keterangan
 import kotlinx.android.synthetic.main.activity_firstaddfood.edt_nama
 import kotlinx.android.synthetic.main.activity_firstaddfood.gambar_makanan
 import kotlinx.android.synthetic.main.activity_firstaddfood.radioGroup_kategori
-import kotlinx.android.synthetic.main.activity_firstaddfood.radio_jenismakanan
-import kotlinx.android.synthetic.main.activity_insert_food.*
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk27.coroutines.onItemSelectedListener
 import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.util.HashMap
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.math.roundToInt
 
 class firstaddfoodActivity : AppCompatActivity() {
     lateinit var sessionManager :SessionManager
@@ -48,7 +56,6 @@ class firstaddfoodActivity : AppCompatActivity() {
     private var filePath: Uri? = null
     private var filepathcamera: Uri? = null
     lateinit var radiokategori: RadioButton
-    lateinit var radiojenis: RadioButton
     var kategori: String? = null
     var jenis: String? = null
     private var storageReference: StorageReference? = null
@@ -57,14 +64,37 @@ class firstaddfoodActivity : AppCompatActivity() {
     private var myUrl = ""
     lateinit var auth: FirebaseAuth
     var userID: String? = null
+    var openday : String? = null
     lateinit var database: DatabaseReference
-
+    var openwarung : Date? = null
+    var jambukawarung : String? = null
+    var jamtutupwarung : String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_firstaddfood)
         sessionManager = SessionManager(this)
         auth = FirebaseAuth.getInstance()
         userID = auth.currentUser!!.uid
+        val hari = resources.getStringArray(R.array.hari)
+        val spinner = findViewById<Spinner>(R.id.spinner_buka)
+        if (spinner != null) {
+            val adapter = ArrayAdapter(
+                this,
+                android.R.layout.simple_spinner_item, hari
+            )
+            spinner.adapter = adapter
+            spinner.onItemSelectedListener = object :
+                AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>,
+                                            view: View, position: Int, id: Long) {
+                    openday = hari[position]
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                }
+            }
+
+    }
         mDatabase = FirebaseDatabase.getInstance().reference
         database = FirebaseDatabase.getInstance().getReference("Pandaan")
 
@@ -80,166 +110,249 @@ class firstaddfoodActivity : AppCompatActivity() {
         }
 
         btnUpload.setOnClickListener {
+            var edtnama = edt_nama.text.toString()
+            var edtharga = edt_harga.text.toString()
+            var edtketerangan = edt_keterangan.text.toString()
 
-            val intSelectkategori: Int = radioGroup_kategori!!.checkedRadioButtonId
-            radiokategori = findViewById(intSelectkategori)
-            kategori = radiokategori.text.toString()
+            if (!TextUtils.isEmpty(edtnama) && !TextUtils.isEmpty(edtharga) && !TextUtils.isEmpty(edtketerangan) && myUrl=="" && !TextUtils.isEmpty(edit_tutupwarung.text.toString()) && !TextUtils.isEmpty(edit_openwarung.text.toString()) && openday!=null){
 
-            val intSelectJenis: Int = radio_jenismakanan!!.checkedRadioButtonId
-            radiojenis = findViewById(intSelectJenis)
-            jenis = radiojenis.text.toString()
+                val intSelectkategori: Int = radioGroup_kategori!!.checkedRadioButtonId
+                radiokategori = findViewById(intSelectkategori)
+                kategori = radiokategori.text.toString()
 
-            var hargamakanan = edt_harga.text.toString().toInt()
-            var hargappn = ((hargamakanan *15 )/100)
-            var hargatotal = hargamakanan + hargappn
 
-            if (logic==1){
-                when {
+                var hargamakanan = edt_harga.text.toString().toInt()
+                var hargappn = ((hargamakanan *15 )/100)
+                var hargatotal = hargamakanan + hargappn
 
-                    filePath == null -> toast("ambil gambar telebih dahulu ")
-                    TextUtils.isEmpty(edt_nama.text.toString()) -> toast("masukkan nama terlebih dahulu")
-                    TextUtils.isEmpty(edt_harga.text.toString()) -> toast("masukkan harga terlebih dahulu")
-                    TextUtils.isEmpty(edt_keterangan.text.toString()) -> toast("masukkan nama keterangan dahulu")
-                    else -> {
-                        val progressDialog = ProgressDialog(this)
-                        progressDialog.setTitle("Akun Setting")
-                        progressDialog.setMessage("Tunggu , sedang update")
-                        progressDialog.show()
-                        val fileref =
-                            storageReference!!.child(System.currentTimeMillis().toString() + ".jpg")
-                        var uploadTask: StorageTask<*>
-                        uploadTask = fileref.putFile(filePath!!)
-                        uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                            if (!task.isSuccessful) {
-                                task.exception?.let {
-                                    throw  it
-                                    progressDialog.dismiss()
+                if (logic==1){
+                    when {
+
+                        filePath == null -> toast("ambil gambar telebih dahulu ")
+                        TextUtils.isEmpty(edt_nama.text.toString()) -> toast("masukkan nama terlebih dahulu")
+                        TextUtils.isEmpty(edt_harga.text.toString()) -> toast("masukkan harga terlebih dahulu")
+                        TextUtils.isEmpty(edt_keterangan.text.toString()) -> toast("masukkan nama keterangan dahulu")
+                        else -> {
+                            val progressDialog = ProgressDialog(this)
+                            progressDialog.setTitle("Akun Setting")
+                            progressDialog.setMessage("Tunggu , sedang update")
+                            progressDialog.show()
+                            val fileref =
+                                storageReference!!.child(System.currentTimeMillis().toString() + ".jpg")
+                            var uploadTask: StorageTask<*>
+                            uploadTask = fileref.putFile(filePath!!)
+                            uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                                if (!task.isSuccessful) {
+                                    task.exception?.let {
+                                        throw  it
+                                        progressDialog.dismiss()
+                                    }
                                 }
-                            }
-                            return@Continuation fileref.downloadUrl
-                        }).addOnCompleteListener(OnCompleteListener<Uri> { task ->
-                            if (task.isSuccessful) {
-                                val downloadUrl = task.result
-                                val key =
-                                    FirebaseDatabase.getInstance().reference.push().key
+                                return@Continuation fileref.downloadUrl
+                            }).addOnCompleteListener(OnCompleteListener<Uri> { task ->
+                                if (task.isSuccessful) {
+                                    val downloadUrl = task.result
+                                    val key =
+                                        FirebaseDatabase.getInstance().reference.push().key
 
-                                myUrl = downloadUrl.toString()
+                                    myUrl = downloadUrl.toString()
+                                    var harga = (hargatotal.toDouble()/1000).roundToInt() * 1000
 
-                                val usermap: MutableMap<String, Any?> = HashMap()
-                                usermap["gambar"] = myUrl
-                                usermap["harga"] = edt_harga.text.toString()
-                                usermap["harga_ppn"] = hargappn.toString()
-                                usermap["harga_total"] = hargatotal.toString()
-                                usermap["kategori"] = radiokategori.text.toString()
-                                usermap["jenis"] = radiojenis.text.toString()
-                                usermap["nama"] = edt_nama.text.toString()
-                                usermap["id"] = key.toString()
+                                    val usermap: MutableMap<String, Any?> = HashMap()
+                                    usermap["gambar"] = myUrl
+                                    usermap["harga"] = edt_harga.text.toString()
+                                    usermap["harga_ppn"] = hargappn.toString()
+                                    usermap["harga_total"] = harga.toString()
+                                    usermap["kategori"] = radiokategori.text.toString()
+                                    usermap["nama"] = edt_nama.text.toString()
+                                    usermap["id"] = key.toString()
+                                    usermap["kode_makanan"] = kode.toString()
+                                    usermap["tutup_warungday"] = openday.toString()
+                                    usermap["jam_buka"] = jambukawarung.toString()
+                                    usermap["jam_tutup"] = jamtutupwarung.toString()
 
-                                val uploadgambar =
-                                    FirebaseDatabase.getInstance().reference
-                                        .child("Pandaan").child("Resto").child(userID.toString()).child("gambar").setValue(myUrl.toString())
-                                val uploadnama =
-                                    FirebaseDatabase.getInstance().reference
-                                        .child("Pandaan").child("Resto").child(userID.toString()).child("nama").setValue(edt_nama.text.toString())
+                                    val uploadgambar =
+                                        FirebaseDatabase.getInstance().reference
+                                            .child("Pandaan").child("Resto").child(userID.toString()).child("gambar").setValue(myUrl.toString())
+                                    val uploadnama =
+                                        FirebaseDatabase.getInstance().reference
+                                            .child("Pandaan").child("Resto").child(userID.toString()).child("nama").setValue(edt_nama.text.toString())
 
-                                mDatabase!!.child("Pandaan")
-                                    .child("Resto_Detail").child(userID.toString()).child(key.toString())
-                                    .setValue(usermap)
-                                    .addOnCompleteListener(OnCompleteListener<Void?> {
-                                        finish()
-                                        startActivity(intentFor<MainActivity>().clearTask().newTask())
+                                    val uploadstatus =
+                                        FirebaseDatabase.getInstance().reference
+                                            .child("Pandaan").child("Resto").child(userID.toString()).child("status").setValue("Tutup")
 
-                                    })
+                                    val  tutup_warungday=
+                                        FirebaseDatabase.getInstance().reference
+                                            .child("Pandaan").child("Resto").child(userID.toString()).child("tutup_warungday").setValue(openday.toString())
 
-                                toast("upload sukses")
-                                progressDialog.dismiss()
-                            } else {
-                                progressDialog.dismiss()
-                                toast("upload gagal")
-                            }
-                        })
+                                    val  jam_buka=
+                                        FirebaseDatabase.getInstance().reference
+                                            .child("Pandaan").child("Resto").child(userID.toString()).child("jam_buka").setValue(jambukawarung.toString())
+
+                                    val  jam_tutup=
+                                        FirebaseDatabase.getInstance().reference
+                                            .child("Pandaan").child("Resto").child(userID.toString()).child("jam_tutup").setValue(jamtutupwarung.toString())
+
+                                    mDatabase!!.child("Pandaan")
+                                        .child("Resto_Detail").child(userID.toString()).child(key.toString())
+                                        .setValue(usermap)
+                                        .addOnCompleteListener(OnCompleteListener<Void?> {
+                                            finish()
+                                            startActivity(intentFor<MainActivity>().clearTask().newTask())
+
+                                        })
+
+                                    toast("upload sukses")
+                                    progressDialog.dismiss()
+                                } else {
+                                    progressDialog.dismiss()
+                                    toast("upload gagal")
+                                }
+                            })
+
+                        }
+
+                    }
+                }
+                else if (logic==2){
+                    when {
+                        filepathcamera == null -> toast("ambil gambar telebih dahulu ")
+                        TextUtils.isEmpty(edt_nama.text.toString()) -> toast("masukkan nama terlebih dahulu")
+                        TextUtils.isEmpty(edt_harga.text.toString()) -> toast("masukkan harga terlebih dahulu")
+                        TextUtils.isEmpty(edt_keterangan.text.toString()) -> toast("masukkan nama keterangan dahulu")
+                        TextUtils.isEmpty(edit_tutupwarung.text.toString()) -> toast("masukkan jam dahulu")
+                        TextUtils.isEmpty(edit_openwarung.text.toString()) -> toast("masukkan jam dahulu")
+                        else -> {
+                            val progressDialog = ProgressDialog(this)
+                            progressDialog.setTitle("Akun Setting")
+                            progressDialog.setMessage("Tunggu , sedang update")
+                            progressDialog.show()
+                            val fileref =
+                                storageReference!!.child(System.currentTimeMillis().toString() + ".jpg")
+                            var uploadTask: StorageTask<*>
+                            uploadTask = fileref.putFile(filepathcamera!!)
+                            uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                                if (!task.isSuccessful) {
+                                    task.exception?.let {
+                                        throw  it
+                                        progressDialog.dismiss()
+                                    }
+                                }
+                                return@Continuation fileref.downloadUrl
+                            }).addOnCompleteListener(OnCompleteListener<Uri> { task ->
+                                if (task.isSuccessful) {
+                                    val downloadUrl = task.result
+                                    val key =
+                                        FirebaseDatabase.getInstance().reference.push().key
+
+                                    myUrl = downloadUrl.toString()
+                                    var harga = (hargatotal.toDouble()/1000).roundToInt() * 1000
+                                    val usermap: MutableMap<String, Any?> = HashMap()
+
+                                    usermap["gambar"] = myUrl
+                                    usermap["harga"] = edt_harga.text.toString()
+                                    usermap["harga_ppn"] = hargappn.toString()
+                                    usermap["harga_total"] = harga.toString()
+                                    usermap["kategori"] = radiokategori.text.toString()
+                                    usermap["nama"] = edt_nama.text.toString()
+                                    usermap["id"] = key.toString()
+                                    usermap["kode_makanan"] = kode.toString()
+                                    usermap["tutup_warungday"] = openday.toString()
+                                    usermap["jam_buka"] = jambukawarung.toString()
+                                    usermap["jam_tutup"] = jamtutupwarung.toString()
+
+
+                                    val uploadgambar =
+                                        FirebaseDatabase.getInstance().reference
+                                            .child("Pandaan").child("Resto").child(userID.toString()).child("gambar").setValue(myUrl.toString())
+                                    val uploadnama =
+                                        FirebaseDatabase.getInstance().reference
+                                            .child("Pandaan").child("Resto").child(userID.toString()).child("nama").setValue(edt_nama.text.toString())
+                                    val uploadstatus =
+                                        FirebaseDatabase.getInstance().reference
+                                            .child("Pandaan").child("Resto").child(userID.toString()).child("status").setValue("Tutup")
+
+                                    val  tutup_warungday=
+                                        FirebaseDatabase.getInstance().reference
+                                            .child("Pandaan").child("Resto").child(userID.toString()).child("tutup_warungday").setValue(openday.toString())
+
+                                    val  jam_buka=
+                                        FirebaseDatabase.getInstance().reference
+                                            .child("Pandaan").child("Resto").child(userID.toString()).child("jam_buka").setValue(jambukawarung.toString())
+
+                                    val  jam_tutup=
+                                        FirebaseDatabase.getInstance().reference
+                                            .child("Pandaan").child("Resto").child(userID.toString()).child("jam_tutup").setValue(jamtutupwarung.toString())
+
+                                    mDatabase!!.child("Pandaan")
+                                        .child("Resto_Detail").child(userID.toString()).child(key.toString())
+                                        .setValue(usermap)
+                                        .addOnCompleteListener(OnCompleteListener<Void?> {
+                                            finish()
+                                            startActivity(intentFor<MainActivity>().clearTask().newTask())
+                                        })
+
+                                    toast("upload sukses")
+                                    progressDialog.dismiss()
+                                } else {
+                                    progressDialog.dismiss()
+                                    toast("upload gagal")
+                                }
+                            })
+
+                        }
 
                     }
 
                 }
-            }
-            else if (logic==2){
-                when {
-                    filepathcamera == null -> toast("ambil gambar telebih dahulu ")
-                    TextUtils.isEmpty(edt_nama.text.toString()) -> toast("masukkan nama terlebih dahulu")
-                    TextUtils.isEmpty(edt_harga.text.toString()) -> toast("masukkan harga terlebih dahulu")
-                    TextUtils.isEmpty(edt_keterangan.text.toString()) -> toast("masukkan nama keterangan dahulu")
-                    else -> {
-                        val progressDialog = ProgressDialog(this)
-                        progressDialog.setTitle("Akun Setting")
-                        progressDialog.setMessage("Tunggu , sedang update")
-                        progressDialog.show()
-                        val fileref =
-                            storageReference!!.child(System.currentTimeMillis().toString() + ".jpg")
-                        var uploadTask: StorageTask<*>
-                        uploadTask = fileref.putFile(filepathcamera!!)
-                        uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                            if (!task.isSuccessful) {
-                                task.exception?.let {
-                                    throw  it
-                                    progressDialog.dismiss()
-                                }
-                            }
-                            return@Continuation fileref.downloadUrl
-                        }).addOnCompleteListener(OnCompleteListener<Uri> { task ->
-                            if (task.isSuccessful) {
-                                val downloadUrl = task.result
-                                val key =
-                                    FirebaseDatabase.getInstance().reference.push().key
-
-                                myUrl = downloadUrl.toString()
-
-                                val usermap: MutableMap<String, Any?> = HashMap()
-                                usermap["gambar"] = myUrl
-                                usermap["harga"] = edt_harga.text.toString()
-                                usermap["kategori"] = radiokategori.text.toString()
-                                usermap["jenis"] = radiojenis.text.toString()
-                                usermap["nama"] = edt_nama.text.toString()
-                                usermap["id"] = key.toString()
-                                val uploadgambar =
-                                    FirebaseDatabase.getInstance().reference
-                                        .child("Pandaan").child("Resto").child(userID.toString()).child("gambar").setValue(myUrl.toString())
-                                val uploadnama =
-                                    FirebaseDatabase.getInstance().reference
-                                        .child("Pandaan").child("Resto").child(userID.toString()).child("nama").setValue(edt_nama.text.toString())
-
-                                mDatabase!!.child("Pandaan")
-                                    .child("Resto_Detail").child(userID.toString()).child(key.toString())
-                                    .setValue(usermap)
-                                    .addOnCompleteListener(OnCompleteListener<Void?> {
-                                        finish()
-                                        startActivity(intentFor<MainActivity>().clearTask().newTask())
-                                    })
-
-                                toast("upload sukses")
-                                progressDialog.dismiss()
-                            } else {
-                                progressDialog.dismiss()
-                                toast("upload gagal")
-                            }
-                        })
-
-                    }
-
+                else{
+                    toast("ambil gambar telebih dahulu ")
                 }
-
             }
             else{
-                toast("ambil gambar telebih dahulu ")
+                toast("Masukkan makanan terlebih dahulu")
             }
         }
 
         btn_galery.setOnClickListener {
             pilihfile()
         }
+        edit_openwarung.setOnClickListener {
+            openwarungtime()
+        }
+        edit_tutupwarung.setOnClickListener {
+            tutupwarungtime()
+        }
 
 
+    }
 
+    private fun openwarungtime(){
+            val cal = Calendar.getInstance()
+            val timeSetListener = TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
+                cal.set(Calendar.HOUR_OF_DAY, hour)
+                cal.set(Calendar.MINUTE, minute)
+
+                edit_openwarung.setText(SimpleDateFormat("HH:mm").format(cal.time))
+                openwarung = cal.time
+                jambukawarung = (SimpleDateFormat("HH:mm").format(cal.time))
+
+            }
+            TimePickerDialog(this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show()
+    }
+    private fun tutupwarungtime(){
+            val cal = Calendar.getInstance()
+            val timeSetListener = TimePickerDialog.OnTimeSetListener { timePicker, hour, minute ->
+                cal.set(Calendar.HOUR_OF_DAY, hour)
+                cal.set(Calendar.MINUTE, minute)
+
+                edit_tutupwarung.setText(SimpleDateFormat("HH:mm").format(cal.time))
+                openwarung = cal.time
+                jamtutupwarung = (SimpleDateFormat("HH:mm").format(cal.time))
+
+            }
+            TimePickerDialog(this, timeSetListener, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), true).show()
     }
 
     private fun pilihfile() {
@@ -249,6 +362,19 @@ class firstaddfoodActivity : AppCompatActivity() {
         startActivityForResult(Intent.createChooser(intent, "PILIH GAMBAR"), PICK_IMAGE_REQUEST)
 
     }
+
+    fun kodeorder(): String {
+        val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+        val outputStrLength = (20..26).shuffled().first()
+
+        return (1..outputStrLength)
+            .map { kotlin.random.Random.nextInt(0, charPool.size) }
+            .map(charPool::get)
+            .joinToString("")
+    }
+
+    val kode = kodeorder()
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

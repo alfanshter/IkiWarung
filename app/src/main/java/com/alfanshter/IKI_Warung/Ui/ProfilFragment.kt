@@ -16,6 +16,7 @@ import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.activity_splash_screen.*
 import kotlinx.android.synthetic.main.fragment_profil.*
 import kotlinx.android.synthetic.main.fragment_profil.version
+import kotlinx.android.synthetic.main.fragment_profil.view.*
 import org.jetbrains.anko.find
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.stopService
@@ -47,7 +48,7 @@ class ProfilFragment : Fragment() {
 
             override fun onDataChange(snapshot: DataSnapshot) {
                         var data = snapshot.child(UserID.toString()).child("namapemilik").value.toString()
-                    txt_namawarung.text = data
+                    root.txt_namawarung.text = data
                   }
 
         })

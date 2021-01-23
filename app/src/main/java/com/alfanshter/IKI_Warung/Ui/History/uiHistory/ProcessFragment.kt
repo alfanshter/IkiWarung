@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.alfanshter.IKI_Warung.Model.Pesanan
 import com.alfanshter.IKI_Warung.Model.Proses
 import com.alfanshter.IKI_Warung.R
+import com.alfanshter.IKI_Warung.Ui.Riwayat.DetailRiwayatActivity
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -52,32 +53,57 @@ class ProcessFragment : Fragment(),AnkoLogger {
         val LayoutManager = LinearLayoutManager(context!!.applicationContext)
         LayoutManager.orientation = LinearLayoutManager.VERTICAL
         recyclerView.layoutManager = LayoutManager
+        tampilriwayat()
+        return root
+    }
+
+    private fun tampilriwayat() {
         refinfo = FirebaseDatabase.getInstance().reference.child("BookingResto").child("Proses")
             .child(userID.toString())
         //=======================
-
         //reclerview komentar
         val option =
             FirebaseRecyclerOptions.Builder<Proses>().setQuery(refinfo, Proses::class.java)
                 .build()
         val firebaseRecyclerAdapter =
-            object : FirebaseRecyclerAdapter<Proses, MyViewHolder>(option) {
-                override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+            object : FirebaseRecyclerAdapter<Proses, FinishFragment.MyViewHolder>(option) {
+                override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FinishFragment.MyViewHolder {
                     val itemView = LayoutInflater.from(context?.applicationContext)
                         .inflate(R.layout.daftarpesanan, parent, false)
-                    return MyViewHolder(itemView)
+                    return FinishFragment.MyViewHolder(
+                        itemView
+                    )
                 }
 
-                override fun onBindViewHolder(holder: MyViewHolder, position: Int, model: Proses) {
+                override fun onBindViewHolder(holder: FinishFragment.MyViewHolder, position: Int, model: Proses) {
                     val refid = getRef(position).key.toString()
 
-                    refinfo.addValueEventListener(object :ValueEventListener{
+                    refinfo.addValueEventListener(object : ValueEventListener {
                         override fun onCancelled(error: DatabaseError) {
                             TODO("Not yet implemented")
                         }
 
                         override fun onDataChange(snapshot: DataSnapshot) {
-                            holder.mstatus.text = model.harga.toString()
+                            if (snapshot.exists()) {
+                                val tanggal = model.calendar.toString().split(" ").toTypedArray()
+                                constraint.visibility = View.INVISIBLE
+                                relativeLayout.visibility = View.VISIBLE
+                                holder.mharga.text = "Rp. ${model.harga.toString()}"
+                                holder.mkodeorder.text =
+                                    "Kode Order : ${model.kodeorder.toString()}"
+                                holder.mtanggalan.text = tanggal[0]
+                                holder.itemView.setOnClickListener {
+                                    startActivity<DetailRiwayatActivity>(
+                                        "kode_order" to model.kodeorder.toString(),
+                                        "status" to model.status.toString(),
+                                        "namatoko" to model.namaToko.toString(),
+                                        "harga" to model.harga.toString(),
+                                        "namadriver" to model.namadriver.toString(),
+                                        "platnomor" to model.platnomor.toString()
+                                    )
+                                }
+
+                            }
                         }
 
                     })
@@ -88,14 +114,15 @@ class ProcessFragment : Fragment(),AnkoLogger {
         recyclerView.adapter = firebaseRecyclerAdapter
         firebaseRecyclerAdapter.startListening()
 
-        return root
     }
-
 
 
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var mkodeorder: TextView = itemView.findViewById(R.id.kodeorder)
-        var mstatus: TextView = itemView.findViewById(R.id.status)
+        var mharga: TextView = itemView.findViewById(R.id.harga)
+        var mtanggalan: TextView = itemView.findViewById(R.id.tanggalan)
+
     }
+
 }

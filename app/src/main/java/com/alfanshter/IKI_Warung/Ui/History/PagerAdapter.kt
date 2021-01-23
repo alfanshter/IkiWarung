@@ -5,9 +5,14 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.alfanshter.IKI_Warung.Ui.History.uiHistory.FinishFragment
 import com.alfanshter.IKI_Warung.Ui.History.uiHistory.ProcessFragment
+import java.util.*
 
 
 class PagerAdapter(fm: FragmentManager): FragmentPagerAdapter(fm) {
+
+     private var fragmentList= ArrayList<Fragment>()
+     private var titleList = ArrayList<String>()
+
     override fun getItem(position: Int): Fragment {
         return when (position){
             0-> {
@@ -30,9 +35,17 @@ class PagerAdapter(fm: FragmentManager): FragmentPagerAdapter(fm) {
     override fun getPageTitle(position: Int): CharSequence? {
         return when (position){
             0->"Dalam Proses"
-            1->"Selesai Hari Ini"
+            1->"Selesai"
             else ->"Dalam Proses"
         }
+    }
+
+    fun addFragment(
+        fragment: Fragment?,
+        title: String?
+    ) {
+        fragmentList.add(fragment!!)
+        titleList.add(title!!)
     }
 
 }

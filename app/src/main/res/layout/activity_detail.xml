@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Ui.DetailActivity">
+
     <ImageView
         android:id="@+id/btn_back"
         android:layout_width="wrap_content"
@@ -19,8 +20,10 @@
     <ImageView
         android:id="@+id/gambar_detail"
         android:layout_width="0dp"
-        android:layout_height="256dp"
+        android:layout_height="200dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="16dp"
+        android:layout_marginRight="10dp"
         android:adjustViewBounds="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,21 +56,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name" />
 
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:fontFamily="@font/open_sans_semibold"
-        android:lineSpacingExtra="2dp"
-
-        android:maxLength="150"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/price"
-        app:layout_constraintTop_toBottomOf="@+id/price" />
-
 
     <Button
         android:id="@+id/btn_icon"
@@ -82,21 +70,19 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.97" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Switch
         android:id="@+id/switch1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Tersedia"
         android:layout_marginStart="70dp"
-        android:textSize="24dp"
+        android:layout_marginTop="8dp"
         android:gravity="center_vertical"
+        android:text="Tersedia"
+        android:textSize="24dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        app:layout_constraintTop_toBottomOf="@+id/price" />
 
     <ImageView
         android:id="@+id/btn_delete"
@@ -106,26 +92,28 @@
         android:background="@drawable/ic_baseline_delete_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/switch1"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+        app:layout_constraintTop_toBottomOf="@+id/price" />
 
     <RelativeLayout
         android:id="@+id/editmakanan"
-        android:layout_width="409dp"
-        android:layout_height="155dp"
-        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/btn_icon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/switch1">
+        app:layout_constraintTop_toBottomOf="@+id/switch1"
+        app:layout_constraintVertical_bias="0.100000024">
 
         <TextView
+            android:id="@+id/txtedit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Edit Makanan"
             android:textColor="#000000"
-            android:textSize="24dp"
-            android:id="@+id/txtedit"/>
+            android:textSize="24dp" />
 
         <ImageView
             android:layout_width="30dp"

@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Ui.MenuFragment"
+    android:background="@color/white"
     >
 <RelativeLayout
     android:layout_width="match_parent"
@@ -62,6 +63,36 @@
         android:layout_toRightOf="@id/rv_menu1"
         android:layout_marginRight="10dp"
         android:textSize="24dp" />
+    <RelativeLayout
+        android:layout_marginTop="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/swt_buka"
+        android:background="#ffffff"
+        android:id="@+id/rv_menu2"
+        >
+
+        <ImageView
+            android:id="@+id/img_edit"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/edit" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit Warung"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            android:id="@+id/addedit"
+            android:layout_toRightOf="@+id/img_edit"
+            android:layout_centerInParent="true"
+            />
+
+    </RelativeLayout>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -71,7 +102,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
-        android:layout_below="@id/rv_menu1"
+        android:layout_below="@id/rv_menu2"
         android:id="@+id/txt_menu1"
         />
 

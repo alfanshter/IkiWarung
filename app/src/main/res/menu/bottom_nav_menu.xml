@@ -9,12 +9,12 @@
     <item
         android:id="@+id/navigation_dashboard"
         android:icon="@drawable/menu"
-        android:title="Riwayat" />
+        android:title="Pesanan" />
 
     <item
         android:id="@+id/navigation_riwayat"
         android:icon="@drawable/centang"
-        android:title="Profil" />
+        android:title="Riwayat" />
 
     <item
         android:id="@+id/navigation_notifications"

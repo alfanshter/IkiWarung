@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EditRestoActivity">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="20dp"
+            android:id="@+id/baris1"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sesuaikan warung kamu ?"
+                android:layout_gravity="center_horizontal"
+                android:textColor="#000"
+                android:fontFamily="@font/aleo_bold"
+                android:id="@+id/judul"
+                android:textSize="24dp"
+
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Warung buka Jam ?"
+                android:layout_marginTop="10dp"
+                android:textSize="14dp"
+                android:fontFamily="@font/aleo_bold"
+
+                />
+            <TextView
+                android:paddingTop="8dp"
+                android:text="10:00"
+                android:id="@+id/edit_openwarung"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/black"
+                android:background="@drawable/kotakisi"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="10dp"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Warung tutup hari apa ?"
+                android:layout_marginTop="10dp"
+                android:textSize="14dp"
+                android:fontFamily="@font/aleo_bold"
+
+                />
+            <EditText
+                android:id="@+id/edt_keterangan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Jumat dan Minggu"
+                android:textColorHint="@color/black"
+                android:background="@drawable/kotakisi"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="10dp"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Warung tutup jam berapa ?"
+                android:layout_marginTop="10dp"
+                android:textSize="14dp"
+                android:fontFamily="@font/aleo_bold"
+
+                />
+            <TextView
+                android:paddingTop="8dp"
+                android:text="10:00"
+                android:id="@+id/edit_tutupwarung"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/black"
+                android:background="@drawable/kotakisi"
+                android:layout_marginTop="10dp"
+                android:paddingLeft="10dp"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                />
+
+        </LinearLayout>
+    </ScrollView>
+    <Button
+        android:layout_width="match_parent"
+        android:background="#F3B11A"
+        android:layout_height="wrap_content"
+        android:text="TAMBAHKAN"
+        android:id="@+id/btnUpload"
+        android:fontFamily="@font/alef_bold"
+        android:textColor="@color/colordongker"
+        android:layout_alignParentBottom="true"
+        />
+
+</RelativeLayout>

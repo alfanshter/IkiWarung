@@ -70,6 +70,7 @@ class LoginActivity : AppCompatActivity(),AnkoLogger {
                                     }
                                     else
                                     {
+                                        progressdialog.dismiss()
                                         toast("gagal login")
 
                                     }
