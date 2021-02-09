@@ -19,46 +19,46 @@ class EditRestoActivity : AppCompatActivity(),AnkoLogger {
 
         auth = FirebaseAuth.getInstance()
         UserID = auth.currentUser!!.uid
-        ambildata()
+//        ambildata()
     }
 
-    private fun ambildata(){
-        ref = FirebaseDatabase.getInstance().reference.child("Pandaan")
-        ref.child("Resto").child(UserID.toString()).addListenerForSingleValueEvent(object :ValueEventListener{
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val jam_buka = snapshot.child("jam_buka").value.toString()
-                val jam_tutup = snapshot.child("jam_tutup").value.toString()
-                val open_warungday = snapshot.child("tutup_warungday").value.toString()
-
-                edit_openwarung.setText(jam_buka.toString())
-                edit_tutupwarung.setText(jam_tutup.toString())
-                edt_keterangan.setText(open_warungday.toString())
-
-                btnUpload.setOnClickListener {
-                    val  tutup_warungday=
-                        FirebaseDatabase.getInstance().reference
-                            .child("Pandaan").child("Resto").child(UserID.toString()).child("tutup_warungday").setValue(edt_keterangan.text.toString())
-
-                    val  jam_buka=
-                        FirebaseDatabase.getInstance().reference
-                            .child("Pandaan").child("Resto").child(UserID.toString()).child("jam_buka").setValue(edit_tutupwarung.text.toString())
-
-                    val  jam_tutup=
-                        FirebaseDatabase.getInstance().reference
-                            .child("Pandaan").child("Resto").child(UserID.toString()).child("jam_tutup").setValue(edit_openwarung.text.toString()).addOnCompleteListener {
-                                if (it.isSuccessful){
-                                    toast("berhasil update")
-                                    startActivity(intentFor<MainActivity>().clearTask().newTask())
-                                }
-                            }
-
-                }
-            }
-
-        })
-    }
+//    private fun ambildata(){
+//        ref = FirebaseDatabase.getInstance().reference.child("Pandaan")
+//        ref.child("Resto").child(UserID.toString()).addListenerForSingleValueEvent(object :ValueEventListener{
+//            override fun onCancelled(error: DatabaseError) {
+//
+//            }
+//
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                val jam_buka = snapshot.child("jam_buka").value.toString()
+//                val jam_tutup = snapshot.child("jam_tutup").value.toString()
+//                val open_warungday = snapshot.child("tutup_warungday").value.toString()
+//
+//                edit_openwarung.setText(jam_buka.toString())
+//                edit_tutupwarung.setText(jam_tutup.toString())
+//                edt_keterangan.setText(open_warungday.toString())
+//
+//                btnUpload.setOnClickListener {
+//                    val  tutup_warungday=
+//                        FirebaseDatabase.getInstance().reference
+//                            .child("Pandaan").child("Resto").child(UserID.toString()).child("tutup_warungday").setValue(edt_keterangan.text.toString())
+//
+//                    val  jam_buka=
+//                        FirebaseDatabase.getInstance().reference
+//                            .child("Pandaan").child("Resto").child(UserID.toString()).child("jam_buka").setValue(edit_tutupwarung.text.toString())
+//
+//                    val  jam_tutup=
+//                        FirebaseDatabase.getInstance().reference
+//                            .child("Pandaan").child("Resto").child(UserID.toString()).child("jam_tutup").setValue(edit_openwarung.text.toString()).addOnCompleteListener {
+//                                if (it.isSuccessful){
+//                                    toast("berhasil update")
+//                                    startActivity(intentFor<MainActivity>().clearTask().newTask())
+//                                }
+//                            }
+//
+//                }
+//            }
+//
+//        })
+//    }
 }

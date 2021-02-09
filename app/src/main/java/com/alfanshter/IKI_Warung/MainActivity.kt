@@ -2,11 +2,17 @@ package com.alfanshter.IKI_Warung
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import com.alfanshter.IKI_Warung.Model.Warung
 import com.alfanshter.IKI_Warung.Ui.History.HistoryFragment
 import com.alfanshter.IKI_Warung.Ui.MenuFragment
 import com.alfanshter.IKI_Warung.Ui.ProfilFragment
 import com.alfanshter.IKI_Warung.Ui.Riwayat.RiwayatFragment
+import com.alfanshter.IKI_Warung.Utils.WarungResponse
+import com.alfanshter.IKI_Warung.ViewModels.WarungViewModel
 import com.alfanshter.udinlelangfix.Session.SessionManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -17,11 +23,12 @@ class MainActivity : AppCompatActivity(),AnkoLogger {
     lateinit var refbaru : DatabaseReference
     lateinit var refbarulistener : ValueEventListener
 
-     var auth :FirebaseAuth? = null
+    var auth :FirebaseAuth? = null
     var UserID : String? = null
 
-
     lateinit var sessionManager: SessionManager
+    private lateinit var warungViewModel: WarungViewModel
+
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
@@ -65,19 +72,40 @@ class MainActivity : AppCompatActivity(),AnkoLogger {
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
         navView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
-        auth = FirebaseAuth.getInstance()
 
-        UserID = auth!!.currentUser!!.uid
-        info { "alfan ${UserID.toString()}" }
-        if (auth==null){
-            UserID = null
+        val token = sessionManager.getAuthToken()
+
+        if(token!!.isEmpty()){
             sessionManager.setLogin(false)
             startActivity<SplashScreen>()
             finish()
+        }else{
+//            warungViewModel = ViewModelProviders.of(this).get(WarungViewModel::class.java)
+//            warungViewModel.getDataWarungById(sessionManager.getAuthToken().toString())
+//            warungViewModel.getDataWarung().observe(this, Observer {
+//                getdata(it)
+//            })
         }
 
+
+
+//        auth = FirebaseAuth.getInstance()
+//
+//        UserID = auth!!.currentUser!!.uid
+//        info { "alfan ${UserID.toString()}" }
+//        if (auth==null){
+//            UserID = null
+//            sessionManager.setLogin(false)
+//            startActivity<SplashScreen>()
+//            finish()
+//        }
+
+
+
+
+
             moveToFragment(MenuFragment())
-            getdata()
+//            getdata()
 
     }
 
@@ -88,29 +116,39 @@ class MainActivity : AppCompatActivity(),AnkoLogger {
         fragmentTrans.commit()
     }
 
-    private fun getdata(){
-        refbaru = FirebaseDatabase.getInstance().reference.child("Pandaan").child("Resto_Detail").child(UserID.toString())
-        refbarulistener = object : ValueEventListener {
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()){
-
-                }
-                else{
-                    startActivity(intentFor<firstaddfoodActivity>().clearTask().newTask())
-                    finish()
-                }
-            }
-
+    private fun getdata(warung : WarungResponse){
+        var foto_awal = warung.fotoAwal
+        if (foto_awal!!.isEmpty()){
+            startActivity(intentFor<firstaddfoodActivity>().clearTask().newTask())
+            finish()
         }
-
-        refbaru.addListenerForSingleValueEvent(refbarulistener)
-
-
     }
+
+    private fun toast(message : String?) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+
+//    private fun getdata(){
+//        refbaru = FirebaseDatabase.getInstance().reference.child("Pandaan").child("Resto_Detail").child(UserID.toString())
+//        refbarulistener = object : ValueEventListener {
+//            override fun onCancelled(error: DatabaseError) {
+//                TODO("Not yet implemented")
+//            }
+//
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                if (snapshot.exists()){
+//
+//                }
+//                else{
+//                    startActivity(intentFor<firstaddfoodActivity>().clearTask().newTask())
+//                    finish()
+//                }
+//            }
+//
+//        }
+//
+//        refbaru.addListenerForSingleValueEvent(refbarulistener)
+//
+//
+//    }
 
 
 }

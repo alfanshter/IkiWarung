@@ -7,8 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.alfanshter.IKI_Warung.BuildConfig
 import com.alfanshter.IKI_Warung.R
+import com.alfanshter.IKI_Warung.Utils.WarungResponse
+import com.alfanshter.IKI_Warung.ViewModels.WarungViewModel
 import com.alfanshter.IKI_Warung.auth.LoginActivity
 import com.alfanshter.udinlelangfix.Session.SessionManager
 import com.google.firebase.auth.FirebaseAuth
@@ -28,7 +32,10 @@ class ProfilFragment : Fragment() {
     var UserID : String?=null
     lateinit var buttonlogout : Button
     lateinit var version : TextView
+
     lateinit var sessionManager: SessionManager
+    private lateinit var warungViewModel: WarungViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,23 +45,30 @@ class ProfilFragment : Fragment() {
         sessionManager = SessionManager(context)
         buttonlogout = root.find(R.id.btn_logout)
         version = root.find(R.id.version)
-        auth = FirebaseAuth.getInstance()
-        UserID = auth.currentUser!!.uid
-        ref = FirebaseDatabase.getInstance().reference.child("Pandaan").child("Akun_Resto")
-        ref.addListenerForSingleValueEvent(object :ValueEventListener{
-            override fun onCancelled(error: DatabaseError) {
 
-            }
+//        auth = FirebaseAuth.getInstance()
+//        UserID = auth.currentUser!!.uid
+//        ref = FirebaseDatabase.getInstance().reference.child("Pandaan").child("Akun_Resto")
+//        ref.addListenerForSingleValueEvent(object :ValueEventListener{
+//            override fun onCancelled(error: DatabaseError) {
+//
+//            }
+//
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                        var data = snapshot.child(UserID.toString()).child("namapemilik").value.toString()
+//                    root.txt_namawarung.text = data
+//                  }
+//
+//        })
 
-            override fun onDataChange(snapshot: DataSnapshot) {
-                        var data = snapshot.child(UserID.toString()).child("namapemilik").value.toString()
-                    root.txt_namawarung.text = data
-                  }
-
+        warungViewModel = ViewModelProviders.of(this).get(WarungViewModel::class.java)
+        warungViewModel.getDataWarungById(sessionManager.getAuthToken().toString())
+        warungViewModel.getDataWarung().observe(this, Observer {
+                getData(it)
         })
 
         buttonlogout.setOnClickListener {
-            FirebaseAuth.getInstance().signOut()
+//            FirebaseAuth.getInstance().signOut()
             sessionManager.setLogin(false)
 
             startActivity<LoginActivity>()
@@ -63,9 +77,13 @@ class ProfilFragment : Fragment() {
         }
 
         val versionName = BuildConfig.VERSION_NAME.toFloat()
-      version.text = "Versi Aplikasi ${versionName.toString()}"
+        version.text = "Versi Aplikasi ${versionName.toString()}"
 
         return root
+    }
+
+    fun getData(warung : WarungResponse){
+        txt_namawarung.text = warung.namaWarung
     }
 
 

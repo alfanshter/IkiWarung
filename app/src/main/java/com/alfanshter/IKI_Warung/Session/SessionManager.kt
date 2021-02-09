@@ -6,7 +6,7 @@ import android.content.SharedPreferences
 class SessionManager(private val context: Context?) {
     val privateMode = 0
     val privateName ="login"
-    var Pref : SharedPreferences?=context?.getSharedPreferences(privateName,privateMode)
+    var   Pref : SharedPreferences?=context?.getSharedPreferences(privateName,privateMode)
     var editor : SharedPreferences.Editor?=Pref?.edit()
 
     private val islogin = "login"
@@ -65,6 +65,19 @@ class SessionManager(private val context: Context?) {
     {
         return Pref?.getBoolean(isloginadmin,false)
     }
+
+    private val authToken = "auth_token"
+    fun setAuthToken(check: String?){
+        editor?.putString(authToken,check)
+        editor?.commit()
+    }
+
+    fun getAuthToken():String?
+    {
+        return Pref?.getString(authToken,"")
+    }
+
+
 
 
 

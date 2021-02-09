@@ -23,29 +23,36 @@ class SplashScreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_splash_screen)
-        val versionName = BuildConfig.VERSION_NAME.toFloat()
-        version.text = "Versi Aplikasi ${versionName.toString()}"
-        ref = FirebaseDatabase.getInstance().reference.child("VersiAplikasi").child("warung")
-        ref.addListenerForSingleValueEvent(object :ValueEventListener{
-            override fun onCancelled(error: DatabaseError) {
 
-            }
+        handler = Handler()
+        handler.postDelayed({
+            startActivity<LoginActivity>()
+            finish()
+        }, 3000)
 
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val minimapk = snapshot.child("minimumversi").value.toString().toFloat()
-                if (minimapk <= versionName){
-                    handler = Handler()
-                    handler.postDelayed({
-                        startActivity<LoginActivity>()
-                        finish()
-                    }, 3000)
-                }
-                else{
-                    showHome()
-                }
-                  }
-
-        })
+        //val versionName = BuildConfig.VERSION_NAME.toFloat()
+        //version.text = "Versi Aplikasi ${versionName.toString()}"
+        //ref = FirebaseDatabase.getInstance().reference.child("VersiAplikasi").child("warung")
+//        ref.addListenerForSingleValueEvent(object :ValueEventListener{
+//            override fun onCancelled(error: DatabaseError) {
+//
+//            }
+//
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                val minimapk = snapshot.child("minimumversi").value.toString().toFloat()
+//                if (minimapk <= versionName){
+//                    handler = Handler()
+//                    handler.postDelayed({
+//                        startActivity<LoginActivity>()
+//                        finish()
+//                    }, 3000)
+//                }
+//                else{
+//                    showHome()
+//                }
+//                  }
+//
+//        })
 
     }
 

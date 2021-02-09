@@ -69,12 +69,13 @@ class firstaddfoodActivity : AppCompatActivity() {
     var openwarung : Date? = null
     var jambukawarung : String? = null
     var jamtutupwarung : String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_firstaddfood)
         sessionManager = SessionManager(this)
-        auth = FirebaseAuth.getInstance()
-        userID = auth.currentUser!!.uid
+//        auth = FirebaseAuth.getInstance()
+//        userID = auth.currentUser!!.uid
         val hari = resources.getStringArray(R.array.hari)
         val spinner = findViewById<Spinner>(R.id.spinner_buka)
         if (spinner != null) {
@@ -95,13 +96,13 @@ class firstaddfoodActivity : AppCompatActivity() {
             }
 
     }
-        mDatabase = FirebaseDatabase.getInstance().reference
-        database = FirebaseDatabase.getInstance().getReference("Pandaan")
+//        mDatabase = FirebaseDatabase.getInstance().reference
+//        database = FirebaseDatabase.getInstance().getReference("Pandaan")
 
         nama = edt_nama.text.toString().trim()
         harga = edt_harga.text.toString().trim()
         keterangan = edt_keterangan.text.toString().trim()
-        storageReference = FirebaseStorage.getInstance().reference.child("Warung").child(userID.toString()).child("resep")
+//        storageReference = FirebaseStorage.getInstance().reference.child("Warung").child(userID.toString()).child("resep")
 
         btn_foto.setOnClickListener {
             var i = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -109,211 +110,211 @@ class firstaddfoodActivity : AppCompatActivity() {
 
         }
 
-        btnUpload.setOnClickListener {
-            var edtnama = edt_nama.text.toString()
-            var edtharga = edt_harga.text.toString()
-            var edtketerangan = edt_keterangan.text.toString()
-
-            if (!TextUtils.isEmpty(edtnama) && !TextUtils.isEmpty(edtharga) && !TextUtils.isEmpty(edtketerangan) && myUrl=="" && !TextUtils.isEmpty(edit_tutupwarung.text.toString()) && !TextUtils.isEmpty(edit_openwarung.text.toString()) && openday!=null){
-
-                val intSelectkategori: Int = radioGroup_kategori!!.checkedRadioButtonId
-                radiokategori = findViewById(intSelectkategori)
-                kategori = radiokategori.text.toString()
-
-
-                var hargamakanan = edt_harga.text.toString().toInt()
-                var hargappn = ((hargamakanan *15 )/100)
-                var hargatotal = hargamakanan + hargappn
-
-                if (logic==1){
-                    when {
-
-                        filePath == null -> toast("ambil gambar telebih dahulu ")
-                        TextUtils.isEmpty(edt_nama.text.toString()) -> toast("masukkan nama terlebih dahulu")
-                        TextUtils.isEmpty(edt_harga.text.toString()) -> toast("masukkan harga terlebih dahulu")
-                        TextUtils.isEmpty(edt_keterangan.text.toString()) -> toast("masukkan nama keterangan dahulu")
-                        else -> {
-                            val progressDialog = ProgressDialog(this)
-                            progressDialog.setTitle("Akun Setting")
-                            progressDialog.setMessage("Tunggu , sedang update")
-                            progressDialog.show()
-                            val fileref =
-                                storageReference!!.child(System.currentTimeMillis().toString() + ".jpg")
-                            var uploadTask: StorageTask<*>
-                            uploadTask = fileref.putFile(filePath!!)
-                            uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                                if (!task.isSuccessful) {
-                                    task.exception?.let {
-                                        throw  it
-                                        progressDialog.dismiss()
-                                    }
-                                }
-                                return@Continuation fileref.downloadUrl
-                            }).addOnCompleteListener(OnCompleteListener<Uri> { task ->
-                                if (task.isSuccessful) {
-                                    val downloadUrl = task.result
-                                    val key =
-                                        FirebaseDatabase.getInstance().reference.push().key
-
-                                    myUrl = downloadUrl.toString()
-                                    var harga = (hargatotal.toDouble()/1000).roundToInt() * 1000
-
-                                    val usermap: MutableMap<String, Any?> = HashMap()
-                                    usermap["gambar"] = myUrl
-                                    usermap["harga"] = edt_harga.text.toString()
-                                    usermap["harga_ppn"] = hargappn.toString()
-                                    usermap["harga_total"] = harga.toString()
-                                    usermap["kategori"] = radiokategori.text.toString()
-                                    usermap["nama"] = edt_nama.text.toString()
-                                    usermap["id"] = key.toString()
-                                    usermap["kode_makanan"] = kode.toString()
-                                    usermap["tutup_warungday"] = openday.toString()
-                                    usermap["jam_buka"] = jambukawarung.toString()
-                                    usermap["jam_tutup"] = jamtutupwarung.toString()
-
-                                    val uploadgambar =
-                                        FirebaseDatabase.getInstance().reference
-                                            .child("Pandaan").child("Resto").child(userID.toString()).child("gambar").setValue(myUrl.toString())
-                                    val uploadnama =
-                                        FirebaseDatabase.getInstance().reference
-                                            .child("Pandaan").child("Resto").child(userID.toString()).child("nama").setValue(edt_nama.text.toString())
-
-                                    val uploadstatus =
-                                        FirebaseDatabase.getInstance().reference
-                                            .child("Pandaan").child("Resto").child(userID.toString()).child("status").setValue("Tutup")
-
-                                    val  tutup_warungday=
-                                        FirebaseDatabase.getInstance().reference
-                                            .child("Pandaan").child("Resto").child(userID.toString()).child("tutup_warungday").setValue(openday.toString())
-
-                                    val  jam_buka=
-                                        FirebaseDatabase.getInstance().reference
-                                            .child("Pandaan").child("Resto").child(userID.toString()).child("jam_buka").setValue(jambukawarung.toString())
-
-                                    val  jam_tutup=
-                                        FirebaseDatabase.getInstance().reference
-                                            .child("Pandaan").child("Resto").child(userID.toString()).child("jam_tutup").setValue(jamtutupwarung.toString())
-
-                                    mDatabase!!.child("Pandaan")
-                                        .child("Resto_Detail").child(userID.toString()).child(key.toString())
-                                        .setValue(usermap)
-                                        .addOnCompleteListener(OnCompleteListener<Void?> {
-                                            finish()
-                                            startActivity(intentFor<MainActivity>().clearTask().newTask())
-
-                                        })
-
-                                    toast("upload sukses")
-                                    progressDialog.dismiss()
-                                } else {
-                                    progressDialog.dismiss()
-                                    toast("upload gagal")
-                                }
-                            })
-
-                        }
-
-                    }
-                }
-                else if (logic==2){
-                    when {
-                        filepathcamera == null -> toast("ambil gambar telebih dahulu ")
-                        TextUtils.isEmpty(edt_nama.text.toString()) -> toast("masukkan nama terlebih dahulu")
-                        TextUtils.isEmpty(edt_harga.text.toString()) -> toast("masukkan harga terlebih dahulu")
-                        TextUtils.isEmpty(edt_keterangan.text.toString()) -> toast("masukkan nama keterangan dahulu")
-                        TextUtils.isEmpty(edit_tutupwarung.text.toString()) -> toast("masukkan jam dahulu")
-                        TextUtils.isEmpty(edit_openwarung.text.toString()) -> toast("masukkan jam dahulu")
-                        else -> {
-                            val progressDialog = ProgressDialog(this)
-                            progressDialog.setTitle("Akun Setting")
-                            progressDialog.setMessage("Tunggu , sedang update")
-                            progressDialog.show()
-                            val fileref =
-                                storageReference!!.child(System.currentTimeMillis().toString() + ".jpg")
-                            var uploadTask: StorageTask<*>
-                            uploadTask = fileref.putFile(filepathcamera!!)
-                            uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                                if (!task.isSuccessful) {
-                                    task.exception?.let {
-                                        throw  it
-                                        progressDialog.dismiss()
-                                    }
-                                }
-                                return@Continuation fileref.downloadUrl
-                            }).addOnCompleteListener(OnCompleteListener<Uri> { task ->
-                                if (task.isSuccessful) {
-                                    val downloadUrl = task.result
-                                    val key =
-                                        FirebaseDatabase.getInstance().reference.push().key
-
-                                    myUrl = downloadUrl.toString()
-                                    var harga = (hargatotal.toDouble()/1000).roundToInt() * 1000
-                                    val usermap: MutableMap<String, Any?> = HashMap()
-
-                                    usermap["gambar"] = myUrl
-                                    usermap["harga"] = edt_harga.text.toString()
-                                    usermap["harga_ppn"] = hargappn.toString()
-                                    usermap["harga_total"] = harga.toString()
-                                    usermap["kategori"] = radiokategori.text.toString()
-                                    usermap["nama"] = edt_nama.text.toString()
-                                    usermap["id"] = key.toString()
-                                    usermap["kode_makanan"] = kode.toString()
-                                    usermap["tutup_warungday"] = openday.toString()
-                                    usermap["jam_buka"] = jambukawarung.toString()
-                                    usermap["jam_tutup"] = jamtutupwarung.toString()
-
-
-                                    val uploadgambar =
-                                        FirebaseDatabase.getInstance().reference
-                                            .child("Pandaan").child("Resto").child(userID.toString()).child("gambar").setValue(myUrl.toString())
-                                    val uploadnama =
-                                        FirebaseDatabase.getInstance().reference
-                                            .child("Pandaan").child("Resto").child(userID.toString()).child("nama").setValue(edt_nama.text.toString())
-                                    val uploadstatus =
-                                        FirebaseDatabase.getInstance().reference
-                                            .child("Pandaan").child("Resto").child(userID.toString()).child("status").setValue("Tutup")
-
-                                    val  tutup_warungday=
-                                        FirebaseDatabase.getInstance().reference
-                                            .child("Pandaan").child("Resto").child(userID.toString()).child("tutup_warungday").setValue(openday.toString())
-
-                                    val  jam_buka=
-                                        FirebaseDatabase.getInstance().reference
-                                            .child("Pandaan").child("Resto").child(userID.toString()).child("jam_buka").setValue(jambukawarung.toString())
-
-                                    val  jam_tutup=
-                                        FirebaseDatabase.getInstance().reference
-                                            .child("Pandaan").child("Resto").child(userID.toString()).child("jam_tutup").setValue(jamtutupwarung.toString())
-
-                                    mDatabase!!.child("Pandaan")
-                                        .child("Resto_Detail").child(userID.toString()).child(key.toString())
-                                        .setValue(usermap)
-                                        .addOnCompleteListener(OnCompleteListener<Void?> {
-                                            finish()
-                                            startActivity(intentFor<MainActivity>().clearTask().newTask())
-                                        })
-
-                                    toast("upload sukses")
-                                    progressDialog.dismiss()
-                                } else {
-                                    progressDialog.dismiss()
-                                    toast("upload gagal")
-                                }
-                            })
-
-                        }
-
-                    }
-
-                }
-                else{
-                    toast("ambil gambar telebih dahulu ")
-                }
-            }
-            else{
-                toast("Masukkan makanan terlebih dahulu")
-            }
-        }
+//        btnUpload.setOnClickListener {
+//            var edtnama = edt_nama.text.toString()
+//            var edtharga = edt_harga.text.toString()
+//            var edtketerangan = edt_keterangan.text.toString()
+//
+//            if (!TextUtils.isEmpty(edtnama) && !TextUtils.isEmpty(edtharga) && !TextUtils.isEmpty(edtketerangan) && myUrl=="" && !TextUtils.isEmpty(edit_tutupwarung.text.toString()) && !TextUtils.isEmpty(edit_openwarung.text.toString()) && openday!=null){
+//
+//                val intSelectkategori: Int = radioGroup_kategori!!.checkedRadioButtonId
+//                radiokategori = findViewById(intSelectkategori)
+//                kategori = radiokategori.text.toString()
+//
+//
+//                var hargamakanan = edt_harga.text.toString().toInt()
+//                var hargappn = ((hargamakanan *15 )/100)
+//                var hargatotal = hargamakanan + hargappn
+//
+//                if (logic==1){
+//                    when {
+//
+//                        filePath == null -> toast("ambil gambar telebih dahulu ")
+//                        TextUtils.isEmpty(edt_nama.text.toString()) -> toast("masukkan nama terlebih dahulu")
+//                        TextUtils.isEmpty(edt_harga.text.toString()) -> toast("masukkan harga terlebih dahulu")
+//                        TextUtils.isEmpty(edt_keterangan.text.toString()) -> toast("masukkan nama keterangan dahulu")
+//                        else -> {
+//                            val progressDialog = ProgressDialog(this)
+//                            progressDialog.setTitle("Akun Setting")
+//                            progressDialog.setMessage("Tunggu , sedang update")
+//                            progressDialog.show()
+//                            val fileref =
+//                                storageReference!!.child(System.currentTimeMillis().toString() + ".jpg")
+//                            var uploadTask: StorageTask<*>
+//                            uploadTask = fileref.putFile(filePath!!)
+//                            uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+//                                if (!task.isSuccessful) {
+//                                    task.exception?.let {
+//                                        throw  it
+//                                        progressDialog.dismiss()
+//                                    }
+//                                }
+//                                return@Continuation fileref.downloadUrl
+//                            }).addOnCompleteListener(OnCompleteListener<Uri> { task ->
+//                                if (task.isSuccessful) {
+//                                    val downloadUrl = task.result
+//                                    val key =
+//                                        FirebaseDatabase.getInstance().reference.push().key
+//
+//                                    myUrl = downloadUrl.toString()
+//                                    var harga = (hargatotal.toDouble()/1000).roundToInt() * 1000
+//
+//                                    val usermap: MutableMap<String, Any?> = HashMap()
+//                                    usermap["gambar"] = myUrl
+//                                    usermap["harga"] = edt_harga.text.toString()
+//                                    usermap["harga_ppn"] = hargappn.toString()
+//                                    usermap["harga_total"] = harga.toString()
+//                                    usermap["kategori"] = radiokategori.text.toString()
+//                                    usermap["nama"] = edt_nama.text.toString()
+//                                    usermap["id"] = key.toString()
+//                                    usermap["kode_makanan"] = kode.toString()
+//                                    usermap["tutup_warungday"] = openday.toString()
+//                                    usermap["jam_buka"] = jambukawarung.toString()
+//                                    usermap["jam_tutup"] = jamtutupwarung.toString()
+//
+//                                    val uploadgambar =
+//                                        FirebaseDatabase.getInstance().reference
+//                                            .child("Pandaan").child("Resto").child(userID.toString()).child("gambar").setValue(myUrl.toString())
+//                                    val uploadnama =
+//                                        FirebaseDatabase.getInstance().reference
+//                                            .child("Pandaan").child("Resto").child(userID.toString()).child("nama").setValue(edt_nama.text.toString())
+//
+//                                    val uploadstatus =
+//                                        FirebaseDatabase.getInstance().reference
+//                                            .child("Pandaan").child("Resto").child(userID.toString()).child("status").setValue("Tutup")
+//
+//                                    val  tutup_warungday=
+//                                        FirebaseDatabase.getInstance().reference
+//                                            .child("Pandaan").child("Resto").child(userID.toString()).child("tutup_warungday").setValue(openday.toString())
+//
+//                                    val  jam_buka=
+//                                        FirebaseDatabase.getInstance().reference
+//                                            .child("Pandaan").child("Resto").child(userID.toString()).child("jam_buka").setValue(jambukawarung.toString())
+//
+//                                    val  jam_tutup=
+//                                        FirebaseDatabase.getInstance().reference
+//                                            .child("Pandaan").child("Resto").child(userID.toString()).child("jam_tutup").setValue(jamtutupwarung.toString())
+//
+//                                    mDatabase!!.child("Pandaan")
+//                                        .child("Resto_Detail").child(userID.toString()).child(key.toString())
+//                                        .setValue(usermap)
+//                                        .addOnCompleteListener(OnCompleteListener<Void?> {
+//                                            finish()
+//                                            startActivity(intentFor<MainActivity>().clearTask().newTask())
+//
+//                                        })
+//
+//                                    toast("upload sukses")
+//                                    progressDialog.dismiss()
+//                                } else {
+//                                    progressDialog.dismiss()
+//                                    toast("upload gagal")
+//                                }
+//                            })
+//
+//                        }
+//
+//                    }
+//                }
+//                else if (logic==2){
+//                    when {
+//                        filepathcamera == null -> toast("ambil gambar telebih dahulu ")
+//                        TextUtils.isEmpty(edt_nama.text.toString()) -> toast("masukkan nama terlebih dahulu")
+//                        TextUtils.isEmpty(edt_harga.text.toString()) -> toast("masukkan harga terlebih dahulu")
+//                        TextUtils.isEmpty(edt_keterangan.text.toString()) -> toast("masukkan nama keterangan dahulu")
+//                        TextUtils.isEmpty(edit_tutupwarung.text.toString()) -> toast("masukkan jam dahulu")
+//                        TextUtils.isEmpty(edit_openwarung.text.toString()) -> toast("masukkan jam dahulu")
+//                        else -> {
+//                            val progressDialog = ProgressDialog(this)
+//                            progressDialog.setTitle("Akun Setting")
+//                            progressDialog.setMessage("Tunggu , sedang update")
+//                            progressDialog.show()
+//                            val fileref =
+//                                storageReference!!.child(System.currentTimeMillis().toString() + ".jpg")
+//                            var uploadTask: StorageTask<*>
+//                            uploadTask = fileref.putFile(filepathcamera!!)
+//                            uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+//                                if (!task.isSuccessful) {
+//                                    task.exception?.let {
+//                                        throw  it
+//                                        progressDialog.dismiss()
+//                                    }
+//                                }
+//                                return@Continuation fileref.downloadUrl
+//                            }).addOnCompleteListener(OnCompleteListener<Uri> { task ->
+//                                if (task.isSuccessful) {
+//                                    val downloadUrl = task.result
+//                                    val key =
+//                                        FirebaseDatabase.getInstance().reference.push().key
+//
+//                                    myUrl = downloadUrl.toString()
+//                                    var harga = (hargatotal.toDouble()/1000).roundToInt() * 1000
+//                                    val usermap: MutableMap<String, Any?> = HashMap()
+//
+//                                    usermap["gambar"] = myUrl
+//                                    usermap["harga"] = edt_harga.text.toString()
+//                                    usermap["harga_ppn"] = hargappn.toString()
+//                                    usermap["harga_total"] = harga.toString()
+//                                    usermap["kategori"] = radiokategori.text.toString()
+//                                    usermap["nama"] = edt_nama.text.toString()
+//                                    usermap["id"] = key.toString()
+//                                    usermap["kode_makanan"] = kode.toString()
+//                                    usermap["tutup_warungday"] = openday.toString()
+//                                    usermap["jam_buka"] = jambukawarung.toString()
+//                                    usermap["jam_tutup"] = jamtutupwarung.toString()
+//
+//
+//                                    val uploadgambar =
+//                                        FirebaseDatabase.getInstance().reference
+//                                            .child("Pandaan").child("Resto").child(userID.toString()).child("gambar").setValue(myUrl.toString())
+//                                    val uploadnama =
+//                                        FirebaseDatabase.getInstance().reference
+//                                            .child("Pandaan").child("Resto").child(userID.toString()).child("nama").setValue(edt_nama.text.toString())
+//                                    val uploadstatus =
+//                                        FirebaseDatabase.getInstance().reference
+//                                            .child("Pandaan").child("Resto").child(userID.toString()).child("status").setValue("Tutup")
+//
+//                                    val  tutup_warungday=
+//                                        FirebaseDatabase.getInstance().reference
+//                                            .child("Pandaan").child("Resto").child(userID.toString()).child("tutup_warungday").setValue(openday.toString())
+//
+//                                    val  jam_buka=
+//                                        FirebaseDatabase.getInstance().reference
+//                                            .child("Pandaan").child("Resto").child(userID.toString()).child("jam_buka").setValue(jambukawarung.toString())
+//
+//                                    val  jam_tutup=
+//                                        FirebaseDatabase.getInstance().reference
+//                                            .child("Pandaan").child("Resto").child(userID.toString()).child("jam_tutup").setValue(jamtutupwarung.toString())
+//
+//                                    mDatabase!!.child("Pandaan")
+//                                        .child("Resto_Detail").child(userID.toString()).child(key.toString())
+//                                        .setValue(usermap)
+//                                        .addOnCompleteListener(OnCompleteListener<Void?> {
+//                                            finish()
+//                                            startActivity(intentFor<MainActivity>().clearTask().newTask())
+//                                        })
+//
+//                                    toast("upload sukses")
+//                                    progressDialog.dismiss()
+//                                } else {
+//                                    progressDialog.dismiss()
+//                                    toast("upload gagal")
+//                                }
+//                            })
+//
+//                        }
+//
+//                    }
+//
+//                }
+//                else{
+//                    toast("ambil gambar telebih dahulu ")
+//                }
+//            }
+//            else{
+//                toast("Masukkan makanan terlebih dahulu")
+//            }
+//        }
 
         btn_galery.setOnClickListener {
             pilihfile()
