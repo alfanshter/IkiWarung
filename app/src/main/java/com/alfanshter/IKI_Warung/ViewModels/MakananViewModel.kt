@@ -85,7 +85,7 @@ class MakananViewModel : ViewModel(){
 //        })
 //    }
 
-    fun validate(nama: String, harga: Int, keterangan: String, uri : Uri?) : Boolean{
+    fun validate(nama: String, harga: Int, keterangan: String, path: String) : Boolean{
         state.value = MakananState.Reset
 //        if(email.isEmpty() || password.isEmpty()){
 //            state.value = MakananState.ShowToast("Username dan Password tidak boleh kosong")
@@ -100,7 +100,7 @@ class MakananViewModel : ViewModel(){
         }else if(keterangan.isEmpty()){
             state.value = MakananState.ShowToast("Masukkan Keterangan")
             return false
-        }else if(uri == null){
+        }else if(path == null){
             state.value = MakananState.ShowToast("Silahkan pilih foto terlebih dahulu")
             return false
         }

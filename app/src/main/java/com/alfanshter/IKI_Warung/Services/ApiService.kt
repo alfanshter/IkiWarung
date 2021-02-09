@@ -29,13 +29,6 @@ interface ApiService {
                       @Part("keterangan") keterangan : RequestBody,
                       @Part("status") status : RequestBody) : Call<TambahMakananResponse>
 
-//    fun tambahMakanan(@Header("auth-token") token : String,
-//                      @Part file: MultipartBody.Part,
-//                      @Field("nama") nama : String,
-//                      @Field("kategori") kategori : String,
-//                      @Field("harga") harga : Int,
-//                      @Field("keterangan") keterangan : String,
-//                      @Field("status") status : Boolean) : Call<TambahMakananResponse>
 
     @Multipart
     @PUT("food/update")
@@ -81,9 +74,6 @@ interface ApiService {
     @DELETE("makanan/{id}")
     fun deleteMakanan(@Header("auth-token") token: String,
                       @Path("id") id: String)
-
-
-
 
 
 

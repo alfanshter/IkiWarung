@@ -259,17 +259,7 @@ class InsertFoodActivity : AppCompatActivity() {
         radiokategori = findViewById(intSelectkategori)
         val kategori = radiokategori.text.toString()
 
-//        val path: File = File(
-//            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM),
-//            "IKIWarung"
-//        )
-//        try {
-//            path.mkdirs()
-//        }catch (e: IOException){
-//            e.printStackTrace()
-//        }
-
-        val foto : File = File(currentPhotoPath)
+        val foto = File(currentPhotoPath)
         val requestBody = RequestBody.create(MediaType.parse("image/*"), foto)
         imagename = MultipartBody.Part.createFormData("file", foto.name, requestBody)
         val name = RequestBody.create(MediaType.parse("text/plain"), nama)
@@ -278,8 +268,8 @@ class InsertFoodActivity : AppCompatActivity() {
         val description = RequestBody.create(MediaType.parse("text/plain"), keterangan)
         val status = RequestBody.create(MediaType.parse("text/plain"), "false")
 
-        if (makananViewModel.validate(nama, parseInt(harga), keterangan, filePathGambar)){
-//            toast(filePathGambar.toString())
+        if (makananViewModel.validate(nama, parseInt(harga), keterangan, currentPhotoPath)){
+//            toast(currentPhotoPath)
             makananViewModel.addMakanan(token, name, cate, price, description, status, imagename)
         }
     }
