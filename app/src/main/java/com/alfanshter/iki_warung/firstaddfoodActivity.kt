@@ -28,6 +28,9 @@ import kotlinx.android.synthetic.main.activity_firstaddfood.*
 import kotlinx.android.synthetic.main.activity_firstaddfood.btn_foto
 import kotlinx.android.synthetic.main.activity_firstaddfood.btn_galery
 import kotlinx.android.synthetic.main.activity_firstaddfood.gambar_makanan
+import org.jetbrains.anko.clearTask
+import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.newTask
 import org.jetbrains.anko.toast
 import java.text.SimpleDateFormat
 import java.util.*
@@ -280,8 +283,17 @@ class firstaddfoodActivity : AppCompatActivity() {
         when(it){
             is FoodViewModel.FoodState.IsLoading -> loading(it.loading)
             is FoodViewModel.FoodState.ShowToast -> toast(it.message)
+            is FoodViewModel.FoodState.IsSukses -> insertfirstfood(it.sukses)
         }
 
+    }
+
+    private fun insertfirstfood(sukses: Int?) {
+        if (sukses==1){
+            startActivity(
+                intentFor<MainActivity>().clearTask().newTask()
+            )
+        }
     }
 
     private fun openwarungtime() {

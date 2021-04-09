@@ -54,8 +54,8 @@ class FoodViewModel : ViewModel(), AnkoLogger {
         inisialisasifirebase()
 
         if (nama_makanan.isNullOrEmpty() || harga_makanan.isNullOrEmpty() || keterangan_makanan.isNullOrEmpty() || openday.isNullOrEmpty()
-            || jambukawarung.isNullOrEmpty() || jamtutupwarung.isNullOrEmpty()  || image_uri==null
-            || kategori==null
+            || jambukawarung.isNullOrEmpty() || jamtutupwarung.isNullOrEmpty() || image_uri == null
+            || kategori == null
         ) {
             state.value = FoodState.ShowToast(Constant.input)
             state.value = FoodState.IsLoading(false)
@@ -79,7 +79,7 @@ class FoodViewModel : ViewModel(), AnkoLogger {
                     }
                 }
                 return@Continuation fileref.downloadUrl
-            }).addOnCompleteListener {task ->
+            }).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val downloadUrl = task.result
                     val key =
@@ -101,15 +101,24 @@ class FoodViewModel : ViewModel(), AnkoLogger {
                     usermap["jam_buka"] = firstaddfoodActivity.jambukawarung.toString()
                     usermap["jam_tutup"] = firstaddfoodActivity.jamtutupwarung.toString()
                     info { "dinda $UserId" }
-                    val docref = firestore.collection("Warung_Akun").document(UserId.toString()).update("nib","alfan").addOnCompleteListener {
-                        if (it.isSuccessful){
-                            state.value = FoodState.IsSukses(1)
+                    val docref =
+                        firestore.collection("Warung_Akun").document(UserId.toString()).update(
+                            "gambar", myUrl,
+                            "tutup_warungday", openday,
+                            "jam_buka", jambukawarung,
+                            "jam_tutup", jamtutupwarung
+                        ).addOnCompleteListener {
+                            if (it.isSuccessful) {
+                                val ref = firestore.collection("Warung_Detail").document(UserId.toString()).set(usermap).addOnCompleteListener {
+                                    if (it.isSuccessful){
+                                        state.value = FoodState.IsSukses(1)
+                                    }
+                                }
+                            }
                         }
-                    }
-
                 }
             }
-
+                state.value = FoodState.IsLoading(false)
         }
     }
 
@@ -129,8 +138,8 @@ class FoodViewModel : ViewModel(), AnkoLogger {
 
     sealed class FoodState {
         data class IsLoading(var loading: Boolean = false) : FoodState()
-        data class ShowToast (var message : String) : FoodState()
-        data class IsSukses(var sukses : Int? = null) : FoodState()
+        data class ShowToast(var message: String) : FoodState()
+        data class IsSukses(var sukses: Int? = null) : FoodState()
     }
 }
 
