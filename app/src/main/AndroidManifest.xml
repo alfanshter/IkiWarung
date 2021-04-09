@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.alfanshter.IKI_Warung">
+    package="com.alfanshter.iki_warung">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -13,27 +13,27 @@
         android:roundIcon="@mipmap/ikiwarung"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Ui.Riwayat.DetailRiwayatActivity"></activity>
-        <activity android:name=".EditRestoActivity" />
-        <activity android:name=".EditActivity" />
-        <activity android:name=".firstaddfoodActivity" />
-        <activity android:name=".SplashScreen">
+        <activity android:name="com.alfanshter.iki_warung.Ui.Riwayat.DetailRiwayatActivity"></activity>
+        <activity android:name="com.alfanshter.iki_warung.EditRestoActivity" />
+        <activity android:name="com.alfanshter.iki_warung.EditActivity" />
+        <activity android:name="com.alfanshter.iki_warung.firstaddfoodActivity" />
+        <activity android:name="com.alfanshter.iki_warung.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".jarakterdekat" />
-        <activity android:name=".Ui.DetailActivity" />
+        <activity android:name="com.alfanshter.iki_warung.jarakterdekat" />
+        <activity android:name="com.alfanshter.iki_warung.Ui.DetailActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".Ui.InsertFoodActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".auth.LoginActivity" />
+        <activity android:name="com.alfanshter.iki_warung.Ui.InsertFoodActivity" />
+        <activity android:name="com.alfanshter.iki_warung.MainActivity" />
+        <activity android:name="com.alfanshter.iki_warung.auth.LoginActivity" />
     </application>
 
 </manifest>

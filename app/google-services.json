@@ -15,11 +15,27 @@
       },
       "oauth_client": [
         {
+          "client_id": "110009922026-49jaafo2iss0blpnj1h9ictfqrvfpjai.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alfanshter.IKICostumer",
+            "certificate_hash": "7feb6b7957a896f8f9059b4636936ab97f7da0e0"
+          }
+        },
+        {
           "client_id": "110009922026-9lrou6j4gu7ssbkffm9emhucrv6v7f2p.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.alfanshter.IKICostumer",
             "certificate_hash": "7dc8b1766b7cec7ee2d7b7147c5885732fedff42"
+          }
+        },
+        {
+          "client_id": "110009922026-u7jn3qbn8ao2bf0b56jntsg92umg8cd8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alfanshter.IKICostumer",
+            "certificate_hash": "859fce5c452401f396705a8b24f2ea0d0ef97e8e"
           }
         },
         {
@@ -57,6 +73,14 @@
           "android_info": {
             "package_name": "com.alfanshter.IKI_Warung",
             "certificate_hash": "7dc8b1766b7cec7ee2d7b7147c5885732fedff42"
+          }
+        },
+        {
+          "client_id": "110009922026-nmnnkhomthgt6jtegiusq13e7dja6bmp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alfanshter.IKI_Warung",
+            "certificate_hash": "c35641fef23ad1ba6123c6ae36259777de9e6e8d"
           }
         },
         {
