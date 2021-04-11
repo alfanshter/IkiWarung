@@ -1,283 +1,134 @@
 package com.alfanshter.iki_warung.Ui
 
-import android.app.Activity
 import android.app.ProgressDialog
-import android.content.Context
+import android.content.ContentValues
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.TextUtils
 import android.widget.RadioButton
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.alfanshter.iki_warung.MainActivity
 import com.alfanshter.iki_warung.R
-import com.google.android.gms.tasks.Continuation
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
+import com.alfanshter.iki_warung.Utils.Constant
+import com.alfanshter.iki_warung.databinding.ActivityInsertFoodBinding
+import com.alfanshter.iki_warung.viewmodel.FoodViewModel
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.StorageTask
-import com.google.firebase.storage.UploadTask
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_insert_food.*
-import org.jetbrains.anko.startActivity
+import kotlinx.android.synthetic.main.activity_insert_food.gambar_makanan
+import org.jetbrains.anko.clearTask
+import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.newTask
 import org.jetbrains.anko.toast
-import java.io.ByteArrayOutputStream
-import java.io.IOException
-import java.util.*
-import kotlin.math.roundToInt
 
 class InsertFoodActivity : AppCompatActivity() {
     var nama: String? = null
     var harga: String? = null
-    var keterangan: String? = null
-    private val PICK_IMAGE_REQUEST = 1
-    private var filePath: Uri? = null
-    private var filepathcamera: Uri? = null
     lateinit var radiokategori: RadioButton
-    lateinit var radiojenis: RadioButton
-    var kategori: String? = null
-    var jenis: String? = null
-    private var storageReference: StorageReference? = null
-    private var mDatabase: DatabaseReference? = null
-    var logic = 0
-    private var myUrl = ""
     lateinit var auth: FirebaseAuth
-    var userID: String? = null
-    lateinit var firestore: FirebaseFirestore
+
+    //FOTO
+    private val REQUEST_IMAGE_CAPTURE = 1
+    private val REQUEST_PICK_IMAGE = 2
+
+    lateinit var binding: ActivityInsertFoodBinding
+    lateinit var insertfoodmodel: FoodViewModel
+
+    lateinit var progressDialog: ProgressDialog
+
+    companion object {
+        var kategori_insert: String? = null
+         var filePath: Uri? = null
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_insert_food)
-        auth = FirebaseAuth.getInstance()
-        firestore = FirebaseFirestore.getInstance()
-        userID = auth.currentUser!!.uid
-        mDatabase = FirebaseDatabase.getInstance().reference
+        progressDialog = ProgressDialog(this)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_insert_food)
+        insertfoodmodel = ViewModelProviders.of(this).get(FoodViewModel::class.java)
+        binding.viewmodel = insertfoodmodel
 
-        nama = edt_nama.text.toString().trim()
-        harga = edt_harga.text.toString().trim()
-        keterangan = edt_keterangan.text.toString().trim()
-        storageReference = FirebaseStorage.getInstance().reference.child("Warung").child(userID.toString()).child("resep")
-        btn_foto.setOnClickListener {
-            var i = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(i, 123)
+        insertfoodmodel.getState().observer(this, Observer {
+            handleUiState(it)
+        })
+
+        val intSelectkategori: Int = binding.radioGroupKategori.checkedRadioButtonId
+        radiokategori = findViewById(intSelectkategori)
+        kategori_insert = radiokategori.text.toString()
+
+
+        binding.btnFoto.setOnClickListener {
+            val values = ContentValues()
+            values.put(MediaStore.Images.Media.TITLE, "New Picture")
+            values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera")
+            filePath =
+                contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+            //camera intent
+            val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, filePath)
+            startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE)
 
         }
 
-        btnUpload.setOnClickListener {
-
-            val intSelectkategori: Int = radioGroup_kategori!!.checkedRadioButtonId
-            radiokategori = findViewById(intSelectkategori)
-            kategori = radiokategori.text.toString()
-
-
-            var hargamakanan = edt_harga.text.toString().toInt()
-            var hargappn = ((hargamakanan *15 )/100)
-            var hargatotal = hargamakanan + hargappn
-
-            if (logic==1){
-                when {
-                    filePath == null -> toast("ambil gambar telebih dahulu ")
-                    TextUtils.isEmpty(edt_nama.text.toString()) -> toast("masukkan nama terlebih dahulu")
-                    TextUtils.isEmpty(edt_harga.text.toString()) -> toast("masukkan harga terlebih dahulu")
-                    TextUtils.isEmpty(edt_keterangan.text.toString()) -> toast("masukkan nama keterangan dahulu")
-                    else -> {
-                        val progressDialog = ProgressDialog(this)
-                        progressDialog.setTitle("Upload Makanan")
-                        progressDialog.setMessage("Tunggu , sedang update")
-                        progressDialog.show()
-                        val bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath)
-                        val baos = ByteArrayOutputStream()
-                        bmp.compress(Bitmap.CompressFormat.JPEG, 25, baos)
-                        val data = baos.toByteArray()
-                        val fileref =
-                            storageReference!!.child(System.currentTimeMillis().toString() + ".jpg")
-                        var uploadTask: StorageTask<*>
-                        uploadTask = fileref.putBytes(data)
-                        uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                            if (!task.isSuccessful) {
-                                task.exception?.let {
-                                    throw  it
-                                    progressDialog.dismiss()
-                                }
-                            }
-                            return@Continuation fileref.downloadUrl
-                        }).addOnCompleteListener(OnCompleteListener<Uri> { task ->
-                            if (task.isSuccessful) {
-                                val downloadUrl = task.result
-                                val key =
-                                    FirebaseDatabase.getInstance().reference.push().key
-
-                                myUrl = downloadUrl.toString()
-                                var harga = (hargatotal.toDouble()/1000).roundToInt() * 1000
-
-                                val usermap: MutableMap<String, Any?> = HashMap()
-                                usermap["gambar"] = myUrl
-                                usermap["harga"] = edt_harga.text.toString()
-                                usermap["harga_ppn"] = hargappn.toString()
-                                usermap["harga_total"] = harga.toString()
-                                usermap["kategori"] = radiokategori.text.toString()
-                                usermap["nama"] = edt_nama.text.toString()
-                                usermap["id"] = key.toString()
-                                usermap["keterangan"] = edt_keterangan.text.toString()
-                                usermap["kode_makanan"] = kode
-                                mDatabase!!.child("Pandaan")
-                                    .child("Resto_Detail").child(userID.toString()).child(key.toString())
-                                    .setValue(usermap)
-                                    .addOnCompleteListener(OnCompleteListener<Void?> {
-                                        finish()
-                                        startActivity<MainActivity>()
-                                    })
-
-                                toast("upload sukses")
-                                progressDialog.dismiss()
-                            } else {
-                                progressDialog.dismiss()
-                                toast("upload gagal")
-                            }
-                        })
-
-                    }
-
-                }
-            }
-            else if (logic==2){
-                when {
-                    filepathcamera == null -> toast("ambil gambar telebih dahulu ")
-                    TextUtils.isEmpty(edt_nama.text.toString()) -> toast("masukkan nama terlebih dahulu")
-                    TextUtils.isEmpty(edt_harga.text.toString()) -> toast("masukkan harga terlebih dahulu")
-                    TextUtils.isEmpty(edt_keterangan.text.toString()) -> toast("masukkan nama keterangan dahulu")
-                    else -> {
-                        val progressDialog = ProgressDialog(this)
-                        progressDialog.setTitle("Akun Setting")
-                        progressDialog.setMessage("Tunggu , sedang update")
-                        progressDialog.show()
-                        val fileref =
-                            storageReference!!.child(System.currentTimeMillis().toString() + ".jpg")
-                        var uploadTask: StorageTask<*>
-                        uploadTask = fileref.putFile(filepathcamera!!)
-                        uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                            if (!task.isSuccessful) {
-                                task.exception?.let {
-                                    throw  it
-                                    progressDialog.dismiss()
-                                }
-                            }
-                            return@Continuation fileref.downloadUrl
-                        }).addOnCompleteListener(OnCompleteListener<Uri> { task ->
-                            if (task.isSuccessful) {
-                                val downloadUrl = task.result
-                                val key =
-                                    FirebaseDatabase.getInstance().reference.push().key
-
-                                myUrl = downloadUrl.toString()
-                                var harga = (hargatotal.toDouble()/1000).roundToInt() * 1000
-
-                                val usermap: MutableMap<String, Any?> = HashMap()
-                                usermap["gambar"] = myUrl
-                                usermap["harga"] = edt_harga.text.toString()
-                                usermap["harga_ppn"] = hargappn.toString()
-                                usermap["harga_total"] = harga.toString()
-                                usermap["kategori"] = radiokategori.text.toString()
-                                usermap["nama"] = edt_nama.text.toString()
-                                usermap["id"] = key.toString()
-                                usermap["keterangan"] = edt_keterangan.text.toString()
-                                usermap["kode_makanan"] = kode
-                                mDatabase!!.child("Pandaan")
-                                    .child("Resto_Detail").child(userID.toString()).child(key.toString())
-                                    .setValue(usermap)
-                                    .addOnCompleteListener(OnCompleteListener<Void?> {
-                                        finish()
-                                        startActivity<MainActivity>()
-                                    })
-
-                                toast("upload sukses")
-                                progressDialog.dismiss()
-                            } else {
-                                progressDialog.dismiss()
-                                toast("upload gagal")
-                            }
-                        })
-
-                    }
-
-                }
-
-            }
-            else{
-                toast("ambil gambar telebih dahulu ")
-            }
-        }
-
-        btn_galery.setOnClickListener {
+        binding.btnGalery.setOnClickListener {
             pilihfile()
         }
 
 
+    }
 
+    private fun handleUiState(it: FoodViewModel.FoodState?) {
+        when(it){
+            is FoodViewModel.FoodState.ShowToast -> toast(it.message)
+            is FoodViewModel.FoodState.IsLoading -> loading(it.loading)
+            is FoodViewModel.FoodState.IsSukses -> sukses(it.sukses!!)
+        }
     }
 
     private fun pilihfile() {
-        val intent = Intent()
+        //Intent to pick image
+        val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
-        intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(Intent.createChooser(intent, "PILIH GAMBAR"), PICK_IMAGE_REQUEST)
+        startActivityForResult(intent, REQUEST_PICK_IMAGE)
 
     }
 
-    fun kodeorder(): String {
-        val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-        val outputStrLength = (20..26).shuffled().first()
-
-        return (1..outputStrLength)
-            .map { kotlin.random.Random.nextInt(0, charPool.size) }
-            .map(charPool::get)
-            .joinToString("")
-    }
-
-    val kode = kodeorder()
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
-            logic = 1
-
-            filePath = data.data!!
-            try {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_IMAGE_CAPTURE) {
                 Picasso.get().load(filePath).fit().into(gambar_makanan)
-            } catch (e: IOException) {
-                e.printStackTrace()
+            } else if (requestCode == REQUEST_PICK_IMAGE) {
+                filePath = data?.data
+                Picasso.get().load(filePath).fit().into(gambar_makanan)
             }
         }
-        else if (requestCode == 123 && resultCode == Activity.RESULT_OK) {
-            logic = 2
-            var bmp = data!!.extras!!.get("data") as Bitmap
-            filepathcamera = getImageUri(applicationContext, bmp)
 
-            try {
-                Picasso.get().load(filepathcamera).fit().into(gambar_makanan)
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
+    }
 
-
+    fun sukses(state : Int){
+        if (state == 1){
+            startActivity(intentFor<MainActivity>().clearTask().newTask())
+            finish()
         }
     }
 
-    fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
-        val bytes = ByteArrayOutputStream()
-        inImage.compress(Bitmap.CompressFormat.JPEG, 25, bytes)
-        val path: String =
-            MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "Title", null)
-        return Uri.parse(path)
+    fun loading(state : Boolean){
+        if (state){
+            progressDialog.setCanceledOnTouchOutside(false)
+            progressDialog.setTitle(Constant.tunggu)
+            progressDialog.show()
+
+        }else{
+            progressDialog.dismiss()
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        logic = 0
     }
 }

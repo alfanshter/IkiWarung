@@ -6,4 +6,5 @@ object Constant {
     var input = "Masukkan Semua Kolom"
     val  error = "Mohon maaf gangguan server"
     val selamat = "Selamat bekerja"
+    val input_sukses = "Input Sukses"
 }

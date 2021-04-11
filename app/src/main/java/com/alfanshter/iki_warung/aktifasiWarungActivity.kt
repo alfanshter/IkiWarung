@@ -48,7 +48,6 @@ class aktifasiWarungActivity : AppCompatActivity() {
     var userID: String? = null
     lateinit var database: DatabaseReference
     var openwarung: Date? = null
-    lateinit var radiokategori: RadioButton
 
     companion object {
         var openday: String? = null
