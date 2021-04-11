@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity(), AnkoLogger {
 
     fun isloading(state: Int) {
         if (state == 1) {
-            startActivity(intentFor<firstaddfoodActivity>().clearTask().newTask())
+            startActivity(intentFor<aktifasiWarungActivity>().clearTask().newTask())
             finish()
         } else if (state == 2) {
             toast(Constant.selamat)

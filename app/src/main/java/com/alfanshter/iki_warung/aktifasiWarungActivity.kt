@@ -16,18 +16,15 @@ import android.widget.Spinner
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
 import com.alfanshter.iki_warung.Utils.Constant
-import com.alfanshter.iki_warung.databinding.ActivityFirstaddfoodBinding
-import com.alfanshter.iki_warung.viewmodel.FoodViewModel
+import com.alfanshter.iki_warung.databinding.ActivityAktifasiwarungBinding
+import com.alfanshter.iki_warung.viewmodel.UsersViewModel
 import com.alfanshter.udinlelangfix.Session.SessionManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.StorageReference
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_firstaddfood.*
-import kotlinx.android.synthetic.main.activity_firstaddfood.btn_foto
-import kotlinx.android.synthetic.main.activity_firstaddfood.btn_galery
-import kotlinx.android.synthetic.main.activity_firstaddfood.gambar_makanan
+import kotlinx.android.synthetic.main.activity_aktifasiwarung.*
 import org.jetbrains.anko.clearTask
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
@@ -35,7 +32,7 @@ import org.jetbrains.anko.toast
 import java.text.SimpleDateFormat
 import java.util.*
 
-class firstaddfoodActivity : AppCompatActivity() {
+class aktifasiWarungActivity : AppCompatActivity() {
     lateinit var sessionManager: SessionManager
     var nama: String? = null
     var harga: String? = null
@@ -58,7 +55,6 @@ class firstaddfoodActivity : AppCompatActivity() {
         var jambukawarung: String? = null
         var jamtutupwarung: String? = null
         var image_uri: Uri? = null
-        var kategori: String? = null
 
     }
 
@@ -66,17 +62,17 @@ class firstaddfoodActivity : AppCompatActivity() {
     lateinit var progressDialog: ProgressDialog
 
     //binding
-    lateinit var binding: ActivityFirstaddfoodBinding
-    lateinit var foodViewModel: FoodViewModel
+    lateinit var binding: ActivityAktifasiwarungBinding
+    lateinit var userviewmodel: UsersViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sessionManager = SessionManager(this)
         progressDialog = ProgressDialog(this)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_firstaddfood)
-        foodViewModel = ViewModelProviders.of(this).get(FoodViewModel::class.java)
-        binding.viewmodels = foodViewModel
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_aktifasiwarung)
+        userviewmodel = ViewModelProviders.of(this).get(UsersViewModel::class.java)
+        binding.viewmodels = userviewmodel
 
-        foodViewModel.getState().observer(this, androidx.lifecycle.Observer {
+        userviewmodel.getState().observer(this, androidx.lifecycle.Observer {
             handleUiState(it)
         })
         val hari = resources.getStringArray(R.array.hari)
@@ -114,10 +110,6 @@ class firstaddfoodActivity : AppCompatActivity() {
 
         }
 
-        val intSelectkategori: Int = radioGroup_kategori!!.checkedRadioButtonId
-        radiokategori = findViewById(intSelectkategori)
-        kategori = radiokategori.text.toString()
-
 
         btn_galery.setOnClickListener {
             pilihfile()
@@ -132,20 +124,22 @@ class firstaddfoodActivity : AppCompatActivity() {
 
     }
 
-    private fun handleUiState(it: FoodViewModel.FoodState?) {
+    private fun handleUiState(it: UsersViewModel.UserState?) {
         when (it) {
-            is FoodViewModel.FoodState.IsLoading -> loading(it.loading)
-            is FoodViewModel.FoodState.ShowToast -> toast(it.message)
-            is FoodViewModel.FoodState.IsSukses -> insertfirstfood(it.sukses)
+            is UsersViewModel.UserState.ShowToast -> toast(it.message)
+            is UsersViewModel.UserState.Isloading -> loading(it.userstate)
+            is UsersViewModel.UserState.IsSuccess -> aktifasi_warung(it.what)
         }
 
     }
 
-    private fun insertfirstfood(sukses: Int?) {
+
+    private fun aktifasi_warung(sukses: Int?) {
         if (sukses == 1) {
             startActivity(
                 intentFor<MainActivity>().clearTask().newTask()
             )
+            finish()
         }
     }
 

@@ -5,12 +5,11 @@ import android.view.View
 import androidx.lifecycle.ViewModel
 import com.alfanshter.iki_warung.Utils.Constant
 import com.alfanshter.iki_warung.Utils.SingleLiveEvent
-import com.alfanshter.iki_warung.firstaddfoodActivity
-import com.alfanshter.iki_warung.firstaddfoodActivity.Companion.image_uri
-import com.alfanshter.iki_warung.firstaddfoodActivity.Companion.jambukawarung
-import com.alfanshter.iki_warung.firstaddfoodActivity.Companion.jamtutupwarung
-import com.alfanshter.iki_warung.firstaddfoodActivity.Companion.kategori
-import com.alfanshter.iki_warung.firstaddfoodActivity.Companion.openday
+import com.alfanshter.iki_warung.aktifasiWarungActivity
+import com.alfanshter.iki_warung.aktifasiWarungActivity.Companion.image_uri
+import com.alfanshter.iki_warung.aktifasiWarungActivity.Companion.jambukawarung
+import com.alfanshter.iki_warung.aktifasiWarungActivity.Companion.jamtutupwarung
+import com.alfanshter.iki_warung.aktifasiWarungActivity.Companion.openday
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
@@ -49,7 +48,9 @@ class FoodViewModel : ViewModel(), AnkoLogger {
         firestore = FirebaseFirestore.getInstance()
     }
 
-    fun btn_tambahkan(view: View) {
+
+    //tambah menu
+    /*fun btn_tambahkan(view: View) {
         state.value = FoodState.IsLoading(true)
         inisialisasifirebase()
 
@@ -97,9 +98,9 @@ class FoodViewModel : ViewModel(), AnkoLogger {
                     usermap["nama"] = nama_makanan.toString()
                     usermap["id"] = key.toString()
                     usermap["kode_makanan"] = kode.toString()
-                    usermap["tutup_warungday"] = firstaddfoodActivity.openday.toString()
-                    usermap["jam_buka"] = firstaddfoodActivity.jambukawarung.toString()
-                    usermap["jam_tutup"] = firstaddfoodActivity.jamtutupwarung.toString()
+                    usermap["tutup_warungday"] = aktifasiWarungActivity.openday.toString()
+                    usermap["jam_buka"] = aktifasiWarungActivity.jambukawarung.toString()
+                    usermap["jam_tutup"] = aktifasiWarungActivity.jamtutupwarung.toString()
                     usermap["uid"] = UserId.toString()
                     info { "dinda $UserId" }
                     val docref =
@@ -122,19 +123,20 @@ class FoodViewModel : ViewModel(), AnkoLogger {
                 state.value = FoodState.IsLoading(false)
         }
     }
-        //ambil data ketika gak ada makanan sama sekali langsung diarahkan ke firstfood
-    fun IsGetData(){
+   */
+
+    //ambil data ketika gak ada makanan sama sekali langsung diarahkan ke firstfood
+    fun IsGetData() {
         inisialisasifirebase()
-        val docref = firestore.collection("Warung_Detail").whereEqualTo("alfan","dinda")
-                if (docref.get().isSuccessful){
-                    info { "dinda benar" }
-                }else{
-                    info { "dinda salah" }
-                }
-
-
-
+        val docref = firestore.collection("Warung_Detail").whereEqualTo("alfan", "dinda")
+        if (docref.get().isSuccessful) {
+            info { "dinda benar" }
+        } else {
+            info { "dinda salah" }
         }
+
+
+    }
 
 
 //        } .get().addOnSuccessListener {
@@ -162,8 +164,6 @@ class FoodViewModel : ViewModel(), AnkoLogger {
     }
 
 
-
-
     fun getState() = state
 
 
@@ -172,7 +172,7 @@ class FoodViewModel : ViewModel(), AnkoLogger {
         data class ShowToast(var message: String) : FoodState()
         data class IsSukses(var sukses: Int? = null) : FoodState()
     }
-    }
+}
 
 
 

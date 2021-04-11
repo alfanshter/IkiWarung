@@ -16,7 +16,7 @@
         <activity android:name="com.alfanshter.iki_warung.Ui.Riwayat.DetailRiwayatActivity"></activity>
         <activity android:name="com.alfanshter.iki_warung.EditRestoActivity" />
         <activity android:name="com.alfanshter.iki_warung.EditActivity" />
-        <activity android:name="com.alfanshter.iki_warung.firstaddfoodActivity" />
+        <activity android:name="com.alfanshter.iki_warung.aktifasiWarungActivity" />
         <activity android:name="com.alfanshter.iki_warung.SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
