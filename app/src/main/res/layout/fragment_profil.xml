@@ -1,8 +1,17 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.alfanshter.iki_warung.Ui.ProfilFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+            <import type="android.view.View"/>
+        <variable
+            name="viewmodels"
+            type="com.alfanshter.iki_warung.viewmodel.UsersViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.alfanshter.iki_warung.Ui.ProfilFragment">
 
         <ImageView
             android:layout_width="138dp"
@@ -10,51 +19,48 @@
             android:src="@drawable/tulisaniki"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
-            android:id="@+id/tuilsan"
-            />
+            android:id="@+id/tuilsan" />firestore
 
-    <ImageView
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@drawable/warung"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:id="@+id/gambar"
-        android:layout_below="@+id/tuilsan"
-        />
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/warung"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:id="@+id/gambar"
+            android:layout_below="@+id/tuilsan" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/txt_namawarung"
-        android:layout_below="@+id/gambar"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:textSize="17sp"
-        android:fontFamily="@font/aleo_bold"
-        />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_namawarung"
+            android:layout_below="@+id/gambar"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:textSize="17sp"
+            android:text="@={viewmodels.namawarung}"
+            android:fontFamily="@font/aleo_bold" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_logout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:id="@+id/version"
-        />
-    <Button
-        android:id="@+id/btn_logout"
-        android:layout_width="330dp"
-        android:layout_height="40dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/kotakmerahbutto"
-        android:text="LOGOUT"
-        android:textColor="#ffffff"
-        android:textSize="24dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/btn_logout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:id="@+id/version" />
+
+        <Button
+            android:id="@+id/btn_logout"
+            android:layout_width="330dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/kotakmerahbutto"
+            android:text="LOGOUT"
+            android:textColor="#ffffff"
+            android:textSize="24dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
 
 
-
-</RelativeLayout>
+    </RelativeLayout>
+</layout>

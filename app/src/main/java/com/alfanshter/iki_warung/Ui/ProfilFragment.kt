@@ -7,9 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.alfanshter.iki_warung.BuildConfig
 import com.alfanshter.iki_warung.R
 import com.alfanshter.iki_warung.auth.LoginActivity
+import com.alfanshter.iki_warung.databinding.FragmentProfilBinding
+import com.alfanshter.iki_warung.viewmodel.UsersViewModel
 import com.alfanshter.udinlelangfix.Session.SessionManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -19,37 +24,26 @@ import org.jetbrains.anko.support.v4.startActivity
 
 class ProfilFragment : Fragment() {
 
-    lateinit var ref : DatabaseReference
     lateinit var auth: FirebaseAuth
-    var UserID : String?=null
-    lateinit var buttonlogout : Button
-    lateinit var version : TextView
     lateinit var sessionManager: SessionManager
+    lateinit var profilviewmodel: UsersViewModel
+    lateinit var binding: FragmentProfilBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         // Inflate the layout for this fragment
-        val root =  inflater.inflate(R.layout.fragment_profil, container, false)
-        sessionManager = SessionManager(context)
-        buttonlogout = root.find(R.id.btn_logout)
-        version = root.find(R.id.version)
-        auth = FirebaseAuth.getInstance()
-        UserID = auth.currentUser!!.uid
-        ref = FirebaseDatabase.getInstance().reference.child("Pandaan").child("Akun_Resto")
-        ref.addListenerForSingleValueEvent(object :ValueEventListener{
-            override fun onCancelled(error: DatabaseError) {
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profil, container, false)
+        profilviewmodel = ViewModelProviders.of(this).get(UsersViewModel::class.java)
+        binding.viewmodels = profilviewmodel
+        binding.lifecycleOwner = this
 
-            }
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-                        var data = snapshot.child(UserID.toString()).child("namapemilik").value.toString()
-                    root.txt_namawarung.text = data
-                  }
-
+        profilviewmodel.ProfilWarung()
+        profilviewmodel.getProfilWarung().observe(this, Observer {
+            binding.txtNamawarung.text = it.namatoko
         })
-
-        buttonlogout.setOnClickListener {
+        binding.btnLogout.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
             sessionManager.setLogin(false)
 
@@ -59,9 +53,9 @@ class ProfilFragment : Fragment() {
         }
 
         val versionName = BuildConfig.VERSION_NAME.toFloat()
-      version.text = "Versi Aplikasi ${versionName.toString()}"
+        binding.version.text = "Versi Aplikasi ${versionName}"
 
-        return root
+        return binding.root
     }
 
 

@@ -2,6 +2,7 @@ package com.alfanshter.iki_warung.viewmodel
 
 import android.net.Uri
 import android.view.View
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.alfanshter.iki_warung.Model.UsersModel
 import com.alfanshter.iki_warung.Utils.Constant
@@ -17,6 +18,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.auth.User
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.StorageTask
@@ -28,18 +30,47 @@ import kotlin.math.roundToInt
 class UsersViewModel : ViewModel(), AnkoLogger {
     private var state: SingleLiveEvent<UserState> = SingleLiveEvent()
     private var storageUsers: StorageReference? = null
+    private var datauser = MutableLiveData<UsersModel>()
 
     //firebase
     lateinit var firestoreuser: FirebaseFirestore
     lateinit var auth: FirebaseAuth
     var UserId: String? = null
     private var myUrl = ""
+
+    //profilwarung
+    var namawarung: String? = null
+
+
+    //ambil data warung
+    fun ProfilWarung() {
+        inisialisasidatabase()
+        val docref = firestoreuser.collection("Warung_Akun").document(UserId.toString()).get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists() && documentSnapshot != null) {
+                    var profil = documentSnapshot.toObject(UsersModel::class.java)
+                    datauser.postValue(profil!!)
+                }
+                val source = if (documentSnapshot.metadata.isFromCache) {
+                    var profil = documentSnapshot.toObject(UsersModel::class.java)
+                    datauser.postValue(profil!!)
+                } else {
+                    var profil = documentSnapshot.toObject(UsersModel::class.java)
+                    datauser.postValue(profil!!)
+
+                }
+
+
+            }
+    }
+
     fun inisialisasidatabase() {
         storageUsers =
             FirebaseStorage.getInstance().reference.child("Warung").child(UserId.toString())
                 .child("daftar")
 
         firestoreuser = FirebaseFirestore.getInstance()
+
         auth = FirebaseAuth.getInstance()
         UserId = auth.currentUser!!.uid
     }
@@ -123,6 +154,7 @@ class UsersViewModel : ViewModel(), AnkoLogger {
     }
 
     fun getState() = state
+    fun getProfilWarung() = datauser
 
 
     sealed class UserState {
