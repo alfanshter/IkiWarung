@@ -4,4 +4,6 @@ object Constant {
     //Loading
     val tunggu = "Tunggu Sebentar ...."
     var input = "Masukkan Semua Kolom"
+    val  error = "Mohon maaf gangguan server"
+    val selamat = "Selamat bekerja"
 }

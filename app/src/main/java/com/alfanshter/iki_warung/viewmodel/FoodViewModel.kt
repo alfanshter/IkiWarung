@@ -100,6 +100,7 @@ class FoodViewModel : ViewModel(), AnkoLogger {
                     usermap["tutup_warungday"] = firstaddfoodActivity.openday.toString()
                     usermap["jam_buka"] = firstaddfoodActivity.jambukawarung.toString()
                     usermap["jam_tutup"] = firstaddfoodActivity.jamtutupwarung.toString()
+                    usermap["uid"] = UserId.toString()
                     info { "dinda $UserId" }
                     val docref =
                         firestore.collection("Warung_Akun").document(UserId.toString()).update(
@@ -109,7 +110,7 @@ class FoodViewModel : ViewModel(), AnkoLogger {
                             "jam_tutup", jamtutupwarung
                         ).addOnCompleteListener {
                             if (it.isSuccessful) {
-                                val ref = firestore.collection("Warung_Detail").document(UserId.toString()).set(usermap).addOnCompleteListener {
+                                val ref = firestore.collection("Warung_Detail").document().set(usermap).addOnCompleteListener {
                                     if (it.isSuccessful){
                                         state.value = FoodState.IsSukses(1)
                                     }
@@ -121,6 +122,34 @@ class FoodViewModel : ViewModel(), AnkoLogger {
                 state.value = FoodState.IsLoading(false)
         }
     }
+        //ambil data ketika gak ada makanan sama sekali langsung diarahkan ke firstfood
+    fun IsGetData(){
+        inisialisasifirebase()
+        val docref = firestore.collection("Warung_Detail").whereEqualTo("alfan","dinda")
+                if (docref.get().isSuccessful){
+                    info { "dinda benar" }
+                }else{
+                    info { "dinda salah" }
+                }
+
+
+
+        }
+
+
+//        } .get().addOnSuccessListener {
+//            document ->
+//            if (document.contains("alfan")){
+//                info { "dinda ayu benar" }
+//                state.value = FoodState.ShowToast("Selamat Bekerja!!!")
+//            }else{
+//                info { "dinda ayu salah" }
+//                state.value = FoodState.IsSukses(1)  // 1 berarti Sukses dan pindah halaman
+//            }
+//        }.addOnFailureListener {
+//            info { "dinda error ${it.message}" }
+//            state.value = FoodState.ShowToast(Constant.error)
+//        }
 
     fun kodeorder(): String {
         val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
@@ -133,6 +162,8 @@ class FoodViewModel : ViewModel(), AnkoLogger {
     }
 
 
+
+
     fun getState() = state
 
 
@@ -141,5 +172,8 @@ class FoodViewModel : ViewModel(), AnkoLogger {
         data class ShowToast(var message: String) : FoodState()
         data class IsSukses(var sukses: Int? = null) : FoodState()
     }
-}
+    }
+
+
+
 
