@@ -5,6 +5,8 @@ import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.widget.RadioButton
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +16,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.alfanshter.iki_warung.MainActivity
 import com.alfanshter.iki_warung.R
 import com.alfanshter.iki_warung.Utils.Constant
+import com.alfanshter.iki_warung.Utils.CustomProgressDialog
 import com.alfanshter.iki_warung.databinding.ActivityInsertFoodBinding
 import com.alfanshter.iki_warung.viewmodel.FoodViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -37,7 +40,7 @@ class InsertFoodActivity : AppCompatActivity() {
     lateinit var binding: ActivityInsertFoodBinding
     lateinit var insertfoodmodel: FoodViewModel
 
-    lateinit var progressDialog: ProgressDialog
+    private var progressdialog  = CustomProgressDialog()
 
     companion object {
         var kategori_insert: String? = null
@@ -47,7 +50,6 @@ class InsertFoodActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        progressDialog = ProgressDialog(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_insert_food)
         insertfoodmodel = ViewModelProviders.of(this).get(FoodViewModel::class.java)
         binding.viewmodel = insertfoodmodel
@@ -119,14 +121,12 @@ class InsertFoodActivity : AppCompatActivity() {
 
     fun loading(state : Boolean){
         if (state){
-            progressDialog.setCanceledOnTouchOutside(false)
-            progressDialog.setTitle(Constant.tunggu)
-            progressDialog.show()
-
+        progressdialog.show(this@InsertFoodActivity, Constant.tunggu)
         }else{
-            progressDialog.dismiss()
+            progressdialog.dialog.dismiss()
         }
     }
+
 
     override fun onDestroy() {
         super.onDestroy()

@@ -11,4 +11,9 @@
         <item name="colorControlNormal">#FFEE5E</item>
         <item name="colorControlActivated">#FFC107</item>
     </style>
+
+    <style name="CustomDialogTheme">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
 </resources>

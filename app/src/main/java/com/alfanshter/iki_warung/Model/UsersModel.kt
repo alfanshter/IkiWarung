@@ -29,5 +29,6 @@ data class UsersModel(
     var email: String? = null,
     var foto: String? = null,
     var nama: String? = null,
-    var no_telp: String? = null
+    var no_telp: String? = null,
+    var status: Boolean? = null
 )

@@ -1,161 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Ui.MenuFragment"
-    android:background="@color/white"
-    >
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textSize="24dp"
-    android:text="IKI WARUNG"
-        android:fontFamily="@font/aleo_bold"
-    android:textStyle="bold"
-    android:layout_centerHorizontal="true"
-    android:layout_marginTop="30dp"
-        android:id="@+id/textmenu1"
-    />
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout
-        android:layout_marginTop="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textmenu1"
-        android:background="#ffffff"
-        android:id="@+id/rv_menu1"
-        >
+    <data>
+            <import type="android.view.View"/>
+        <variable
+            name="viewmodel"
+            type="com.alfanshter.iki_warung.viewmodel.FoodViewModel" />
+    </data>
 
-        <ImageView
-            android:id="@+id/img_book"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:src="@drawable/add" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tambah Menu"
-            android:textSize="14dp"
-            android:textStyle="bold"
-            android:id="@+id/addmenu"
-            android:layout_toRightOf="@+id/img_book"
-            android:layout_centerInParent="true"
-            />
-
-    </RelativeLayout>
-
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/swt_buka"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:layout_marginLeft="80dp"
-        android:layout_below="@+id/textmenu1"
-        android:text="Tutup"
-        android:layout_alignTop="@+id/rv_menu1"
-        android:layout_toRightOf="@id/rv_menu1"
-        android:layout_marginRight="10dp"
-        android:textSize="24dp" />
-    <RelativeLayout
-        android:layout_marginTop="15dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/swt_buka"
-        android:background="#ffffff"
-        android:id="@+id/rv_menu2"
-        >
-
-        <ImageView
-            android:id="@+id/img_edit"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:src="@drawable/edit" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Edit Warung"
-            android:textSize="14dp"
-            android:textStyle="bold"
-            android:id="@+id/addedit"
-            android:layout_toRightOf="@+id/img_edit"
-            android:layout_centerInParent="true"
-            />
-
-    </RelativeLayout>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="18dp"
-        android:text="Menu"
-        android:textStyle="bold"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_below="@id/rv_menu2"
-        android:id="@+id/txt_menu1"
-        />
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_menu1"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical"
-        android:background="#ffffff"
-        android:id="@+id/barismenu4"
-        >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:text="Makanan"
-            android:textStyle="bold"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_below="@id/rv_menu1"
+        android:layout_height="match_parent"
+        tools:context=".Ui.MenuFragment"
+        android:background="@color/white">
 
-            />
-        <androidx.recyclerview.widget.RecyclerView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:id="@+id/rv_makanan"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:text="Minuman"
-            android:textStyle="bold"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_below="@id/rv_menu1"
+            android:layout_height="match_parent">
 
-            />
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"
-            android:id="@+id/rv_minuman"
-            />
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="24dp"
+                android:text="IKI WARUNG"
+                android:fontFamily="@font/aleo_bold"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp"
+                android:id="@+id/textmenu1" />
 
-</RelativeLayout>
-</ScrollView>
+            <RelativeLayout
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textmenu1"
+                android:background="#ffffff"
+                android:id="@+id/rv_menu1">
+
+                <ImageView
+                    android:id="@+id/img_book"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/add" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tambah Menu"
+                    android:textSize="14dp"
+                    android:textStyle="bold"
+                    android:id="@+id/addmenu"
+                    android:layout_toRightOf="@+id/img_book"
+                    android:layout_centerInParent="true" />
+
+            </RelativeLayout>
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/swt_buka"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="80dp"
+                android:layout_below="@+id/textmenu1"
+                android:text="Tutup"
+                android:layout_alignTop="@+id/rv_menu1"
+                android:layout_toRightOf="@id/rv_menu1"
+                android:layout_marginRight="10dp"
+                android:textSize="24dp" />
+
+            <RelativeLayout
+                android:layout_marginTop="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/swt_buka"
+                android:background="#ffffff"
+                android:id="@+id/rv_menu2">
+
+                <ImageView
+                    android:id="@+id/img_edit"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/edit" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Edit Warung"
+                    android:textSize="14dp"
+                    android:textStyle="bold"
+                    android:id="@+id/addedit"
+                    android:layout_toRightOf="@+id/img_edit"
+                    android:layout_centerInParent="true" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18dp"
+                android:text="Menu"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_below="@id/rv_menu2"
+                android:id="@+id/txt_menu1" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_menu1"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical"
+                android:background="#ffffff"
+                android:id="@+id/barismenu4">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20dp"
+                    android:text="Makanan"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_below="@id/rv_menu1"
+
+                    />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
+                    android:id="@+id/rv_makanan" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20dp"
+                    android:text="Minuman"
+                    android:textStyle="bold"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_below="@id/rv_menu1"
+
+                    />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
+                    android:id="@+id/rv_minuman" />
+            </LinearLayout>
+
+        </RelativeLayout>
+    </ScrollView>
+</layout>

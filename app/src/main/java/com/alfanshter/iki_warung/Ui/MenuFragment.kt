@@ -11,12 +11,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alfanshter.iki_warung.*
 import com.alfanshter.iki_warung.R
+import com.alfanshter.iki_warung.Utils.Constant
+import com.alfanshter.iki_warung.Utils.CustomProgressDialog
 import com.alfanshter.iki_warung.auth.UserModel
+import com.alfanshter.iki_warung.databinding.FragmentMenuBinding
+import com.alfanshter.iki_warung.viewmodel.FoodViewModel
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -26,6 +33,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_menu.view.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.find
+import org.jetbrains.anko.info
 import org.jetbrains.anko.support.v4.startActivity
 
 class MenuFragment : Fragment(), AnkoLogger {
@@ -37,32 +45,48 @@ class MenuFragment : Fragment(), AnkoLogger {
      var refinfo: DatabaseReference? = null
     var image_list: HashMap<String, String>? = null
     lateinit var reference: DatabaseReference
-    lateinit var root: View
     lateinit var tambahbarang: RelativeLayout
     lateinit var dialog: AlertDialog
     lateinit var switch : SwitchMaterial
-
     lateinit var getswitchlistener : ValueEventListener
     var refid: String? = null
+
+    lateinit var binding : FragmentMenuBinding
+    lateinit var foodViewModel: FoodViewModel
+    private var progressdialog  = CustomProgressDialog()
+
+    companion object{
+        var status_switch : Boolean? = null
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        root = inflater.inflate(R.layout.fragment_menu, container, false)
-              dialog_bidding = Dialog(context!!)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_menu,container,false)
+        foodViewModel = ViewModelProviders.of(this).get(FoodViewModel::class.java)
+        binding.viewmodel = foodViewModel
+        binding.lifecycleOwner = this
+
+//        foodViewModel.ambilDataSwitchWarung()
+        foodViewModel.getState().observer(this, Observer {
+            handleUiState(it)
+        })
+        setswitch()
+
+        dialog_bidding = Dialog(context!!)
         dialog_bidding!!.setContentView(R.layout.layout_editharga)
-        switch = root.find(R.id.swt_buka)
-        rvMakanan = root.find(R.id.rv_makanan)
-        rvMinuman = root.find(R.id.rv_minuman)
+        switch = binding.root.find(R.id.swt_buka)
+        rvMakanan = binding.root.find(R.id.rv_makanan)
+        rvMinuman = binding.root.find(R.id.rv_minuman)
         auth = FirebaseAuth.getInstance()
         userID = auth.currentUser!!.uid
-        tambahbarang = root.find(R.id.rv_menu1)
+        tambahbarang = binding.root.find(R.id.rv_menu1)
         tambahbarang.setOnClickListener {
             startActivity<InsertFoodActivity>()
         }
 
-        root.rv_menu2.setOnClickListener {
+        binding.rvMenu2.setOnClickListener {
             startActivity<EditRestoActivity>()
         }
 
@@ -75,11 +99,40 @@ class MenuFragment : Fragment(), AnkoLogger {
 
         makanan()
         minuman()
-        switch()
-        getswitch()
+//        switch()
 
-        return root
+
+        return binding.root
     }
+
+    private fun handleUiState(it: FoodViewModel.FoodState?) {
+        when(it){
+            is FoodViewModel.FoodState.IsSuksesMenu -> getswitch(it.sukses!!)
+            is FoodViewModel.FoodState.IsLoading ->  loading(it.loading)
+        }
+    }
+
+    fun getswitch(status : Int){
+            binding.swtBuka.isChecked = status == 2
+            binding.swtBuka.text = "Buka"
+
+
+    }
+
+    fun setswitch(){
+        binding.swtBuka.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked){
+                foodViewModel.setDataSwitchWarung()
+                status_switch = true
+                binding.swtBuka.text = "Buka"
+            }else{
+                foodViewModel.setDataSwitchWarung()
+                status_switch = false
+                binding.swtBuka.text = "Tutup"
+            }
+        }
+    }
+/*
     private fun switch(){
         refinfo = FirebaseDatabase.getInstance().reference.child("Pandaan")
         refinfo!!.child("Resto").child(userID.toString()).addValueEventListener(object :ValueEventListener{
@@ -115,7 +168,9 @@ class MenuFragment : Fragment(), AnkoLogger {
         })
 
     }
+*/
 
+/*
     private fun getswitch(){
         refinfo = FirebaseDatabase.getInstance().reference.child("Pandaan")
 
@@ -136,6 +191,7 @@ class MenuFragment : Fragment(), AnkoLogger {
         refinfo!!.child("Resto").child(userID.toString()).addValueEventListener(getswitchlistener)
 
     }
+*/
 
     private fun makanan() {
         val LayoutManager = LinearLayoutManager(context!!.applicationContext)
@@ -382,9 +438,15 @@ class MenuFragment : Fragment(), AnkoLogger {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (refinfo!=null){
-            refinfo!!.removeEventListener(getswitchlistener)
-        }
 
     }
+
+    fun loading(state : Boolean){
+        if (state){
+            progressdialog.show(activity!!, Constant.tunggu)
+        }else{
+            progressdialog.dialog.dismiss()
+        }
+    }
+
 }

@@ -2,10 +2,13 @@ package com.alfanshter.iki_warung.viewmodel
 
 import android.net.Uri
 import android.view.View
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.alfanshter.iki_warung.Model.UsersModel
 import com.alfanshter.iki_warung.Utils.Constant
 import com.alfanshter.iki_warung.Utils.SingleLiveEvent
 import com.alfanshter.iki_warung.Ui.InsertFoodActivity
+import com.alfanshter.iki_warung.Ui.MenuFragment
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
@@ -24,7 +27,7 @@ import kotlin.math.roundToInt
 
 class FoodViewModel : ViewModel(), AnkoLogger {
     private var state: SingleLiveEvent<FoodState> = SingleLiveEvent()
-
+    private var dataswitch = MutableLiveData<UsersModel>()
     //firebase
     private var storageReference: StorageReference? = null
     lateinit var auth: FirebaseAuth
@@ -37,7 +40,6 @@ class FoodViewModel : ViewModel(), AnkoLogger {
 
     private var myUrl = ""
 
-    val kode = kodeorder()
     fun inisialisasifirebase() {
         auth = FirebaseAuth.getInstance()
         UserId = auth.currentUser!!.uid
@@ -82,7 +84,8 @@ class FoodViewModel : ViewModel(), AnkoLogger {
             }).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val downloadUrl = task.result
-                    val key =FirebaseFirestore.getInstance().collection("Warung_Resep").document().id
+                    val key =
+                        FirebaseFirestore.getInstance().collection("Warung_Resep").document().id
 
                     myUrl = downloadUrl.toString()
                     var harga = (hargatotal.toDouble() / 1000).roundToInt() * 1000
@@ -96,7 +99,6 @@ class FoodViewModel : ViewModel(), AnkoLogger {
                     usermap["nama"] = nama_makanan.toString()
                     usermap["id_makanan"] = key.toString()
                     usermap["keterangan"] = keterangan_makanan.toString()
-                    usermap["kode_makanan"] = kode.toString()
                     usermap["uid"] = UserId.toString()
                     usermap["tanggal_tambah"] = Timestamp(Date())
 
@@ -117,25 +119,54 @@ class FoodViewModel : ViewModel(), AnkoLogger {
         }
     }
 
-
-    fun kodeorder(): String {
-        val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-        val outputStrLength = (20..26).shuffled().first()
-
-        return (1..outputStrLength)
-            .map { kotlin.random.Random.nextInt(0, charPool.size) }
-            .map(charPool::get)
-            .joinToString("")
+    //ambil data switch warung
+    fun ambilDataSwitchWarung(){
+        inisialisasifirebase()
+        state.value = FoodState.IsLoading(true)
+        firestore.collection("Warung_Akun").document(UserId.toString()).get().addOnSuccessListener {document ->
+            if (document.exists() && document!=null){
+                val data = document.toObject(UsersModel::class.java)
+                if (data!!.status == false){
+                    state.value = FoodState.IsSuksesMenu(1)   // satu artinya Switch terdeteksi Tutup
+                    state.value = FoodState.IsLoading(false)
+                }
+                if (data.status == true){
+                    state.value = FoodState.IsSuksesMenu(2)   // dua artinya Switch terdeteksi buka
+                    state.value = FoodState.IsLoading(false)
+                }
+                state.value = FoodState.IsLoading(false)
+            }
+        }
     }
 
+    fun setDataSwitchWarung(){
+        inisialisasifirebase()
+        state.value = FoodState.IsLoading(true)
+        val docref = firestore.collection("Warung_Akun").document(UserId.toString())
+        if (MenuFragment.status_switch ==true){
+            docref.update("status",true).addOnCompleteListener {
+                if (it.isSuccessful){
+                    state.value = FoodState.IsLoading(false)
+                }
+            }
+        }else if (MenuFragment.status_switch ==false){
+            docref.update("status", false).addOnCompleteListener {
+                if (it.isSuccessful){
+                    state.value = FoodState.IsLoading(false)
+                }
+            }
+        }
+    }
 
     fun getState() = state
+    fun getSwitch() = dataswitch
 
 
     sealed class FoodState {
         data class IsLoading(var loading: Boolean = false) : FoodState()
         data class ShowToast(var message: String) : FoodState()
         data class IsSukses(var sukses: Int? = null) : FoodState()
+        data class IsSuksesMenu ( var sukses : Int? = null) : FoodState()
     }
 }
 
