@@ -2,18 +2,21 @@ package com.alfanshter.iki_warung.viewmodel
 
 import android.net.Uri
 import android.view.View
+import android.widget.RadioButton
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.alfanshter.iki_warung.Model.MakananModels
 import com.alfanshter.iki_warung.Model.UsersModel
-import com.alfanshter.iki_warung.Utils.Constant
-import com.alfanshter.iki_warung.Utils.SingleLiveEvent
+import com.alfanshter.iki_warung.R
 import com.alfanshter.iki_warung.Ui.InsertFoodActivity
 import com.alfanshter.iki_warung.Ui.MenuFragment
+import com.alfanshter.iki_warung.Utils.Constant
+import com.alfanshter.iki_warung.Utils.SingleLiveEvent
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.Task
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -25,9 +28,12 @@ import java.util.*
 import kotlin.collections.HashMap
 import kotlin.math.roundToInt
 
+
 class FoodViewModel : ViewModel(), AnkoLogger {
     private var state: SingleLiveEvent<FoodState> = SingleLiveEvent()
     private var dataswitch = MutableLiveData<UsersModel>()
+    private var datamakanan = MutableLiveData<List<MakananModels>>()
+
     //firebase
     private var storageReference: StorageReference? = null
     lateinit var auth: FirebaseAuth
@@ -37,7 +43,7 @@ class FoodViewModel : ViewModel(), AnkoLogger {
     var nama_makanan: String? = null
     var harga_makanan: String? = null
     var keterangan_makanan: String? = null
-
+    var kategori_insert : String? = null
     private var myUrl = ""
 
     fun inisialisasifirebase() {
@@ -50,19 +56,41 @@ class FoodViewModel : ViewModel(), AnkoLogger {
     }
 
 
+    fun onRadioButtonClicked(view: View) {
+        if (view is RadioButton) {
+            // Is the button now checked?
+            val checked = view.isChecked
+
+            // Check which radio button was clicked
+            when (view.getId()) {
+                R.id.radio_makanan ->
+                    if (checked) {
+                        kategori_insert = "Makanan"
+                        // Pirates are the best
+                    }
+                R.id.radio_minuman ->
+                    if (checked) {
+                        kategori_insert = "Minuman"
+                    }
+            }
+        }
+
+    }
+
     //tambah menu
     fun btn_tambahkan(view: View) {
         state.value = FoodState.IsLoading(true)
         inisialisasifirebase()
 
         if (nama_makanan.isNullOrEmpty() || harga_makanan.isNullOrEmpty() || keterangan_makanan.isNullOrEmpty() || InsertFoodActivity.filePath == null
-            || InsertFoodActivity.kategori_insert == null
+            || kategori_insert== null
         ) {
-            info { "dinda $nama_makanan $harga_makanan $keterangan_makanan ${InsertFoodActivity.filePath} ${InsertFoodActivity.kategori_insert}" }
+            info { "dinda $nama_makanan $harga_makanan $keterangan_makanan ${InsertFoodActivity.filePath} ${kategori_insert}" }
             state.value = FoodState.ShowToast(Constant.input)
             state.value = FoodState.IsLoading(false)
 
         } else {
+            info { "dinda $nama_makanan $harga_makanan $keterangan_makanan ${InsertFoodActivity.filePath} ${kategori_insert}" }
             var hargamakanan = harga_makanan.toString().toInt()
             var hargappn = ((hargamakanan * 15) / 100)
             var hargatotal = hargamakanan + hargappn
@@ -95,14 +123,15 @@ class FoodViewModel : ViewModel(), AnkoLogger {
                     usermap["harga"] = harga_makanan.toString()
                     usermap["harga_ppn"] = hargappn.toString()
                     usermap["harga_total"] = harga.toString()
-                    usermap["kategori"] = InsertFoodActivity.kategori_insert!!.toString()
+                    usermap["kategori"] = kategori_insert.toString()
                     usermap["nama"] = nama_makanan.toString()
                     usermap["id_makanan"] = key.toString()
                     usermap["keterangan"] = keterangan_makanan.toString()
+                    usermap["status_makanan"] = "tutup"
                     usermap["uid"] = UserId.toString()
                     usermap["tanggal_tambah"] = Timestamp(Date())
 
-                    val docref = firestore.collection("Warung_Resep").document().set(usermap)
+                    val docref = firestore.collection("Warung_Resep").document(key).set(usermap)
                         .addOnCompleteListener {
                             if (it.isSuccessful) {
                                 state.value = FoodState.IsSukses(1)
@@ -115,58 +144,76 @@ class FoodViewModel : ViewModel(), AnkoLogger {
                         }
                 }
             }
-            state.value = FoodState.IsLoading(false)
         }
     }
 
+    //belum sempurna
     //ambil data switch warung
-    fun ambilDataSwitchWarung(){
+    fun ambilDataSwitchWarung() {
         inisialisasifirebase()
         state.value = FoodState.IsLoading(true)
-        firestore.collection("Warung_Akun").document(UserId.toString()).get().addOnSuccessListener {document ->
-            if (document.exists() && document!=null){
-                val data = document.toObject(UsersModel::class.java)
-                if (data!!.status == false){
-                    state.value = FoodState.IsSuksesMenu(1)   // satu artinya Switch terdeteksi Tutup
+        firestore.collection("Warung_Akun").document(UserId.toString()).get()
+            .addOnSuccessListener { document ->
+                if (document.exists() && document != null) {
+                    val data = document.toObject(UsersModel::class.java)
+                    if (data!!.status == false) {
+                        state.value =
+                            FoodState.IsSuksesMenu(1)   // satu artinya Switch terdeteksi Tutup
+                        state.value = FoodState.IsLoading(false)
+                    }
+                    if (data.status == true) {
+                        state.value =
+                            FoodState.IsSuksesMenu(2)   // dua artinya Switch terdeteksi buka
+                        state.value = FoodState.IsLoading(false)
+                    }
                     state.value = FoodState.IsLoading(false)
                 }
-                if (data.status == true){
-                    state.value = FoodState.IsSuksesMenu(2)   // dua artinya Switch terdeteksi buka
-                    state.value = FoodState.IsLoading(false)
-                }
-                state.value = FoodState.IsLoading(false)
             }
-        }
     }
 
-    fun setDataSwitchWarung(){
+    //belum sempurna
+    fun setDataSwitchWarung() {
         inisialisasifirebase()
         state.value = FoodState.IsLoading(true)
         val docref = firestore.collection("Warung_Akun").document(UserId.toString())
-        if (MenuFragment.status_switch ==true){
-            docref.update("status",true).addOnCompleteListener {
-                if (it.isSuccessful){
+        if (MenuFragment.status_switch == true) {
+            docref.update("status", true).addOnCompleteListener {
+                if (it.isSuccessful) {
                     state.value = FoodState.IsLoading(false)
                 }
             }
-        }else if (MenuFragment.status_switch ==false){
+        } else if (MenuFragment.status_switch == false) {
             docref.update("status", false).addOnCompleteListener {
-                if (it.isSuccessful){
+                if (it.isSuccessful) {
                     state.value = FoodState.IsLoading(false)
                 }
             }
         }
+    }
+
+    fun ambilDataMakanan() {
+        inisialisasifirebase()
+        val docref = firestore.collection("Warung_Resep").whereEqualTo("uid", UserId.toString())
+            .whereEqualTo("kategori", "Makanan").get().addOnSuccessListener { doc ->
+                val snapshotsList: MutableList<MakananModels> =
+                    doc.toObjects(MakananModels::class.java)
+                datamakanan.postValue(snapshotsList)
+            }.addOnFailureListener {
+
+            }
+
     }
 
     fun getState() = state
     fun getSwitch() = dataswitch
+    fun getMakanan() = datamakanan
 
 
     sealed class FoodState {
         data class IsLoading(var loading: Boolean = false) : FoodState()
         data class ShowToast(var message: String) : FoodState()
         data class IsSukses(var sukses: Int? = null) : FoodState()
-        data class IsSuksesMenu ( var sukses : Int? = null) : FoodState()
+        data class IsSuksesMenu(var sukses: Int? = null) : FoodState()
     }
 }
 

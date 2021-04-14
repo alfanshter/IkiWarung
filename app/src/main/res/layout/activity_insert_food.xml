@@ -142,13 +142,14 @@
                             android:id="@+id/radio_makanan"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:checked="true"
+                            android:onClick="@{viewmodel::onRadioButtonClicked}"
                             android:text="Makanan" />
 
                         <RadioButton
                             android:id="@+id/radio_minuman"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:onClick="@{viewmodel::onRadioButtonClicked}"
                             android:text="Minuman" />
 
                     </RadioGroup>

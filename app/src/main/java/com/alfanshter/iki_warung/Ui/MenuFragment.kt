@@ -2,39 +2,31 @@ package com.alfanshter.iki_warung.Ui
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.DialogInterface
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alfanshter.iki_warung.*
+import com.alfanshter.iki_warung.Model.MakananModels
 import com.alfanshter.iki_warung.R
 import com.alfanshter.iki_warung.Utils.Constant
 import com.alfanshter.iki_warung.Utils.CustomProgressDialog
-import com.alfanshter.iki_warung.auth.UserModel
-import com.alfanshter.iki_warung.databinding.FragmentMenuBinding
+import com.alfanshter.iki_warung.adapter.MakananAdapter
 import com.alfanshter.iki_warung.viewmodel.FoodViewModel
-import com.firebase.ui.database.FirebaseRecyclerAdapter
-import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_menu.view.*
+import com.google.firebase.firestore.FirebaseFirestore
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.find
-import org.jetbrains.anko.info
 import org.jetbrains.anko.support.v4.startActivity
+import java.util.*
+import kotlin.collections.HashMap
 
 class MenuFragment : Fragment(), AnkoLogger {
     lateinit var auth: FirebaseAuth
@@ -42,96 +34,173 @@ class MenuFragment : Fragment(), AnkoLogger {
     var dialog_bidding: Dialog? = null
     private lateinit var rvMakanan: RecyclerView
     private lateinit var rvMinuman: RecyclerView
-     var refinfo: DatabaseReference? = null
+    var refinfo: DatabaseReference? = null
     var image_list: HashMap<String, String>? = null
     lateinit var reference: DatabaseReference
     lateinit var tambahbarang: RelativeLayout
     lateinit var dialog: AlertDialog
-    lateinit var switch : SwitchMaterial
-    lateinit var getswitchlistener : ValueEventListener
+    lateinit var switch: SwitchMaterial
+    lateinit var getswitchlistener: ValueEventListener
     var refid: String? = null
 
-    lateinit var binding : FragmentMenuBinding
     lateinit var foodViewModel: FoodViewModel
-    private var progressdialog  = CustomProgressDialog()
+    private var progressdialog = CustomProgressDialog()
 
-    companion object{
-        var status_switch : Boolean? = null
+    private lateinit var adapter: MakananAdapter
+    private lateinit var adapterminuman: MakananAdapter
+    lateinit var root: View
+
+    var arrayList = ArrayList<MakananModels>()
+    var arrayListMinuman = ArrayList<MakananModels>()
+
+    companion object {
+        var status_switch: Boolean? = null
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_menu,container,false)
+        root = inflater.inflate(R.layout.fragment_menu, container, false)
         foodViewModel = ViewModelProviders.of(this).get(FoodViewModel::class.java)
-        binding.viewmodel = foodViewModel
-        binding.lifecycleOwner = this
 
+
+//        foodViewModel.ambilDataMakanan()
+//        foodViewModel.getMakanan().observe(this, Observer {
+//            binding.rvMakanan.adapter?.let { adapter ->
+//                when (adapter) {
+//                    is MakananAdapter -> adapter.setMakanan(it)
+//                }
+//            }
+//        })
 //        foodViewModel.ambilDataSwitchWarung()
-        foodViewModel.getState().observer(this, Observer {
-            handleUiState(it)
-        })
-        setswitch()
+//        foodViewModel.getState().observer(this, Observer {
+//            handleUiState(it)
+//        })
+//        setswitch()
 
         dialog_bidding = Dialog(context!!)
         dialog_bidding!!.setContentView(R.layout.layout_editharga)
-        switch = binding.root.find(R.id.swt_buka)
-        rvMakanan = binding.root.find(R.id.rv_makanan)
-        rvMinuman = binding.root.find(R.id.rv_minuman)
+        switch = root.find(R.id.swt_buka)
+        rvMakanan = root.find(R.id.rv_makanan)
+        rvMinuman = root.find(R.id.rv_minuman)
         auth = FirebaseAuth.getInstance()
         userID = auth.currentUser!!.uid
-        tambahbarang = binding.root.find(R.id.rv_menu1)
+        tambahbarang = root.find(R.id.rv_menu1)
+        getmakanan()
+        getminuman()
         tambahbarang.setOnClickListener {
             startActivity<InsertFoodActivity>()
         }
 
-        binding.rvMenu2.setOnClickListener {
-            startActivity<EditRestoActivity>()
-        }
+//        rvMenu2.setOnClickListener {
+//            startActivity<EditRestoActivity>()
+//        }
 
-        if (auth==null){
+        if (auth == null) {
             userID = null
             startActivity<SplashScreen>()
             activity!!.finish()
         }
 
 
-        makanan()
-        minuman()
 //        switch()
 
 
-        return binding.root
+        return root
     }
 
-    private fun handleUiState(it: FoodViewModel.FoodState?) {
-        when(it){
-            is FoodViewModel.FoodState.IsSuksesMenu -> getswitch(it.sukses!!)
-            is FoodViewModel.FoodState.IsLoading ->  loading(it.loading)
-        }
-    }
+//    private fun handleUiState(it: FoodViewModel.FoodState?) {
+//        when (it) {
+//            is FoodViewModel.FoodState.IsSuksesMenu -> getswitch(it.sukses!!)
+//            is FoodViewModel.FoodState.IsLoading -> loading(it.loading)
+//        }
+//    }
 
-    fun getswitch(status : Int){
-            binding.swtBuka.isChecked = status == 2
-            binding.swtBuka.text = "Buka"
+//    fun getswitch(status: Int) {
+//        binding.swtBuka.isChecked = status == 2
+//        binding.swtBuka.text = "Buka"
+//
+//
+//    }
 
-
-    }
-
-    fun setswitch(){
-        binding.swtBuka.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked){
+/*
+    fun setswitch() {
+        swt_buka.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
                 foodViewModel.setDataSwitchWarung()
                 status_switch = true
                 binding.swtBuka.text = "Buka"
-            }else{
+            } else {
                 foodViewModel.setDataSwitchWarung()
                 status_switch = false
                 binding.swtBuka.text = "Tutup"
             }
         }
     }
+*/
+
+
+
+    private fun getmakanan() {
+        rvMakanan.layoutManager = LinearLayoutManager(context!!.applicationContext)
+        rvMakanan.setHasFixedSize(true)
+        (rvMakanan.layoutManager as LinearLayoutManager).orientation = LinearLayoutManager.HORIZONTAL
+        val auth = FirebaseAuth.getInstance()
+        val userId = auth.currentUser!!.uid
+        val firestore = FirebaseFirestore.getInstance()
+        val setiings = firestore.firestoreSettings.isPersistenceEnabled
+        val docref = firestore.collection("Warung_Resep").whereEqualTo("uid", userId.toString())
+            .whereEqualTo("kategori", "Makanan").get().addOnSuccessListener { doc ->
+                for (document in doc) {
+                    val data = document.toObject(MakananModels::class.java)
+                    val mylist = MakananModels()
+                    mylist.setgambar(data.gambar_makanan.toString())
+                    mylist.setname(data.nama.toString())
+                    mylist.setprice(data.harga.toString())
+                    arrayList.add(mylist)
+                    adapter = MakananAdapter(arrayList, context!!.applicationContext)
+
+                    rvMakanan.adapter = adapter
+                    adapter.notifyDataSetChanged()
+
+                }
+            }.addOnFailureListener {
+
+            }
+    }
+
+    private fun getminuman(){
+        rvMinuman.layoutManager = LinearLayoutManager(context!!.applicationContext)
+        rvMinuman.setHasFixedSize(true)
+        (rvMinuman.layoutManager as LinearLayoutManager).orientation = LinearLayoutManager.HORIZONTAL
+
+
+        val auth = FirebaseAuth.getInstance()
+        val userId = auth.currentUser!!.uid
+        val firestore = FirebaseFirestore.getInstance()
+        val docref = firestore.collection("Warung_Resep").whereEqualTo("uid", userId.toString())
+            .whereEqualTo("kategori", "Minuman").get().addOnSuccessListener { doc ->
+                for (document in doc) {
+                    val data = document.toObject(MakananModels::class.java)
+                    val mylist = MakananModels()
+                    mylist.setgambar(data.gambar_makanan.toString())
+                    mylist.setname(data.nama.toString())
+                    mylist.setprice(data.harga.toString())
+                    mylist.setidmakanan(data.id_makanan.toString())
+                    arrayListMinuman.add(mylist)
+                    adapterminuman = MakananAdapter(arrayListMinuman, context!!.applicationContext)
+
+                    rvMinuman.adapter = adapterminuman
+                    adapterminuman.notifyDataSetChanged()
+
+                }
+            }.addOnFailureListener {
+
+            }
+    }
+
 /*
     private fun switch(){
         refinfo = FirebaseDatabase.getInstance().reference.child("Pandaan")
@@ -193,7 +262,7 @@ class MenuFragment : Fragment(), AnkoLogger {
     }
 */
 
-    private fun makanan() {
+ /*   private fun makanan() {
         val LayoutManager = LinearLayoutManager(context!!.applicationContext)
         LayoutManager.orientation = LinearLayoutManager.HORIZONTAL
         rvMakanan.layoutManager = LayoutManager
@@ -230,35 +299,38 @@ class MenuFragment : Fragment(), AnkoLogger {
                 ) {
 
                     refid = getRef(position).key.toString()
-                    refinfo!!.child(refid!!).addListenerForSingleValueEvent(object : ValueEventListener {
-                        override fun onCancelled(p0: DatabaseError) {
-
-                        }
-
-                        override fun onDataChange(p0: DataSnapshot) {
-                            holder.mtitle.text = model.nama
-                            holder.mharga.text = model.harga
-                            if (model.status.equals("Ready")){
-                                Picasso.get().load(model.gambar).fit().centerCrop().into(holder.mimage)
+                    refinfo!!.child(refid!!)
+                        .addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onCancelled(p0: DatabaseError) {
 
                             }
-                            else{
-                                Picasso.get().load(R.drawable.makanan_habis).fit().centerCrop().into(holder.mimage)
 
+                            override fun onDataChange(p0: DataSnapshot) {
+                                holder.mtitle.text = model.nama
+                                holder.mharga.text = model.harga
+                                if (model.status.equals("Ready")) {
+                                    Picasso.get().load(model.gambar).fit().centerCrop()
+                                        .into(holder.mimage)
+
+                                } else {
+                                    Picasso.get().load(R.drawable.makanan_habis).fit().centerCrop()
+                                        .into(holder.mimage)
+
+                                }
+                                val status = p0.child("status").value.toString()
+
+                                holder.itemView.setOnClickListener {
+                                    startActivity<DetailActivity>(
+                                        "firebase_gambar" to model.gambar,
+                                        "firebase_harga" to model.harga,
+                                        "firebase_nama" to model.nama,
+                                        "firebase_keywarung" to model.id
+                                    )
+
+                                }
                             }
-                            val status = p0.child("status").value.toString()
 
-                            holder.itemView.setOnClickListener {
-                                startActivity<DetailActivity>(
-                                    "firebase_gambar" to model.gambar,
-                                    "firebase_harga" to model.harga,
-                                    "firebase_nama" to model.nama,
-                                    "firebase_keywarung" to model.id)
-
-                            }
-                        }
-
-                    })
+                        })
                 }
             }
 
@@ -305,35 +377,38 @@ class MenuFragment : Fragment(), AnkoLogger {
                 ) {
 
                     refid = getRef(position).key.toString()
-                    refinfo!!.child(refid!!).addListenerForSingleValueEvent(object : ValueEventListener {
-                        override fun onCancelled(p0: DatabaseError) {
-
-                        }
-
-                        override fun onDataChange(p0: DataSnapshot) {
-                            holder.mtitle.text = model.nama
-                            holder.mharga.text = model.harga
-                            if (model.status.equals("Ready")){
-                                Picasso.get().load(model.gambar).fit().centerCrop().into(holder.mimage)
+                    refinfo!!.child(refid!!)
+                        .addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onCancelled(p0: DatabaseError) {
 
                             }
-                            else{
-                                Picasso.get().load(R.drawable.warung_habis).fit().centerCrop().into(holder.mimage)
 
+                            override fun onDataChange(p0: DataSnapshot) {
+                                holder.mtitle.text = model.nama
+                                holder.mharga.text = model.harga
+                                if (model.status.equals("Ready")) {
+                                    Picasso.get().load(model.gambar).fit().centerCrop()
+                                        .into(holder.mimage)
+
+                                } else {
+                                    Picasso.get().load(R.drawable.warung_habis).fit().centerCrop()
+                                        .into(holder.mimage)
+
+                                }
+                                val status = p0.child("status").value.toString()
+
+                                holder.itemView.setOnClickListener {
+                                    startActivity<DetailActivity>(
+                                        "firebase_gambar" to model.gambar,
+                                        "firebase_harga" to model.harga,
+                                        "firebase_nama" to model.nama,
+                                        "firebase_keywarung" to model.id
+                                    )
+
+                                }
                             }
-                            val status = p0.child("status").value.toString()
 
-                            holder.itemView.setOnClickListener {
-                                startActivity<DetailActivity>(
-                                    "firebase_gambar" to model.gambar,
-                                    "firebase_harga" to model.harga,
-                                    "firebase_nama" to model.nama,
-                                    "firebase_keywarung" to model.id)
-
-                            }
-                        }
-
-                    })
+                        })
                 }
             }
 
@@ -342,13 +417,15 @@ class MenuFragment : Fragment(), AnkoLogger {
         firebaseRecyclerAdapter.startListening()
 
     }
-    fun showHome(gambar : String?,nama : String?,harga : String?, id: String?,penjual:String?) {
+*/
+/*
+    fun showHome(gambar: String?, nama: String?, harga: String?, id: String?, penjual: String?) {
         val builder = AlertDialog.Builder(context)
         builder.setTitle("Apakah anda ingin menambahkan food ini ? ")
         val dialogClickListener = DialogInterface.OnClickListener { _, which ->
             when (which) {
                 DialogInterface.BUTTON_POSITIVE -> {
-                    var usermap : HashMap<String,Any?> = HashMap()
+                    var usermap: HashMap<String, Any?> = HashMap()
                     usermap["gambar"] = gambar
                     usermap["harga"] = harga
                     usermap["nama"] = nama
@@ -356,10 +433,10 @@ class MenuFragment : Fragment(), AnkoLogger {
                     usermap["penjual"] = penjual
 
 
-
                     var database =
                         FirebaseDatabase.getInstance().reference
-                            .child("Pandaan").child("Resto").child(userID.toString()).setValue(usermap)
+                            .child("Pandaan").child("Resto").child(userID.toString())
+                            .setValue(usermap)
                 }
                 DialogInterface.BUTTON_NEGATIVE -> {
                 }
@@ -385,7 +462,9 @@ class MenuFragment : Fragment(), AnkoLogger {
         // Finally, display the alert dialog
         dialog.show()
     }
+*/
 
+/*
     private fun showPopUp() {
         val textClose: TextView
         val amount_bidding: EditText
@@ -428,12 +507,15 @@ class MenuFragment : Fragment(), AnkoLogger {
         dialog_bidding!!.show()
 
     }
+*/
+/*
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var mtitle: TextView = itemView.findViewById(R.id.name)
         var mimage: ImageView = itemView.findViewById(R.id.gambar_makanan)
         var mharga: TextView = itemView.findViewById(R.id.harga)
-       }
+    }
+*/
 
 
     override fun onDestroy() {
@@ -441,12 +523,17 @@ class MenuFragment : Fragment(), AnkoLogger {
 
     }
 
-    fun loading(state : Boolean){
-        if (state){
+    fun loading(state: Boolean) {
+        if (state) {
             progressdialog.show(activity!!, Constant.tunggu)
-        }else{
+        } else {
             progressdialog.dialog.dismiss()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        foodViewModel.ambilDataMakanan()
     }
 
 }

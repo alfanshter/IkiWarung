@@ -8,11 +8,13 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.alfanshter.iki_warung.EditActivity
 import com.alfanshter.iki_warung.MainActivity
+import com.alfanshter.iki_warung.Model.MakananModels
 import com.alfanshter.iki_warung.R
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.squareup.picasso.Picasso
@@ -24,35 +26,40 @@ class DetailActivity : AppCompatActivity(), AnkoLogger {
     var gambar: String? = null
     var harga: String? = null
     var nama: String? = null
-    var latitude : String? = null
-    var longitude : String? = null
-    var kodesales : String? = null
-    var penjual : String? = null
-    var keywarung : String? = null
-    var status : Boolean = false
+    var latitude: String? = null
+    var longitude: String? = null
+    var kodesales: String? = null
+    var penjual: String? = null
+    var id_makanan: String? = null
+    var status: Boolean = false
     lateinit var progressDialog: ProgressDialog
     lateinit var dialog: AlertDialog
-    lateinit var getswitchlistener : ValueEventListener
+    lateinit var getswitchlistener: ValueEventListener
     lateinit var database: DatabaseReference
     lateinit var refinfo: DatabaseReference
     lateinit var auth: FirebaseAuth
-    lateinit var mFirebaseStorage : FirebaseStorage
+    lateinit var mFirebaseStorage: FirebaseStorage
     var userID: String? = null
+
+    //firestore
+    lateinit var firestore: FirebaseFirestore
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
         progressDialog = ProgressDialog(this)
-
+        firestore = FirebaseFirestore.getInstance()
         database = FirebaseDatabase.getInstance().getReference("Pandaan")
         refinfo = FirebaseDatabase.getInstance().getReference("Pandaan")
         auth = FirebaseAuth.getInstance()
         userID = auth.currentUser!!.uid
         val bundle: Bundle? = intent.extras
-        gambar = bundle!!.getString("firebase_gambar")
-        keywarung = bundle.getString("firebase_keywarung")
-        harga = bundle.getString("firebase_harga")
-        nama = bundle.getString("firebase_nama")
+        gambar = bundle!!.getString("gambar_makanan")
+        id_makanan = bundle.getString("id_makanan")
+        harga = bundle.getString("harga")
+        nama = bundle.getString("nama")
         mFirebaseStorage = FirebaseStorage.getInstance()
+
+/*
         database.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
                 TODO("Not yet implemented")
@@ -71,33 +78,39 @@ class DetailActivity : AppCompatActivity(), AnkoLogger {
             }
 
         })
+*/
 
-
+        //Tampilkan Data dari MenuFragment
         Picasso.get().load(gambar).into(gambar_detail)
         name.text = nama.toString()
         price.text = harga.toString()
-        btn_icon.setOnClickListener {
-            if (latitude != null && longitude != null) {
-                showHome(gambar,nama.toString(),harga.toString(),userID.toString(),penjual.toString(),kodesales.toString())
-            }
-        }
+
         editmakanan.setOnClickListener {
-            startActivity<EditActivity>("firebase_keywarung" to keywarung.toString())
+            startActivity<EditActivity>("id_makanan" to id_makanan.toString())
         }
         btn_back.setOnClickListener {
             finish()
         }
         switch()
-        getswitch()
-
+        btn_delete.setOnClickListener {
+            hapus()
+        }
     }
-    fun showHome(gambar : String?,nama : String?,harga : String?, id: String?,penjual:String?,kodesales: String) {
+
+    fun showHome(
+        gambar: String?,
+        nama: String?,
+        harga: String?,
+        id: String?,
+        penjual: String?,
+        kodesales: String
+    ) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Apakah anda ingin menambahkan food ini ? ")
         val dialogClickListener = DialogInterface.OnClickListener { _, which ->
             when (which) {
                 DialogInterface.BUTTON_POSITIVE -> {
-                    var usermap : HashMap<String,Any?> = HashMap()
+                    var usermap: HashMap<String, Any?> = HashMap()
                     usermap["gambar"] = gambar
                     usermap["harga"] = harga
                     usermap["nama"] = nama
@@ -109,12 +122,11 @@ class DetailActivity : AppCompatActivity(), AnkoLogger {
                     usermap["status"] = "Tutup"
 
 
-
-
                     var database =
                         FirebaseDatabase.getInstance().reference
-                            .child("Pandaan").child("Resto").child(userID.toString()).setValue(usermap).addOnCompleteListener {
-                                if (it.isSuccessful){
+                            .child("Pandaan").child("Resto").child(userID.toString())
+                            .setValue(usermap).addOnCompleteListener {
+                                if (it.isSuccessful) {
                                     startActivity(intentFor<MainActivity>().newTask().clearTask())
 
                                 }
@@ -145,36 +157,99 @@ class DetailActivity : AppCompatActivity(), AnkoLogger {
         dialog.show()
     }
 
-    private fun switch(){
+    private fun switch() {
         switch1.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
-                // The switch is enabled/checked
-                refinfo.child("Resto_Detail").child(userID.toString()).child(keywarung.toString()).child("status")
-                    .setValue("Ready")
-                // Change the app background color
+                //ubah ke posisi buka
+                firestore.collection("Warung_Resep").document(id_makanan.toString())
+                    .update("status_makanan", "buka").addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            toast("berhasil")
+                        }
+                    }.addOnFailureListener {
+                        toast(it.message.toString())
+                    }
+
             } else {
-                refinfo.child("Resto_Detail").child(userID.toString()).child(keywarung.toString()).child("status")
-                    .setValue("Habis")
+                //ubah ke posisi tutup
+                firestore.collection("Warung_Resep").document(id_makanan.toString())
+                    .update("status_makanan", "tutup").addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            toast("berhasil")
+                        }
+                    }.addOnFailureListener {
+                        toast(it.message.toString())
+                    }
             }
         }
     }
 
-    private fun getswitch(){
-        getswitchlistener = object : ValueEventListener{
+    private fun hapus() {
+        firestore.collection("Warung_Resep").document(id_makanan.toString()).get()
+            .addOnSuccessListener {
+                if (it.exists() && it != null) {
+                    val data = it.toObject(MakananModels::class.java)
+                    if (data!!.status_makanan == "buka") {
+                        val parentLayout = findViewById<View>(android.R.id.content)
+                        val snackbar: Snackbar = Snackbar.make(
+                            parentLayout,
+                            "Habiskan Dulu Makanannya",
+                            Snackbar.LENGTH_LONG
+                        )
+                        snackbar.show()
+                    } else {
+                        val builder = AlertDialog.Builder(this@DetailActivity)
+                        builder.setTitle("Apakah anda ingin menghapus makaanan ini ? ")
+                        val dialogClickListener = DialogInterface.OnClickListener { _, which ->
+                            when (which) {
+                                DialogInterface.BUTTON_POSITIVE -> {
+                                    val photoRef: StorageReference =
+                                        mFirebaseStorage.getReferenceFromUrl(gambar.toString())
+                                    photoRef.delete().addOnSuccessListener {
+                                        val ref =
+                                            FirebaseDatabase.getInstance().reference.child("Pandaan")
+                                                .child("Resto_Detail").child(userID.toString())
+                                                .child(id_makanan.toString()).removeValue()
+                                                .addOnCompleteListener {
+                                                    val docref = firestore.collection("Warung_Resep").document(id_makanan.toString()).delete().addOnCompleteListener {
+                                                        if (it.isSuccessful) {
+                                                            startActivity(
+                                                                intentFor<MainActivity>().clearTask()
+                                                                    .newTask()
+                                                            )
+                                                        }
+                                                }
+                                        }
+                                    }
+                                }
+                                DialogInterface.BUTTON_NEGATIVE -> {
+                                }
+                                DialogInterface.BUTTON_NEUTRAL -> {
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+/*
+        getswitchlistener = object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
-             }
+            }
 
             override fun onDataChange(snapshot: DataSnapshot) {
-            var data = snapshot.child("status").value.toString()
+                var data = snapshot.child("status").value.toString()
                 switch1.isChecked = data == "Ready"
                 btn_delete.setOnClickListener {
-                    if (data =="Ready"){
+                    if (data == "Ready") {
                         val parentLayout = findViewById<View>(android.R.id.content)
-                        val snackbar: Snackbar = Snackbar.make(parentLayout, "Habiskan Dulu Makanannya", Snackbar.LENGTH_LONG)
+                        val snackbar: Snackbar = Snackbar.make(
+                            parentLayout,
+                            "Habiskan Dulu Makanannya",
+                            Snackbar.LENGTH_LONG
+                        )
                         snackbar.show()
 
-                    }
-                    else{
+                    } else {
                         val builder = AlertDialog.Builder(this@DetailActivity)
                         builder.setTitle("Apakah anda ingin menghapus makaanan ini ? ")
                         val dialogClickListener = DialogInterface.OnClickListener { _, which ->
@@ -184,12 +259,18 @@ class DetailActivity : AppCompatActivity(), AnkoLogger {
                                         mFirebaseStorage.getReferenceFromUrl(gambar.toString())
                                     photoRef.delete()
                                         .addOnSuccessListener(OnSuccessListener<Void?> {
-                                            val ref = FirebaseDatabase.getInstance().reference.child("Pandaan")
-                                                .child("Resto_Detail").child(userID.toString()).child(keywarung.toString()).removeValue().addOnCompleteListener {
-                                                    if (it.isSuccessful){
-                                                        startActivity(intentFor<MainActivity>().clearTask().newTask())
+                                            val ref =
+                                                FirebaseDatabase.getInstance().reference.child("Pandaan")
+                                                    .child("Resto_Detail").child(userID.toString())
+                                                    .child(id_makanan.toString()).removeValue()
+                                                    .addOnCompleteListener {
+                                                        if (it.isSuccessful) {
+                                                            startActivity(
+                                                                intentFor<MainActivity>().clearTask()
+                                                                    .newTask()
+                                                            )
+                                                        }
                                                     }
-                                                }
                                         })
 
                                 }
@@ -223,14 +304,15 @@ class DetailActivity : AppCompatActivity(), AnkoLogger {
             }
 
         }
-        refinfo.child("Resto_Detail").child(userID.toString()).child(keywarung.toString()).addValueEventListener(getswitchlistener)
+        refinfo.child("Resto_Detail").child(userID.toString()).child(id_makanan.toString())
+            .addValueEventListener(getswitchlistener)
+*/
 
     }
 
 
     override fun onDestroy() {
         super.onDestroy()
-        refinfo.removeEventListener(getswitchlistener)
     }
 }
 

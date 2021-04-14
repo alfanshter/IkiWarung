@@ -22,12 +22,9 @@ import com.alfanshter.iki_warung.viewmodel.FoodViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_insert_food.gambar_makanan
-import org.jetbrains.anko.clearTask
-import org.jetbrains.anko.intentFor
-import org.jetbrains.anko.newTask
-import org.jetbrains.anko.toast
+import org.jetbrains.anko.*
 
-class InsertFoodActivity : AppCompatActivity() {
+class InsertFoodActivity : AppCompatActivity(),AnkoLogger {
     var nama: String? = null
     var harga: String? = null
     lateinit var radiokategori: RadioButton
@@ -58,9 +55,6 @@ class InsertFoodActivity : AppCompatActivity() {
             handleUiState(it)
         })
 
-        val intSelectkategori: Int = binding.radioGroupKategori.checkedRadioButtonId
-        radiokategori = findViewById(intSelectkategori)
-        kategori_insert = radiokategori.text.toString()
 
 
         binding.btnFoto.setOnClickListener {
