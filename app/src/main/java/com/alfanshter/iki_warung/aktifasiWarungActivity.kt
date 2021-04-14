@@ -190,19 +190,6 @@ class aktifasiWarungActivity : AppCompatActivity() {
 
     }
 
-    fun kodeorder(): String {
-        val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-        val outputStrLength = (20..26).shuffled().first()
-
-        return (1..outputStrLength)
-            .map { kotlin.random.Random.nextInt(0, charPool.size) }
-            .map(charPool::get)
-            .joinToString("")
-    }
-
-    val kode = kodeorder()
-
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {

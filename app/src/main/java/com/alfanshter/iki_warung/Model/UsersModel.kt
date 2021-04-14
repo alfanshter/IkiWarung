@@ -28,7 +28,11 @@ data class UsersModel(
     var tanggal_pendaftaran: String? = null,
     var email: String? = null,
     var foto: String? = null,
+    var foto_icon: String? = null,
     var nama: String? = null,
     var no_telp: String? = null,
+    var jam_buka: String? = null,
+    var jam_tutup: String? = null,
+    var hari_tutup: String? = null,
     var status: Boolean? = null
 )

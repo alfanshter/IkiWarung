@@ -4,6 +4,9 @@ import android.net.Uri
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.alfanshter.iki_warung.EditActivity
+import com.alfanshter.iki_warung.EditRestoActivity
+import com.alfanshter.iki_warung.Model.MakananModels
 import com.alfanshter.iki_warung.Model.UsersModel
 import com.alfanshter.iki_warung.Utils.Constant
 import com.alfanshter.iki_warung.Utils.FirebaseInisalisasi.Companion.firestore
@@ -37,6 +40,7 @@ class UsersViewModel : ViewModel(), AnkoLogger {
     lateinit var auth: FirebaseAuth
     var UserId: String? = null
     private var myUrl = ""
+    lateinit var mFirebaseStorage: FirebaseStorage
 
     //profilwarung
     var namawarung: String? = null
@@ -57,8 +61,8 @@ class UsersViewModel : ViewModel(), AnkoLogger {
                 } else {
                     var profil = documentSnapshot.toObject(UsersModel::class.java)
                     datauser.postValue(profil!!)
-
                 }
+
 
 
             }
@@ -73,6 +77,8 @@ class UsersViewModel : ViewModel(), AnkoLogger {
 
         auth = FirebaseAuth.getInstance()
         UserId = auth.currentUser!!.uid
+        mFirebaseStorage = FirebaseStorage.getInstance()
+
     }
 
     fun cekstatusaktifasi() {
@@ -148,9 +154,76 @@ class UsersViewModel : ViewModel(), AnkoLogger {
                 }
 
             }
+        }
+    }
 
+    //edit makanan
+    fun btn_editwarung(view: View) {
+        inisialisasidatabase()
+        state.value = UserState.Isloading(true)
+        if (EditRestoActivity.data==null
+        ) {
+            val docref = firestoreuser.collection("Warung_Akun")
+                .document(UserId.toString()).update(
+                    "jam_buka",
+                    EditRestoActivity.jambukawarung,
+                    "jam_tutup",
+                    EditRestoActivity.jamtutupwarung,
+                    "hari_tutup",
+                    EditRestoActivity.openday).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        state.value = UserState.IsSuccess(1)  // 1 sukses
+                        state.value = UserState.ShowToast(Constant.input_sukses)
+                        state.value = UserState.Isloading(false)
+                    }
+                }
+        } else {
+            val fileref =
+                storageUsers!!.child(System.currentTimeMillis().toString() + ".jpg")
+            var uploadTask: StorageTask<*>
+            uploadTask = fileref.putBytes(EditRestoActivity.data!!)
+            uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let {
+                        throw  it
+                        state.value = UserState.ShowToast(it.message.toString())
+                    }
+                }
+                return@Continuation fileref.downloadUrl
+            }).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val downloadUrl = task.result
+                    myUrl = downloadUrl.toString()
+                    val photoRef: StorageReference =
+                        mFirebaseStorage.getReferenceFromUrl(datauser.value!!.foto_icon.toString())
+                    photoRef.delete()
+
+                    val docref = firestoreuser.collection("Warung_Akun")
+                        .document(UserId.toString()).update(
+                            "jam_buka",
+                            EditRestoActivity.jambukawarung,
+                            "jam_tutup",
+                            EditRestoActivity.jamtutupwarung,
+                            "hari_tutup",
+                            EditRestoActivity.openday,
+                            "foto_icon",
+                            myUrl
+                        ).addOnCompleteListener {
+                            if (it.isSuccessful) {
+                                state.value = UserState.IsSuccess(1)  // 1 sukses
+                                state.value = UserState.ShowToast(Constant.input_sukses)
+                                state.value = UserState.Isloading(false)
+                            }
+                        }
+
+                } else {
+                    state.value = UserState.Isloading(false)
+                    state.value = UserState.ShowToast(Constant.error)
+                }
+            }
 
         }
+
     }
 
     fun getState() = state

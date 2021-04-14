@@ -25,6 +25,7 @@ import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_detail.*
 import kotlinx.android.synthetic.main.fragment_menu.*
+import kotlinx.android.synthetic.main.fragment_menu.view.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.find
 import org.jetbrains.anko.info
@@ -74,21 +75,6 @@ class MenuFragment : Fragment(), AnkoLogger {
         root = inflater.inflate(R.layout.fragment_menu, container, false)
         foodViewModel = ViewModelProviders.of(this).get(FoodViewModel::class.java)
 
-
-//        foodViewModel.ambilDataMakanan()
-//        foodViewModel.getMakanan().observe(this, Observer {
-//            binding.rvMakanan.adapter?.let { adapter ->
-//                when (adapter) {
-//                    is MakananAdapter -> adapter.setMakanan(it)
-//                }
-//            }
-//        })
-//        foodViewModel.ambilDataSwitchWarung()
-//        foodViewModel.getState().observer(this, Observer {
-//            handleUiState(it)
-//        })
-//        setswitch()
-
         dialog_bidding = Dialog(context!!)
         dialog_bidding!!.setContentView(R.layout.layout_editharga)
         switch = root.find(R.id.swt_buka)
@@ -105,9 +91,9 @@ class MenuFragment : Fragment(), AnkoLogger {
             startActivity<InsertFoodActivity>()
         }
 
-//        rvMenu2.setOnClickListener {
-//            startActivity<EditRestoActivity>()
-//        }
+        root.rv_menu2.setOnClickListener {
+            startActivity<EditRestoActivity>()
+        }
 
         if (auth == null) {
             userID = null
@@ -253,17 +239,6 @@ class MenuFragment : Fragment(), AnkoLogger {
 
     }
 
-    fun loading(state: Boolean) {
-        if (state) {
-            progressdialog.show(activity!!, Constant.tunggu)
-        } else {
-            progressdialog.dialog.dismiss()
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-    }
 
 
 }
