@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.RadioButton
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.alfanshter.iki_warung.EditActivity
 import com.alfanshter.iki_warung.Model.MakananModels
 import com.alfanshter.iki_warung.Model.UsersModel
 import com.alfanshter.iki_warung.R
@@ -38,12 +39,14 @@ class FoodViewModel : ViewModel(), AnkoLogger {
     private var state: SingleLiveEvent<FoodState> = SingleLiveEvent()
     private var dataswitch = MutableLiveData<UsersModel>()
     private var datamakanan = MutableLiveData<List<MakananModels>>()
+    private var datafood_id = MutableLiveData<MakananModels>()
 
     //firebase
     private var storageReference: StorageReference? = null
     lateinit var auth: FirebaseAuth
     lateinit var firestore: FirebaseFirestore
     var UserId: String? = null
+    lateinit var mFirebaseStorage: FirebaseStorage
 
     var nama_makanan: String? = null
     var harga_makanan: String? = null
@@ -58,6 +61,7 @@ class FoodViewModel : ViewModel(), AnkoLogger {
             FirebaseStorage.getInstance().reference.child("Warung").child(UserId.toString())
                 .child("resep")
         firestore = FirebaseFirestore.getInstance()
+        mFirebaseStorage = FirebaseStorage.getInstance()
     }
 
 
@@ -95,11 +99,12 @@ class FoodViewModel : ViewModel(), AnkoLogger {
             state.value = FoodState.IsLoading(false)
 
         } else {
+            val key =
+                FirebaseFirestore.getInstance().collection("Warung_Resep").document().id
             info { "dinda $nama_makanan $harga_makanan $keterangan_makanan ${InsertFoodActivity.filePath} ${kategori_insert}" }
             var hargamakanan = harga_makanan.toString().toInt()
             var hargappn = ((hargamakanan * 15) / 100)
             var hargatotal = hargamakanan + hargappn
-
 
 
             val fileref =
@@ -117,8 +122,6 @@ class FoodViewModel : ViewModel(), AnkoLogger {
             }).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val downloadUrl = task.result
-                    val key =
-                        FirebaseFirestore.getInstance().collection("Warung_Resep").document().id
 
                     myUrl = downloadUrl.toString()
                     var harga = (hargatotal.toDouble() / 1000).roundToInt() * 1000
@@ -152,48 +155,91 @@ class FoodViewModel : ViewModel(), AnkoLogger {
         }
     }
 
-    //belum sempurna
-    //ambil data switch warung
-    fun ambilDataSwitchWarung() {
+    //edit makanan
+    fun btn_edit(view: View) {
         inisialisasifirebase()
         state.value = FoodState.IsLoading(true)
-        firestore.collection("Warung_Akun").document(UserId.toString()).get()
-            .addOnSuccessListener { document ->
-                if (document.exists() && document != null) {
-                    val data = document.toObject(UsersModel::class.java)
-                    if (data!!.status == false) {
-                        state.value =
-                            FoodState.IsSuksesMenu(1)   // satu artinya Switch terdeteksi Tutup
+        if (EditActivity.data==null
+        ) {
+            val docref = firestore.collection("Warung_Resep")
+                .document(EditActivity.idmakanan.toString()).update(
+                    "nama",
+                    nama_makanan,
+                    "harga",
+                    harga_makanan,
+                    "keterangan",
+                    keterangan_makanan).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        state.value = FoodState.IsSukses(1)  // 1 sukses
+                        state.value = FoodState.ShowToast(Constant.input_sukses)
                         state.value = FoodState.IsLoading(false)
                     }
-                    if (data.status == true) {
-                        state.value =
-                            FoodState.IsSuksesMenu(2)   // dua artinya Switch terdeteksi buka
-                        state.value = FoodState.IsLoading(false)
-                    }
-                    state.value = FoodState.IsLoading(false)
                 }
-            }
+        } else {
+                val fileref =
+                    storageReference!!.child(System.currentTimeMillis().toString() + ".jpg")
+                var uploadTask: StorageTask<*>
+                uploadTask = fileref.putBytes(EditActivity.data!!)
+                uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                    if (!task.isSuccessful) {
+                        task.exception?.let {
+                            throw  it
+                            state.value = FoodState.ShowToast(it.message.toString())
+                        }
+                    }
+                    return@Continuation fileref.downloadUrl
+                }).addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val downloadUrl = task.result
+                        myUrl = downloadUrl.toString()
+                        val photoRef: StorageReference =
+                            mFirebaseStorage.getReferenceFromUrl(EditActivity.gambarmakanan.toString())
+                        photoRef.delete()
+
+                        val docref = firestore.collection("Warung_Resep")
+                            .document(EditActivity.idmakanan.toString()).update(
+                                "nama",
+                                nama_makanan,
+                                "harga",
+                                harga_makanan,
+                                "keterangan",
+                                keterangan_makanan,
+                                "gambar_makanan",
+                                myUrl.toString()
+                            ).addOnCompleteListener {
+                                if (it.isSuccessful) {
+                                    state.value = FoodState.IsSukses(1)  // 1 sukses
+                                    state.value = FoodState.ShowToast(Constant.input_sukses)
+                                    state.value = FoodState.IsLoading(false)
+                                }
+                            }
+
+                    } else {
+                        state.value = FoodState.IsLoading(false)
+                        state.value = FoodState.ShowToast(Constant.error)
+                    }
+                }
+
+        }
+
     }
 
-    //belum sempurna
-    fun setDataSwitchWarung() {
+    fun getdatamakanan_id() {
         inisialisasifirebase()
         state.value = FoodState.IsLoading(true)
-        val docref = firestore.collection("Warung_Akun").document(UserId.toString())
-        if (MenuFragment.status_switch == true) {
-            docref.update("status", true).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    state.value = FoodState.IsLoading(false)
+        info { "dinda ${EditActivity.id_makanan}" }
+        val docref =
+            firestore.collection("Warung_Resep").document(EditActivity.id_makanan.toString()).get()
+                .addOnSuccessListener { document ->
+                    if (document.exists() && document != null) {
+                        val data = document.toObject(MakananModels::class.java)
+                        datafood_id.postValue(data!!)
+                        state.value = FoodState.IsLoading(false)
+                    } else {
+                        state.value = FoodState.ShowToast(Constant.error)
+                        state.value = FoodState.IsLoading(false)
+                    }
                 }
-            }
-        } else if (MenuFragment.status_switch == false) {
-            docref.update("status", false).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    state.value = FoodState.IsLoading(false)
-                }
-            }
-        }
     }
 
     fun ambilDataMakanan() {
@@ -212,6 +258,7 @@ class FoodViewModel : ViewModel(), AnkoLogger {
     fun getState() = state
     fun getSwitch() = dataswitch
     fun getMakanan() = datamakanan
+    fun getMakanan_Id() = datafood_id
 
 
     sealed class FoodState {

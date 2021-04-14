@@ -2,6 +2,7 @@ package com.alfanshter.iki_warung
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -9,6 +10,14 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
+import com.alfanshter.iki_warung.Ui.InsertFoodActivity
+import com.alfanshter.iki_warung.Utils.Constant
+import com.alfanshter.iki_warung.Utils.CustomProgressDialog
+import com.alfanshter.iki_warung.databinding.ActivityEditBinding
+import com.alfanshter.iki_warung.viewmodel.FoodViewModel
 import com.google.android.gms.tasks.Continuation
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
@@ -26,224 +35,137 @@ import kotlinx.android.synthetic.main.activity_edit.edt_harga
 import kotlinx.android.synthetic.main.activity_edit.edt_keterangan
 import kotlinx.android.synthetic.main.activity_edit.edt_nama
 import kotlinx.android.synthetic.main.activity_edit.gambar_makanan
+import kotlinx.android.synthetic.main.activity_insert_food.*
 import org.jetbrains.anko.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import kotlin.math.roundToInt
 
-class EditActivity : AppCompatActivity(),AnkoLogger {
-    private val PICK_IMAGE_REQUEST = 1
+class EditActivity : AppCompatActivity(), AnkoLogger {
     private var filePath: Uri? = null
-    private var filepathcamera: Uri? = null
     lateinit var progressDialog: ProgressDialog
-    lateinit var ref : DatabaseReference
-    lateinit var reflistener : ValueEventListener
     lateinit var auth: FirebaseAuth
-    var keywarung : String? = null
-    var logic = 0
-    private var myUrl = ""
-    lateinit var mFirebaseStorage : FirebaseStorage
+    lateinit var mFirebaseStorage: FirebaseStorage
 
-    private var storageReference: StorageReference? = null
 
-    var userID : String? = null
+    companion object {
+        var id_makanan: String? = null
+        var data: ByteArray? = null
+        var gambarmakanan: String? = null
+        var idmakanan: String? = null
+    }
+
+    private var progressdialog = CustomProgressDialog()
+
+    lateinit var foodViewModel: FoodViewModel
+    lateinit var binding: ActivityEditBinding
+    var userID: String? = null
+
+    //FOTO
+    private val REQUEST_IMAGE_CAPTURE = 1
+    private val REQUEST_PICK_IMAGE = 2
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_edit)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_edit)
+        foodViewModel = ViewModelProviders.of(this).get(FoodViewModel::class.java)
+        binding.viewmodel = foodViewModel
+
         progressDialog = ProgressDialog(this)
         val bundle: Bundle? = intent.extras
-        keywarung = bundle!!.getString("firebase_keywarung")
+        id_makanan = bundle!!.getString("id_makanan")
         mFirebaseStorage = FirebaseStorage.getInstance()
 
-        auth = FirebaseAuth.getInstance()
-        userID = auth.currentUser!!.uid
-        ref = FirebaseDatabase.getInstance().reference.child("Pandaan").child("Resto_Detail").child(userID.toString()).child(keywarung.toString())
-        storageReference = FirebaseStorage.getInstance().reference.child("Warung").child(userID.toString()).child("resep")
+        foodViewModel.getdatamakanan_id()
+        foodViewModel.getState().observer(this, Observer {
+            handleUiState(it)
+        })
 
-        reflistener = object : ValueEventListener{
-            override fun onCancelled(error: DatabaseError) {
+        foodViewModel.getMakanan_Id().observe(this, Observer {
+            binding.edtNama.setText(it.nama.toString())
+            binding.edtHarga.setText(it.harga.toString())
+            binding.edtKeterangan.setText(it.keterangan)
+            Picasso.get().load(it.gambar_makanan).into(binding.gambarMakanan)
+            gambarmakanan = it.gambar_makanan
+            idmakanan = it.id_makanan
+        })
 
-            }
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()){
-                    var nama = snapshot.child("nama").value.toString()
-                    var harga = snapshot.child("harga").value.toString()
-                    var keterangan = snapshot.child("keterangan").value.toString()
-                    var foto = snapshot.child("gambar").value.toString()
-                    var kategori = snapshot.child("kategori").value.toString()
-
-
-                    edt_nama.setText(nama)
-                    edt_harga.setText(harga)
-//                    edt_keterangan.setText(keterangan)
-                    Picasso.get().load(foto).into(gambar_makanan)
-
-
-
-                    btn_edit.setOnClickListener {
-                        var hargamakanan = edt_harga.text.toString().toInt()
-                        var hargappn = ((hargamakanan *15 )/100)
-                        var hargatotal = hargamakanan + hargappn
-                        var harga_total = (hargatotal.toDouble()/1000).roundToInt() * 1000
-
-                        if (logic ==1){
-                            progressDialog.setTitle("Upload Makanan")
-                            progressDialog.setMessage("Tunggu , sedang update")
-                            progressDialog.show()
-                            val bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath)
-                            val baos = ByteArrayOutputStream()
-                            bmp.compress(Bitmap.CompressFormat.JPEG, 25, baos)
-                            val data = baos.toByteArray()
-                            val fileref =
-                                storageReference!!.child(System.currentTimeMillis().toString() + ".jpg")
-                            var uploadTask: StorageTask<*>
-                            uploadTask = fileref.putBytes(data)
-                            uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                                if (!task.isSuccessful) {
-                                    task.exception?.let {
-                                        throw  it
-                                        progressDialog.dismiss()
-                                    }
-                                }
-                                return@Continuation fileref.downloadUrl
-                            }).addOnCompleteListener(OnCompleteListener<Uri> { task ->
-                                if (task.isSuccessful) {
-                                    val downloadUrl = task.result
-                                    myUrl = downloadUrl.toString()
-                                    ref.child("nama").setValue(edt_nama.text.toString())
-                                    ref.child("harga").setValue(edt_harga.text.toString())
-                                    ref.child("harga_ppn").setValue(hargappn.toString())
-                                    ref.child("harga_total").setValue(harga_total.toString())
-                                    ref.child("keterangan").setValue(edt_keterangan.text.toString())
-                                    ref.child("gambar").setValue(myUrl)
-                                    val photoRef: StorageReference =
-                                        mFirebaseStorage.getReferenceFromUrl(foto)
-                                    photoRef.delete()
-                                    finish()
-                                    startActivity(intentFor<MainActivity>().clearTask().newTask())
-
-                                } else {
-                                    progressDialog.dismiss()
-                                    toast("upload gagal")
-                                }
-                            })
-
-                        }
-                        else if (logic==2){
-                            progressDialog.setTitle("Upload Makanan")
-                            progressDialog.setMessage("Tunggu , sedang update")
-                            progressDialog.show()
-                            val fileref =
-                                storageReference!!.child(System.currentTimeMillis().toString() + ".jpg")
-                            var uploadTask: StorageTask<*>
-                            uploadTask = fileref.putFile(filepathcamera!!)
-                            uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                                if (!task.isSuccessful) {
-                                    task.exception?.let {
-                                        throw  it
-                                        progressDialog.dismiss()
-                                    }
-                                }
-                                return@Continuation fileref.downloadUrl
-                            }).addOnCompleteListener(OnCompleteListener<Uri> { task ->
-                                if (task.isSuccessful) {
-                                    val downloadUrl = task.result
-                                    myUrl = downloadUrl.toString()
-                                    ref.child("nama").setValue(edt_nama.text.toString())
-                                    ref.child("harga").setValue(edt_harga.text.toString())
-                                    ref.child("harga_ppn").setValue(hargappn.toString())
-                                    ref.child("harga_total").setValue(harga_total.toString())
-                                    ref.child("keterangan").setValue(edt_keterangan.text.toString())
-                                    ref.child("gambar").setValue(myUrl)
-                                    val photoRef: StorageReference =
-                                        mFirebaseStorage.getReferenceFromUrl(foto)
-                                    photoRef.delete()
-                                    finish()
-                                    startActivity(intentFor<MainActivity>().clearTask().newTask())
-
-                                } else {
-                                    progressDialog.dismiss()
-                                    toast("upload gagal")
-                                }
-                            })
-
-                        }
-                        else{
-                            ref.child("nama").setValue(edt_nama.text.toString())
-                            ref.child("harga").setValue(edt_harga.text.toString())
-                            ref.child("harga_ppn").setValue(hargappn.toString())
-                            ref.child("harga_total").setValue(harga_total.toString())
-                            ref.child("keterangan").setValue(edt_keterangan.text.toString())
-                            finish()
-                            startActivity(intentFor<MainActivity>().clearTask().newTask())
-
-                        }
-                     }
-                }
-            }
-
-        }
-
-        ref.addListenerForSingleValueEvent(reflistener)
-
-        btn_galery.setOnClickListener {
+        binding.btnGalery.setOnClickListener {
             pilihfile()
         }
-        btn_foto.setOnClickListener {
-            var i = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(i, 123)
+        binding.btnFoto.setOnClickListener {
+            val values = ContentValues()
+            values.put(MediaStore.Images.Media.TITLE, "New Picture")
+            values.put(MediaStore.Images.Media.DESCRIPTION, "From the Camera")
+            filePath =
+                contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+            //camera intent
+            val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, filePath)
+            startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE)
 
         }
 
+    }
+
+    private fun handleUiState(it: FoodViewModel.FoodState?) {
+        when (it) {
+            is FoodViewModel.FoodState.ShowToast -> toast(it.message)
+            is FoodViewModel.FoodState.IsLoading -> loading(it.loading)
+            is FoodViewModel.FoodState.IsSukses -> sukses(it.sukses)
+        }
+
+    }
+
+    private fun sukses(sukses: Int?) {
+        if (sukses == 1) {
+            startActivity(intentFor<MainActivity>().clearTask().newTask())
+            finish()
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        ref.removeEventListener(reflistener)
     }
 
     private fun pilihfile() {
-        val intent = Intent()
+        //Intent to pick image
+        val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
-        intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(Intent.createChooser(intent, "PILIH GAMBAR"), PICK_IMAGE_REQUEST)
+        startActivityForResult(intent, REQUEST_PICK_IMAGE)
 
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
-            logic = 1
-
-            filePath = data.data!!
-            try {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_IMAGE_CAPTURE) {
                 Picasso.get().load(filePath).fit().into(gambar_makanan)
-            } catch (e: IOException) {
-                e.printStackTrace()
+                convert()
+            } else if (requestCode == REQUEST_PICK_IMAGE) {
+                filePath = data?.data
+                Picasso.get().load(filePath).fit().into(gambar_makanan)
+                convert()
             }
         }
-        else if (requestCode == 123 && resultCode == Activity.RESULT_OK) {
-            logic = 2
-            var bmp = data!!.extras!!.get("data") as Bitmap
-            filepathcamera = getImageUri(applicationContext, bmp)
 
-            try {
-                Picasso.get().load(filepathcamera).fit().into(gambar_makanan)
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-
-
-        }
     }
 
-    fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
-        val bytes = ByteArrayOutputStream()
-        inImage.compress(Bitmap.CompressFormat.JPEG, 25, bytes)
-        val path: String =
-            MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "Title", null)
-        return Uri.parse(path)
+    fun convert() {
+        val bmp = MediaStore.Images.Media.getBitmap(contentResolver, filePath)
+        val baos = ByteArrayOutputStream()
+        bmp.compress(Bitmap.CompressFormat.JPEG, 25, baos)
+        data = baos.toByteArray()
+    }
+
+
+    fun loading(state: Boolean) {
+        if (state) {
+            progressdialog.show(this@EditActivity, Constant.tunggu)
+        } else {
+            progressdialog.dialog.dismiss()
+        }
     }
 
 }

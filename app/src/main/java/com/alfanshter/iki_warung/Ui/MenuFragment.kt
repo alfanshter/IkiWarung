@@ -27,6 +27,7 @@ import kotlinx.android.synthetic.main.activity_detail.*
 import kotlinx.android.synthetic.main.fragment_menu.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.find
+import org.jetbrains.anko.info
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 import org.jetbrains.anko.toast
@@ -119,11 +120,13 @@ class MenuFragment : Fragment(), AnkoLogger {
 
         return root
     }
+
     //ambil data makanan
     private fun getmakanan() {
         rvMakanan.layoutManager = LinearLayoutManager(context!!.applicationContext)
         rvMakanan.setHasFixedSize(true)
-        (rvMakanan.layoutManager as LinearLayoutManager).orientation = LinearLayoutManager.HORIZONTAL
+        (rvMakanan.layoutManager as LinearLayoutManager).orientation =
+            LinearLayoutManager.HORIZONTAL
         val auth = FirebaseAuth.getInstance()
         val userId = auth.currentUser!!.uid
         val firestore = FirebaseFirestore.getInstance()
@@ -148,11 +151,13 @@ class MenuFragment : Fragment(), AnkoLogger {
 
             }
     }
+
     //ambil data minuman
-    private fun getminuman(){
+    private fun getminuman() {
         rvMinuman.layoutManager = LinearLayoutManager(context!!.applicationContext)
         rvMinuman.setHasFixedSize(true)
-        (rvMinuman.layoutManager as LinearLayoutManager).orientation = LinearLayoutManager.HORIZONTAL
+        (rvMinuman.layoutManager as LinearLayoutManager).orientation =
+            LinearLayoutManager.HORIZONTAL
 
 
         val auth = FirebaseAuth.getInstance()
@@ -179,25 +184,28 @@ class MenuFragment : Fragment(), AnkoLogger {
             }
     }
 
-    private fun inisialisasifirebase(){
+    private fun inisialisasifirebase() {
         firestore = FirebaseFirestore.getInstance()
 
     }
-    private fun getswitch(){
+
+    private fun getswitch() {
         inisialisasifirebase()
-        val docref = firestore.collection("Warung_Akun").document(userID.toString()).get().addOnSuccessListener {document ->
-            if (document!=null && document.exists()){
-                val data = document.toObject(UsersModel::class.java)
-                if (data!!.status==true){
-                    switch.isChecked = true
-                    switch.text = "Buka"
-                }else if (data.status ==false){
-                    switch.isChecked = false
-                    switch.text = "Tutup"
+        val docref = firestore.collection("Warung_Akun").document(userID.toString()).get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    val data = document.toObject(UsersModel::class.java)
+                    if (data!!.status == true) {
+                        switch.isChecked = true
+                        switch.text = "Buka"
+                    } else if (data.status == false) {
+                        switch.isChecked = false
+                        switch.text = "Tutup"
+                    }
                 }
             }
-        }
     }
+
     private fun switch() {
         inisialisasifirebase()
         switch.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -225,6 +233,7 @@ class MenuFragment : Fragment(), AnkoLogger {
             }
         }
     }
+
     override fun onDestroy() {
         super.onDestroy()
 
@@ -240,7 +249,7 @@ class MenuFragment : Fragment(), AnkoLogger {
 
     override fun onResume() {
         super.onResume()
-        foodViewModel.ambilDataMakanan()
     }
+
 
 }
