@@ -159,6 +159,7 @@ class MenuFragment : Fragment(), AnkoLogger {
                     mylist.setgambar(data.gambar_makanan.toString())
                     mylist.setname(data.nama.toString())
                     mylist.setprice(data.harga.toString())
+                    mylist.setidmakanan(data.id_makanan.toString())
                     arrayList.add(mylist)
                     adapter = MakananAdapter(arrayList, context!!.applicationContext)
 

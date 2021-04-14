@@ -1,6 +1,9 @@
 package com.alfanshter.iki_warung.viewmodel
 
+import android.content.Context
+import android.graphics.Bitmap
 import android.net.Uri
+import android.provider.MediaStore
 import android.view.View
 import android.widget.RadioButton
 import androidx.lifecycle.MutableLiveData
@@ -9,6 +12,7 @@ import com.alfanshter.iki_warung.Model.MakananModels
 import com.alfanshter.iki_warung.Model.UsersModel
 import com.alfanshter.iki_warung.R
 import com.alfanshter.iki_warung.Ui.InsertFoodActivity
+import com.alfanshter.iki_warung.Ui.InsertFoodActivity.Companion.filePath
 import com.alfanshter.iki_warung.Ui.MenuFragment
 import com.alfanshter.iki_warung.Utils.Constant
 import com.alfanshter.iki_warung.Utils.SingleLiveEvent
@@ -24,6 +28,7 @@ import com.google.firebase.storage.StorageTask
 import com.google.firebase.storage.UploadTask
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
+import java.io.ByteArrayOutputStream
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.math.roundToInt
@@ -43,7 +48,7 @@ class FoodViewModel : ViewModel(), AnkoLogger {
     var nama_makanan: String? = null
     var harga_makanan: String? = null
     var keterangan_makanan: String? = null
-    var kategori_insert : String? = null
+    var kategori_insert: String? = null
     private var myUrl = ""
 
     fun inisialisasifirebase() {
@@ -82,8 +87,8 @@ class FoodViewModel : ViewModel(), AnkoLogger {
         state.value = FoodState.IsLoading(true)
         inisialisasifirebase()
 
-        if (nama_makanan.isNullOrEmpty() || harga_makanan.isNullOrEmpty() || keterangan_makanan.isNullOrEmpty() || InsertFoodActivity.filePath == null
-            || kategori_insert== null
+        if (nama_makanan.isNullOrEmpty() || harga_makanan.isNullOrEmpty() || keterangan_makanan.isNullOrEmpty() || InsertFoodActivity.data == null
+            || kategori_insert == null
         ) {
             info { "dinda $nama_makanan $harga_makanan $keterangan_makanan ${InsertFoodActivity.filePath} ${kategori_insert}" }
             state.value = FoodState.ShowToast(Constant.input)
@@ -95,12 +100,12 @@ class FoodViewModel : ViewModel(), AnkoLogger {
             var hargappn = ((hargamakanan * 15) / 100)
             var hargatotal = hargamakanan + hargappn
 
+
+
             val fileref =
-                storageReference!!.child(
-                    System.currentTimeMillis().toString() + ".jpg"
-                )
+                storageReference!!.child(System.currentTimeMillis().toString() + ".jpg")
             var uploadTask: StorageTask<*>
-            uploadTask = fileref.putFile(InsertFoodActivity.filePath!!)
+            uploadTask = fileref.putBytes(InsertFoodActivity.data!!)
             uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
                 if (!task.isSuccessful) {
                     task.exception?.let {

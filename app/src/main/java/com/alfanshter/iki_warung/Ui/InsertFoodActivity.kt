@@ -3,6 +3,7 @@ package com.alfanshter.iki_warung.Ui
 import android.app.ProgressDialog
 import android.content.ContentValues
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -23,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_insert_food.gambar_makanan
 import org.jetbrains.anko.*
+import java.io.ByteArrayOutputStream
 
 class InsertFoodActivity : AppCompatActivity(),AnkoLogger {
     var nama: String? = null
@@ -42,6 +44,8 @@ class InsertFoodActivity : AppCompatActivity(),AnkoLogger {
     companion object {
         var kategori_insert: String? = null
          var filePath: Uri? = null
+         var data : ByteArray? = null
+
 
     }
 
@@ -93,16 +97,27 @@ class InsertFoodActivity : AppCompatActivity(),AnkoLogger {
 
     }
 
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_IMAGE_CAPTURE) {
                 Picasso.get().load(filePath).fit().into(gambar_makanan)
+                convert()
             } else if (requestCode == REQUEST_PICK_IMAGE) {
                 filePath = data?.data
                 Picasso.get().load(filePath).fit().into(gambar_makanan)
+                convert()
             }
         }
+
+    }
+
+    fun convert(){
+        val bmp = MediaStore.Images.Media.getBitmap(contentResolver, filePath)
+        val baos = ByteArrayOutputStream()
+        bmp.compress(Bitmap.CompressFormat.JPEG, 25, baos)
+        data = baos.toByteArray()
 
     }
 
