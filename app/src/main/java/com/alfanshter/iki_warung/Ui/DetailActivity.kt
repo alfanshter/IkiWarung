@@ -91,9 +91,10 @@ class DetailActivity : AppCompatActivity(), AnkoLogger {
         btn_back.setOnClickListener {
             finish()
         }
+        getswitch()
         switch()
         btn_delete.setOnClickListener {
-            hapus()
+
         }
     }
 
@@ -157,6 +158,18 @@ class DetailActivity : AppCompatActivity(), AnkoLogger {
         dialog.show()
     }
 
+    private fun getswitch(){
+        val docref = firestore.collection("Warung_Resep").document(id_makanan.toString()).get().addOnSuccessListener {document ->
+            if (document!=null && document.exists()){
+                val data = document.toObject(MakananModels::class.java)
+                if (data!!.status_makanan.equals("buka")){
+                    switch1.isChecked = true
+                }else if (data.status_makanan.equals("tutup")){
+                    switch1.isChecked = false
+                }
+            }
+        }
+    }
     private fun switch() {
         switch1.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
@@ -184,7 +197,7 @@ class DetailActivity : AppCompatActivity(), AnkoLogger {
         }
     }
 
-    private fun hapus() {
+/*    private fun hapus() {
         firestore.collection("Warung_Resep").document(id_makanan.toString()).get()
             .addOnSuccessListener {
                 if (it.exists() && it != null) {
@@ -231,7 +244,7 @@ class DetailActivity : AppCompatActivity(), AnkoLogger {
                     }
                 }
             }
-/*
+*//*
         getswitchlistener = object : ValueEventListener {
             override fun onCancelled(error: DatabaseError) {
             }
@@ -306,9 +319,9 @@ class DetailActivity : AppCompatActivity(), AnkoLogger {
         }
         refinfo.child("Resto_Detail").child(userID.toString()).child(id_makanan.toString())
             .addValueEventListener(getswitchlistener)
-*/
+*//*
 
-    }
+    }*/
 
 
     override fun onDestroy() {
