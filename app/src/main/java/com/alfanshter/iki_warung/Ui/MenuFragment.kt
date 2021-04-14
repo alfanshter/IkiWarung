@@ -31,6 +31,7 @@ import org.jetbrains.anko.info
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 import org.jetbrains.anko.toast
+import java.lang.Exception
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -133,19 +134,28 @@ class MenuFragment : Fragment(), AnkoLogger {
         val setiings = firestore.firestoreSettings.isPersistenceEnabled
         val docref = firestore.collection("Warung_Resep").whereEqualTo("uid", userId.toString())
             .whereEqualTo("kategori", "Makanan").get().addOnSuccessListener { doc ->
-                for (document in doc) {
-                    val data = document.toObject(MakananModels::class.java)
-                    val mylist = MakananModels()
-                    mylist.setgambar(data.gambar_makanan.toString())
-                    mylist.setname(data.nama.toString())
-                    mylist.setprice(data.harga.toString())
-                    mylist.setidmakanan(data.id_makanan.toString())
-                    arrayList.add(mylist)
-                    adapter = MakananAdapter(arrayList, context!!.applicationContext)
+                if (doc.isEmpty){
 
-                    rvMakanan.adapter = adapter
-                    adapter.notifyDataSetChanged()
+                }else{
+                    for (document in doc) {
+                        try {
+                            val data = document.toObject(MakananModels::class.java)
+                            val mylist = MakananModels()
+                            mylist.setgambar(data.gambar_makanan.toString())
+                            mylist.setname(data.nama.toString())
+                            mylist.setprice(data.harga.toString())
+                            mylist.setidmakanan(data.id_makanan.toString())
+                            arrayList.add(mylist)
+                            adapter = MakananAdapter(arrayList, context!!.applicationContext)
 
+                            rvMakanan.adapter = adapter
+                            adapter.notifyDataSetChanged()
+
+                        }catch (e: Exception){
+
+                        }
+
+                    }
                 }
             }.addOnFailureListener {
 
@@ -172,11 +182,16 @@ class MenuFragment : Fragment(), AnkoLogger {
                     mylist.setname(data.nama.toString())
                     mylist.setprice(data.harga.toString())
                     mylist.setidmakanan(data.id_makanan.toString())
+                try {
                     arrayListMinuman.add(mylist)
                     adapterminuman = MakananAdapter(arrayListMinuman, context!!.applicationContext)
 
                     rvMinuman.adapter = adapterminuman
                     adapterminuman.notifyDataSetChanged()
+
+                }catch (e:Exception){
+
+                }
 
                 }
             }.addOnFailureListener {
@@ -214,7 +229,6 @@ class MenuFragment : Fragment(), AnkoLogger {
                 firestore.collection("Warung_Akun").document(userID.toString())
                     .update("status", true).addOnCompleteListener {
                         if (it.isSuccessful) {
-                            toast("berhasil")
                         }
                     }.addOnFailureListener {
                         toast(it.message.toString())

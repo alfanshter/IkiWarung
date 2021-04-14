@@ -58,28 +58,7 @@ class DetailActivity : AppCompatActivity(), AnkoLogger {
         harga = bundle.getString("harga")
         nama = bundle.getString("nama")
         mFirebaseStorage = FirebaseStorage.getInstance()
-
-/*
-        database.addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-
-                latitude =
-                    snapshot.child("Akun_Resto").child(userID.toString())
-                        .child("latitude").value.toString()
-                longitude = snapshot.child("Akun_Resto").child(userID.toString()).child("longitude").value.toString()
-                penjual = snapshot.child("Akun_Resto").child(userID.toString()).child("namatoko").value.toString()
-                kodesales = snapshot.child("Akun_Resto").child(userID.toString()).child("kode_sales").value.toString()
-
-
-            }
-
-        })
-*/
-
+        
         //Tampilkan Data dari MenuFragment
         Picasso.get().load(gambar).into(gambar_detail)
         name.text = nama.toString()
@@ -94,44 +73,28 @@ class DetailActivity : AppCompatActivity(), AnkoLogger {
         getswitch()
         switch()
         btn_delete.setOnClickListener {
-
+            hapusmakanan()
         }
     }
 
-    fun showHome(
-        gambar: String?,
-        nama: String?,
-        harga: String?,
-        id: String?,
-        penjual: String?,
-        kodesales: String
-    ) {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Apakah anda ingin menambahkan food ini ? ")
+    private fun hapusmakanan() {
+        val builder = AlertDialog.Builder(this@DetailActivity)
+        builder.setTitle("Apakah anda ingin menghapus makaanan ini ? ")
         val dialogClickListener = DialogInterface.OnClickListener { _, which ->
             when (which) {
                 DialogInterface.BUTTON_POSITIVE -> {
-                    var usermap: HashMap<String, Any?> = HashMap()
-                    usermap["gambar"] = gambar
-                    usermap["harga"] = harga
-                    usermap["nama"] = nama
-                    usermap["id"] = id
-                    usermap["penjual"] = penjual
-                    usermap["latitude"] = latitude
-                    usermap["longitude"] = longitude
-                    usermap["kode_sales"] = kodesales
-                    usermap["status"] = "Tutup"
-
-
-                    var database =
-                        FirebaseDatabase.getInstance().reference
-                            .child("Pandaan").child("Resto").child(userID.toString())
-                            .setValue(usermap).addOnCompleteListener {
-                                if (it.isSuccessful) {
-                                    startActivity(intentFor<MainActivity>().newTask().clearTask())
-
-                                }
+                    val photoRef: StorageReference =
+                        mFirebaseStorage.getReferenceFromUrl(gambar.toString())
+                    photoRef.delete().addOnSuccessListener {
+                        val docref = firestore.collection("Warung_Resep").document(id_makanan.toString()).delete()
+                        docref.addOnCompleteListener {
+                            if (it.isSuccessful){
+                                startActivity(intentFor<MainActivity>().clearTask().newTask())
+                                finish()
                             }
+                        }
+
+                    }
                 }
                 DialogInterface.BUTTON_NEGATIVE -> {
                 }
@@ -139,8 +102,6 @@ class DetailActivity : AppCompatActivity(), AnkoLogger {
                 }
             }
         }
-
-
         // Set the alert dialog positive/yes button
         builder.setPositiveButton("YES", dialogClickListener)
 
@@ -158,18 +119,21 @@ class DetailActivity : AppCompatActivity(), AnkoLogger {
         dialog.show()
     }
 
-    private fun getswitch(){
-        val docref = firestore.collection("Warung_Resep").document(id_makanan.toString()).get().addOnSuccessListener {document ->
-            if (document!=null && document.exists()){
-                val data = document.toObject(MakananModels::class.java)
-                if (data!!.status_makanan.equals("buka")){
-                    switch1.isChecked = true
-                }else if (data.status_makanan.equals("tutup")){
-                    switch1.isChecked = false
+
+    private fun getswitch() {
+        val docref = firestore.collection("Warung_Resep").document(id_makanan.toString()).get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    val data = document.toObject(MakananModels::class.java)
+                    if (data!!.status_makanan.equals("buka")) {
+                        switch1.isChecked = true
+                    } else if (data.status_makanan.equals("tutup")) {
+                        switch1.isChecked = false
+                    }
                 }
             }
-        }
     }
+
     private fun switch() {
         switch1.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
@@ -196,132 +160,6 @@ class DetailActivity : AppCompatActivity(), AnkoLogger {
             }
         }
     }
-
-/*    private fun hapus() {
-        firestore.collection("Warung_Resep").document(id_makanan.toString()).get()
-            .addOnSuccessListener {
-                if (it.exists() && it != null) {
-                    val data = it.toObject(MakananModels::class.java)
-                    if (data!!.status_makanan == "buka") {
-                        val parentLayout = findViewById<View>(android.R.id.content)
-                        val snackbar: Snackbar = Snackbar.make(
-                            parentLayout,
-                            "Habiskan Dulu Makanannya",
-                            Snackbar.LENGTH_LONG
-                        )
-                        snackbar.show()
-                    } else {
-                        val builder = AlertDialog.Builder(this@DetailActivity)
-                        builder.setTitle("Apakah anda ingin menghapus makaanan ini ? ")
-                        val dialogClickListener = DialogInterface.OnClickListener { _, which ->
-                            when (which) {
-                                DialogInterface.BUTTON_POSITIVE -> {
-                                    val photoRef: StorageReference =
-                                        mFirebaseStorage.getReferenceFromUrl(gambar.toString())
-                                    photoRef.delete().addOnSuccessListener {
-                                        val ref =
-                                            FirebaseDatabase.getInstance().reference.child("Pandaan")
-                                                .child("Resto_Detail").child(userID.toString())
-                                                .child(id_makanan.toString()).removeValue()
-                                                .addOnCompleteListener {
-                                                    val docref = firestore.collection("Warung_Resep").document(id_makanan.toString()).delete().addOnCompleteListener {
-                                                        if (it.isSuccessful) {
-                                                            startActivity(
-                                                                intentFor<MainActivity>().clearTask()
-                                                                    .newTask()
-                                                            )
-                                                        }
-                                                }
-                                        }
-                                    }
-                                }
-                                DialogInterface.BUTTON_NEGATIVE -> {
-                                }
-                                DialogInterface.BUTTON_NEUTRAL -> {
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-*//*
-        getswitchlistener = object : ValueEventListener {
-            override fun onCancelled(error: DatabaseError) {
-            }
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-                var data = snapshot.child("status").value.toString()
-                switch1.isChecked = data == "Ready"
-                btn_delete.setOnClickListener {
-                    if (data == "Ready") {
-                        val parentLayout = findViewById<View>(android.R.id.content)
-                        val snackbar: Snackbar = Snackbar.make(
-                            parentLayout,
-                            "Habiskan Dulu Makanannya",
-                            Snackbar.LENGTH_LONG
-                        )
-                        snackbar.show()
-
-                    } else {
-                        val builder = AlertDialog.Builder(this@DetailActivity)
-                        builder.setTitle("Apakah anda ingin menghapus makaanan ini ? ")
-                        val dialogClickListener = DialogInterface.OnClickListener { _, which ->
-                            when (which) {
-                                DialogInterface.BUTTON_POSITIVE -> {
-                                    val photoRef: StorageReference =
-                                        mFirebaseStorage.getReferenceFromUrl(gambar.toString())
-                                    photoRef.delete()
-                                        .addOnSuccessListener(OnSuccessListener<Void?> {
-                                            val ref =
-                                                FirebaseDatabase.getInstance().reference.child("Pandaan")
-                                                    .child("Resto_Detail").child(userID.toString())
-                                                    .child(id_makanan.toString()).removeValue()
-                                                    .addOnCompleteListener {
-                                                        if (it.isSuccessful) {
-                                                            startActivity(
-                                                                intentFor<MainActivity>().clearTask()
-                                                                    .newTask()
-                                                            )
-                                                        }
-                                                    }
-                                        })
-
-                                }
-                                DialogInterface.BUTTON_NEGATIVE -> {
-                                }
-                                DialogInterface.BUTTON_NEUTRAL -> {
-                                }
-                            }
-                        }
-
-
-                        // Set the alert dialog positive/yes button
-                        builder.setPositiveButton("YES", dialogClickListener)
-
-                        // Set the alert dialog negative/no button
-                        builder.setNegativeButton("NO", dialogClickListener)
-
-                        // Set the alert dialog neutral/cancel button
-                        builder.setNeutralButton("CANCEL", dialogClickListener)
-
-
-                        // Initialize the AlertDialog using builder object
-                        dialog = builder.create()
-
-                        // Finally, display the alert dialog
-                        dialog.show()
-                    }
-
-                }
-
-            }
-
-        }
-        refinfo.child("Resto_Detail").child(userID.toString()).child(id_makanan.toString())
-            .addValueEventListener(getswitchlistener)
-*//*
-
-    }*/
 
 
     override fun onDestroy() {
