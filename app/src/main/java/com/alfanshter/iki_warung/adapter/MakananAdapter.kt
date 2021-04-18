@@ -50,12 +50,12 @@ class MakananAdapter(list: ArrayList<MakananModels>, context: Context) :
         Picasso.get().load(mylist.getgambar()).transform(transformation).centerCrop().fit()
             .into(holder.makanan)
         holder.nama.text = mylist.getname()
-        holder.harga.text = mylist.getprice()
+        holder.harga.text = mylist.getprice().toString()
         holder.itemView.setOnClickListener {
             context.startActivity(
                 context.intentFor<DetailActivity>(
                     "gambar_makanan" to mylist.getgambar(),
-                    "harga" to mylist.getprice(),
+                    "harga" to mylist.getprice().toString(),
                     "nama" to mylist.getname(),
                     "id_makanan" to mylist.getidmakanan()
                 ).newTask()

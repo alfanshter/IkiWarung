@@ -105,6 +105,8 @@ class FoodViewModel : ViewModel(), AnkoLogger {
             var hargamakanan = harga_makanan.toString().toInt()
             var hargappn = ((hargamakanan * 15) / 100)
             var hargatotal = hargamakanan + hargappn
+            var harga = (hargatotal.toDouble() / 1000).roundToInt() * 1000
+            var harga_ppn = harga - hargamakanan
 
 
             val fileref =
@@ -124,13 +126,12 @@ class FoodViewModel : ViewModel(), AnkoLogger {
                     val downloadUrl = task.result
 
                     myUrl = downloadUrl.toString()
-                    var harga = (hargatotal.toDouble() / 1000).roundToInt() * 1000
                     val usermap: MutableMap<String, Any?> = HashMap()
 
                     usermap["gambar_makanan"] = myUrl
-                    usermap["harga"] = harga_makanan.toString()
-                    usermap["harga_ppn"] = hargappn.toString()
-                    usermap["harga_total"] = harga.toString()
+                    usermap["harga"] = harga_makanan.toString().toInt()
+                    usermap["harga_ppn"] = harga_ppn
+                    usermap["harga_total"] = harga
                     usermap["kategori"] = kategori_insert.toString()
                     usermap["nama"] = nama_makanan.toString()
                     usermap["id_makanan"] = key.toString()
@@ -159,16 +160,22 @@ class FoodViewModel : ViewModel(), AnkoLogger {
     fun btn_edit(view: View) {
         inisialisasifirebase()
         state.value = FoodState.IsLoading(true)
-        if (EditActivity.data==null
+        var hargamakanan = harga_makanan.toString().toInt()
+        var hargappn = ((hargamakanan * 15) / 100)
+        var hargatotal = hargamakanan + hargappn
+        var harga = (hargatotal.toDouble() / 1000).roundToInt() * 1000
+        var harga_ppn = harga - hargamakanan
+
+        if (EditActivity.data == null
         ) {
             val docref = firestore.collection("Warung_Resep")
                 .document(EditActivity.idmakanan.toString()).update(
-                    "nama",
-                    nama_makanan,
-                    "harga",
-                    harga_makanan,
-                    "keterangan",
-                    keterangan_makanan).addOnCompleteListener {
+                    "nama", nama_makanan,
+                    "harga", harga_makanan.toString().toInt(),
+                    "keterangan",keterangan_makanan,
+                    "harga_ppn", harga_ppn,
+                    "harga_total", harga
+                ).addOnCompleteListener {
                     if (it.isSuccessful) {
                         state.value = FoodState.IsSukses(1)  // 1 sukses
                         state.value = FoodState.ShowToast(Constant.input_sukses)
@@ -176,49 +183,47 @@ class FoodViewModel : ViewModel(), AnkoLogger {
                     }
                 }
         } else {
-                val fileref =
-                    storageReference!!.child(System.currentTimeMillis().toString() + ".jpg")
-                var uploadTask: StorageTask<*>
-                uploadTask = fileref.putBytes(EditActivity.data!!)
-                uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
-                    if (!task.isSuccessful) {
-                        task.exception?.let {
-                            throw  it
-                            state.value = FoodState.ShowToast(it.message.toString())
-                        }
-                    }
-                    return@Continuation fileref.downloadUrl
-                }).addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val downloadUrl = task.result
-                        myUrl = downloadUrl.toString()
-                        val photoRef: StorageReference =
-                            mFirebaseStorage.getReferenceFromUrl(EditActivity.gambarmakanan.toString())
-                        photoRef.delete()
-
-                        val docref = firestore.collection("Warung_Resep")
-                            .document(EditActivity.idmakanan.toString()).update(
-                                "nama",
-                                nama_makanan,
-                                "harga",
-                                harga_makanan,
-                                "keterangan",
-                                keterangan_makanan,
-                                "gambar_makanan",
-                                myUrl.toString()
-                            ).addOnCompleteListener {
-                                if (it.isSuccessful) {
-                                    state.value = FoodState.IsSukses(1)  // 1 sukses
-                                    state.value = FoodState.ShowToast(Constant.input_sukses)
-                                    state.value = FoodState.IsLoading(false)
-                                }
-                            }
-
-                    } else {
-                        state.value = FoodState.IsLoading(false)
-                        state.value = FoodState.ShowToast(Constant.error)
+            val fileref =
+                storageReference!!.child(System.currentTimeMillis().toString() + ".jpg")
+            var uploadTask: StorageTask<*>
+            uploadTask = fileref.putBytes(EditActivity.data!!)
+            uploadTask.continueWithTask(Continuation<UploadTask.TaskSnapshot, Task<Uri>> { task ->
+                if (!task.isSuccessful) {
+                    task.exception?.let {
+                        throw  it
+                        state.value = FoodState.ShowToast(it.message.toString())
                     }
                 }
+                return@Continuation fileref.downloadUrl
+            }).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val downloadUrl = task.result
+                    myUrl = downloadUrl.toString()
+                    val photoRef: StorageReference =
+                        mFirebaseStorage.getReferenceFromUrl(EditActivity.gambarmakanan.toString())
+                    photoRef.delete()
+
+                    val docref = firestore.collection("Warung_Resep")
+                        .document(EditActivity.idmakanan.toString()).update(
+                            "nama", nama_makanan,
+                            "harga", harga_makanan.toString().toInt(),
+                            "keterangan", keterangan_makanan,
+                            "gambar_makanan", myUrl.toString(),
+                            "harga_ppn", harga_ppn,
+                            "harga_total", harga
+                        ).addOnCompleteListener {
+                            if (it.isSuccessful) {
+                                state.value = FoodState.IsSukses(1)  // 1 sukses
+                                state.value = FoodState.ShowToast(Constant.input_sukses)
+                                state.value = FoodState.IsLoading(false)
+                            }
+                        }
+
+                } else {
+                    state.value = FoodState.IsLoading(false)
+                    state.value = FoodState.ShowToast(Constant.error)
+                }
+            }
 
         }
 

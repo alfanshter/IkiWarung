@@ -4,9 +4,9 @@ import com.google.firebase.Timestamp
 
  class MakananModels {
      var gambar_makanan: String? = null
-     var harga: String? = null
-     var harga_ppn: String? = null
-     var harga_total: String? = null
+     var harga: Int? = null
+     var harga_ppn: Int? = null
+     var harga_total: Int? = null
      var id_makanan: String? = null
      var kategori: String? = null
      var keterangan: String? = null
@@ -19,9 +19,9 @@ import com.google.firebase.Timestamp
      constructor() {}
      constructor(
          gambar_makanan: String?,
-         harga: String?,
-         harga_ppn: String?,
-         harga_total: String?,
+         harga: Int?,
+         harga_ppn: Int?,
+         harga_total: Int?,
          id_makanan: String?,
          kategori: String?,
          keterangan: String?,
@@ -45,7 +45,6 @@ import com.google.firebase.Timestamp
          this.status_makanan = status_makanan
      }
 
-
      fun getgambar(): String? {
          return gambar_makanan
      }
@@ -62,11 +61,11 @@ import com.google.firebase.Timestamp
          this.nama = name
      }
 
-     fun getprice(): String? {
+     fun getprice(): Int? {
          return harga
      }
 
-     fun setprice(price: String?) {
+     fun setprice(price: Int?) {
          this.harga = price
      }
 

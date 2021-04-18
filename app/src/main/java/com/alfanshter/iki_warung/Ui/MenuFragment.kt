@@ -129,7 +129,7 @@ class MenuFragment : Fragment(), AnkoLogger {
                             val mylist = MakananModels()
                             mylist.setgambar(data.gambar_makanan.toString())
                             mylist.setname(data.nama.toString())
-                            mylist.setprice(data.harga.toString())
+                            mylist.setprice(data.harga)
                             mylist.setidmakanan(data.id_makanan.toString())
                             arrayList.add(mylist)
                             adapter = MakananAdapter(arrayList, context!!.applicationContext)
@@ -166,7 +166,7 @@ class MenuFragment : Fragment(), AnkoLogger {
                     val mylist = MakananModels()
                     mylist.setgambar(data.gambar_makanan.toString())
                     mylist.setname(data.nama.toString())
-                    mylist.setprice(data.harga.toString())
+                    mylist.setprice(data.harga)
                     mylist.setidmakanan(data.id_makanan.toString())
                 try {
                     arrayListMinuman.add(mylist)
