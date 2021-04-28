@@ -43,9 +43,11 @@ class FoodViewModel : ViewModel(), AnkoLogger {
 
     //firebase
     private var storageReference: StorageReference? = null
+
     lateinit var auth: FirebaseAuth
-    lateinit var firestore: FirebaseFirestore
     var UserId: String? = null
+    lateinit var firestore: FirebaseFirestore
+
     lateinit var mFirebaseStorage: FirebaseStorage
 
     var nama_makanan: String? = null
