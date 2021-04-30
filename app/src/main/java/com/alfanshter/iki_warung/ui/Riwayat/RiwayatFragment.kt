@@ -1,4 +1,4 @@
-package com.alfanshter.iki_warung.Ui.Riwayat
+package com.alfanshter.iki_warung.ui.Riwayat
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

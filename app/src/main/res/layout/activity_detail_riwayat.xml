@@ -7,7 +7,7 @@
     android:background="@color/colorWhite"
     android:orientation="vertical"
     app:behavior_peekHeight="225dp"
-    tools:context=".Ui.Riwayat.DetailRiwayatActivity"
+    tools:context=".ui.Riwayat.DetailRiwayatActivity"
     app:layout_behavior= "@string/bottom_sheet_behavior">
 
     <LinearLayout

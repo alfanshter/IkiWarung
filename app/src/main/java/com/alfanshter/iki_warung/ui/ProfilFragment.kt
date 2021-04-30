@@ -1,12 +1,10 @@
-package com.alfanshter.iki_warung.Ui
+package com.alfanshter.iki_warung.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -19,7 +17,6 @@ import com.alfanshter.udinlelangfix.Session.SessionManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.fragment_profil.view.*
-import org.jetbrains.anko.find
 import org.jetbrains.anko.support.v4.startActivity
 
 class ProfilFragment : Fragment() {

@@ -1,6 +1,5 @@
 package com.alfanshter.iki_warung
 
-import android.app.ProgressDialog
 import android.app.TimePickerDialog
 import android.content.ContentValues
 import android.content.Intent
@@ -15,7 +14,6 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
-import com.alfanshter.iki_warung.Ui.InsertFoodActivity
 import com.alfanshter.iki_warung.Utils.Constant
 import com.alfanshter.iki_warung.Utils.CustomProgressDialog
 import com.alfanshter.iki_warung.databinding.ActivityEditRestoBinding

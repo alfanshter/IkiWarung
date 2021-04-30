@@ -1,17 +1,14 @@
-package com.alfanshter.iki_warung.Ui
+package com.alfanshter.iki_warung.ui
 
 import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.alfanshter.iki_warung.EditActivity
 import com.alfanshter.iki_warung.MainActivity
 import com.alfanshter.iki_warung.Model.MakananModels
 import com.alfanshter.iki_warung.R
-import com.google.android.gms.tasks.OnSuccessListener
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore

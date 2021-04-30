@@ -1,23 +1,18 @@
 package com.alfanshter.iki_warung.adapter
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.alfanshter.iki_warung.MainActivity
 import com.alfanshter.iki_warung.Model.MakananModels
 import com.alfanshter.iki_warung.R
-import com.alfanshter.iki_warung.Ui.DetailActivity
+import com.alfanshter.iki_warung.ui.DetailActivity
 import com.alfanshter.iki_warung.Utils.RoundedCornersTransformation
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Transformation
-import kotlinx.android.synthetic.main.list_item.view.*
 import org.jetbrains.anko.*
 import java.util.ArrayList
 

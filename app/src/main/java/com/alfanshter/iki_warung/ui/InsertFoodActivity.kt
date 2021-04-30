@@ -1,13 +1,10 @@
-package com.alfanshter.iki_warung.Ui
+package com.alfanshter.iki_warung.ui
 
-import android.app.ProgressDialog
 import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.provider.MediaStore
 import android.widget.RadioButton
 import androidx.appcompat.app.AppCompatActivity

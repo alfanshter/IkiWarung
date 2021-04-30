@@ -15,8 +15,9 @@ import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.*
 
-class LoginActivity : AppCompatActivity(),AnkoLogger {
+class LoginActivity : AppCompatActivity(), AnkoLogger {
     lateinit var sessionManager: SessionManager
+
     //database
     lateinit var databaseReference: DatabaseReference
     private lateinit var auth: FirebaseAuth
@@ -24,8 +25,8 @@ class LoginActivity : AppCompatActivity(),AnkoLogger {
 
     lateinit var progressdialog: ProgressDialog
 
-    var email : String? = null
-    var password : String? = null
+    var email: String? = null
+    var password: String? = null
 
     //token
     var token: String? = null
@@ -39,7 +40,7 @@ class LoginActivity : AppCompatActivity(),AnkoLogger {
         progressdialog = ProgressDialog(this)
         sessionManager = SessionManager(this)
 
-        if (sessionManager.getLogin()!!){
+        if (sessionManager.getLogin()!!) {
             startActivity(intentFor<MainActivity>().clearTask().newTask())
             finish()
         }
@@ -52,34 +53,32 @@ class LoginActivity : AppCompatActivity(),AnkoLogger {
     }
 
 
-    fun loginfirestore(){
+    fun loginfirestore() {
         var userss = username_input.text.toString()
         var pass = pass.text.toString()
-        if (userss.isEmpty() || pass.isEmpty()){
+        if (userss.isEmpty() || pass.isEmpty()) {
             toast("Masukan email dan password")
-        }else{
+        } else {
             progressdialog.setTitle("Sedang Menunggu")
             progressdialog.setCanceledOnTouchOutside(false)
             progressdialog.show()
             info { "dinda ok" }
-            val docref =         firestore.collection(Constant.warung_akun).whereEqualTo("username",userss).whereEqualTo("password",pass)
-            docref.get().addOnSuccessListener {
-                    document->
-                for (doc in document){
-                    if (doc.exists()){
+            val docref = firestore.collection(Constant.warung_akun).whereEqualTo("username", userss)
+                .whereEqualTo("password", pass)
+            docref.get().addOnSuccessListener { document ->
+                for (doc in document) {
+                    if (doc.exists()) {
                         info { "dinda dapat" }
-                        auth.signInWithEmailAndPassword(userss,pass).addOnCompleteListener {
-                                task ->
-                            if (task.isSuccessful) {
-                                gettoken()
-                            }
-                            else
-                            {
-                                progressdialog.dismiss()
-                                toast("gagal login")
+                        auth.signInWithEmailAndPassword(userss, pass)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    gettoken()
+                                } else {
+                                    progressdialog.dismiss()
+                                    toast("gagal login")
 
+                                }
                             }
-                        }
                     }
                     progressdialog.dismiss()
                 }
@@ -98,16 +97,18 @@ class LoginActivity : AppCompatActivity(),AnkoLogger {
             }
             // Get new FCM registration token
             token = task.result
-            if (token!=null){
-                val req = firestore.collection(Constant.warung_akun).document(auth.currentUser!!.uid).update("id_token",token.toString()).addOnCompleteListener {
-                    if (it.isSuccessful){
-                        sessionManager.setLogin(true)
-                        startActivity(intentFor<MainActivity>().clearTask().newTask())
-                        progressdialog.dismiss()
-                        finish()
+            if (token != null) {
+                val req =
+                    firestore.collection(Constant.warung_akun).document(auth.currentUser!!.uid)
+                        .update("id_token", token.toString()).addOnCompleteListener {
+                            if (it.isSuccessful) {
+                                sessionManager.setLogin(true)
+                                startActivity(intentFor<MainActivity>().clearTask().newTask())
+                                progressdialog.dismiss()
+                                finish()
 
-                    }
-                }
+                            }
+                        }
             }
 
         })

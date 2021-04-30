@@ -1,9 +1,7 @@
 package com.alfanshter.iki_warung
 
-import android.app.Activity
 import android.app.ProgressDialog
 import android.content.ContentValues
-import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
@@ -13,33 +11,19 @@ import android.provider.MediaStore
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.alfanshter.iki_warung.Ui.InsertFoodActivity
 import com.alfanshter.iki_warung.Utils.Constant
 import com.alfanshter.iki_warung.Utils.CustomProgressDialog
 import com.alfanshter.iki_warung.databinding.ActivityEditBinding
 import com.alfanshter.iki_warung.viewmodel.FoodViewModel
-import com.google.android.gms.tasks.Continuation
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.StorageTask
-import com.google.firebase.storage.UploadTask
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_edit.*
-import kotlinx.android.synthetic.main.activity_edit.btn_foto
-import kotlinx.android.synthetic.main.activity_edit.btn_galery
-import kotlinx.android.synthetic.main.activity_edit.edt_harga
-import kotlinx.android.synthetic.main.activity_edit.edt_keterangan
-import kotlinx.android.synthetic.main.activity_edit.edt_nama
 import kotlinx.android.synthetic.main.activity_edit.gambar_makanan
 import kotlinx.android.synthetic.main.activity_insert_food.*
 import org.jetbrains.anko.*
 import java.io.ByteArrayOutputStream
-import java.io.IOException
-import kotlin.math.roundToInt
 
 class EditActivity : AppCompatActivity(), AnkoLogger {
     private var filePath: Uri? = null

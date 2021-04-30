@@ -1,4 +1,4 @@
-package com.alfanshter.iki_warung.Ui.History
+package com.alfanshter.iki_warung.ui.history
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.alfanshter.iki_warung.R
-import com.alfanshter.iki_warung.Ui.History.uiHistory.FinishFragment
-import com.alfanshter.iki_warung.Ui.History.uiHistory.ProcessFragment
+import com.alfanshter.iki_warung.ui.history.uihistory.FinishFragment
+import com.alfanshter.iki_warung.ui.history.uihistory.ProcessFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.firebase.auth.FirebaseAuth
@@ -25,6 +25,8 @@ class HistoryFragment : Fragment() {
     var userID : String? = null
     var viewPager: ViewPager? = null
     var tabLayout: TabLayout? = null
+
+
 
 
     fun HistoryFragment() {

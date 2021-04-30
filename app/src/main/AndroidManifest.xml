@@ -13,27 +13,28 @@
         android:roundIcon="@mipmap/ikiwarung"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.alfanshter.iki_warung.Ui.Riwayat.DetailRiwayatActivity"></activity>
-        <activity android:name="com.alfanshter.iki_warung.EditRestoActivity" />
-        <activity android:name="com.alfanshter.iki_warung.EditActivity" />
-        <activity android:name="com.alfanshter.iki_warung.aktifasiWarungActivity" />
-        <activity android:name="com.alfanshter.iki_warung.SplashScreen">
+        <activity android:name=".ui.history.Rincian_Proses"></activity>
+        <activity android:name=".ui.Riwayat.DetailRiwayatActivity" />
+        <activity android:name=".EditRestoActivity" />
+        <activity android:name=".EditActivity" />
+        <activity android:name=".aktifasiWarungActivity" />
+        <activity android:name=".SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.alfanshter.iki_warung.jarakterdekat" />
-        <activity android:name="com.alfanshter.iki_warung.Ui.DetailActivity" />
+        <activity android:name=".jarakterdekat" />
+        <activity android:name=".ui.DetailActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name="com.alfanshter.iki_warung.Ui.InsertFoodActivity" />
-        <activity android:name="com.alfanshter.iki_warung.MainActivity" />
-        <activity android:name="com.alfanshter.iki_warung.auth.LoginActivity" />
+        <activity android:name=".ui.InsertFoodActivity" />
+        <activity android:name=".MainActivity" />
+        <activity android:name=".auth.LoginActivity" />
     </application>
 
 </manifest>

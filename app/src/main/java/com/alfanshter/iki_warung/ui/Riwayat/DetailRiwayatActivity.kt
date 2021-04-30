@@ -1,4 +1,4 @@
-package com.alfanshter.iki_warung.Ui.Riwayat
+package com.alfanshter.iki_warung.ui.Riwayat
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

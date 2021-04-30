@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <LinearLayout
+        android:id="@+id/lv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:orientation="vertical"
+        android:layout_toLeftOf="@+id/tanggalan"
+        android:layout_alignParentStart="true"
+        >
+
+        <TextView
+            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nama Customer : "
+            android:textColor="@color/black"
+            android:id="@+id/txt_namacustomer"
+            android:maxLength="20"
+            android:textSize="17sp"
+            android:fontFamily="@font/alegreya_bold"
+            />
+        <TextView
+            android:layout_marginTop="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Harga Pesanan"
+            android:textColor="@color/black"
+            android:id="@+id/txt_harga_pesanan"
+            android:fontFamily="@font/alegreya_regular"
+            />
+
+
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:textColor="@color/black"
+        android:id="@+id/txt_tanggalorder"
+        android:text="20:00" />
+
+</RelativeLayout>

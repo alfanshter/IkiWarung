@@ -1,4 +1,4 @@
-package com.alfanshter.iki_warung.Ui
+package com.alfanshter.iki_warung.ui
 
 import android.app.AlertDialog
 import android.app.Dialog
@@ -23,15 +23,11 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.android.synthetic.main.activity_detail.*
-import kotlinx.android.synthetic.main.fragment_menu.*
 import kotlinx.android.synthetic.main.fragment_menu.view.*
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.find
-import org.jetbrains.anko.info
 import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
-import org.jetbrains.anko.toast
 import java.lang.Exception
 import java.util.*
 import kotlin.collections.HashMap

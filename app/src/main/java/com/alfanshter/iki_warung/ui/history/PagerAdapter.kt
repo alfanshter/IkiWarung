@@ -1,10 +1,10 @@
-package com.alfanshter.iki_warung.Ui.History
+package com.alfanshter.iki_warung.ui.history
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.alfanshter.iki_warung.Ui.History.uiHistory.FinishFragment
-import com.alfanshter.iki_warung.Ui.History.uiHistory.ProcessFragment
+import com.alfanshter.iki_warung.ui.history.uihistory.FinishFragment
+import com.alfanshter.iki_warung.ui.history.uihistory.ProcessFragment
 import java.util.*
 
 

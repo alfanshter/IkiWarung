@@ -5,10 +5,10 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.alfanshter.iki_warung.Ui.History.HistoryFragment
-import com.alfanshter.iki_warung.Ui.MenuFragment
-import com.alfanshter.iki_warung.Ui.ProfilFragment
-import com.alfanshter.iki_warung.Ui.Riwayat.RiwayatFragment
+import com.alfanshter.iki_warung.ui.history.HistoryFragment
+import com.alfanshter.iki_warung.ui.MenuFragment
+import com.alfanshter.iki_warung.ui.ProfilFragment
+import com.alfanshter.iki_warung.ui.Riwayat.RiwayatFragment
 import com.alfanshter.iki_warung.Utils.Constant
 import com.alfanshter.iki_warung.viewmodel.UsersViewModel
 import com.alfanshter.udinlelangfix.Session.SessionManager
