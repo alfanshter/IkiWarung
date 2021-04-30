@@ -5,25 +5,37 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.alfanshter.iki_warung.MainActivity
 import com.alfanshter.iki_warung.R
+import com.alfanshter.iki_warung.Utils.Constant
 import com.alfanshter.udinlelangfix.Session.SessionManager
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.*
 
 class LoginActivity : AppCompatActivity(),AnkoLogger {
     lateinit var sessionManager: SessionManager
+    //database
     lateinit var databaseReference: DatabaseReference
     private lateinit var auth: FirebaseAuth
+    lateinit var firestore: FirebaseFirestore
+
     lateinit var progressdialog: ProgressDialog
+
     var email : String? = null
     var password : String? = null
-    lateinit var firestore: FirebaseFirestore
+
+    //token
+    var token: String? = null
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         firestore = FirebaseFirestore.getInstance()
+        auth = FirebaseAuth.getInstance()
         progressdialog = ProgressDialog(this)
         sessionManager = SessionManager(this)
 
@@ -46,22 +58,20 @@ class LoginActivity : AppCompatActivity(),AnkoLogger {
         if (userss.isEmpty() || pass.isEmpty()){
             toast("Masukan email dan password")
         }else{
-            progressdialog.show()
             progressdialog.setTitle("Sedang Menunggu")
             progressdialog.setCanceledOnTouchOutside(false)
-            auth = FirebaseAuth.getInstance()
-            val docref =         firestore.collection("Warung_Akun").whereEqualTo("username",userss).whereEqualTo("password",pass)
+            progressdialog.show()
+            info { "dinda ok" }
+            val docref =         firestore.collection(Constant.warung_akun).whereEqualTo("username",userss).whereEqualTo("password",pass)
             docref.get().addOnSuccessListener {
                     document->
                 for (doc in document){
                     if (doc.exists()){
+                        info { "dinda dapat" }
                         auth.signInWithEmailAndPassword(userss,pass).addOnCompleteListener {
                                 task ->
                             if (task.isSuccessful) {
-                                sessionManager.setLogin(true)
-                                startActivity(intentFor<MainActivity>().clearTask().newTask())
-                                progressdialog.dismiss()
-                                finish()
+                                gettoken()
                             }
                             else
                             {
@@ -80,6 +90,29 @@ class LoginActivity : AppCompatActivity(),AnkoLogger {
         }
 
     }
+
+    private fun gettoken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                return@OnCompleteListener
+            }
+            // Get new FCM registration token
+            token = task.result
+            if (token!=null){
+                val req = firestore.collection(Constant.warung_akun).document(auth.currentUser!!.uid).update("id_token",token.toString()).addOnCompleteListener {
+                    if (it.isSuccessful){
+                        sessionManager.setLogin(true)
+                        startActivity(intentFor<MainActivity>().clearTask().newTask())
+                        progressdialog.dismiss()
+                        finish()
+
+                    }
+                }
+            }
+
+        })
+    }
+
 //    fun login() {
 //        val progressDialog = ProgressDialog(this)
 //        progressDialog.setTitle("Sedang Login .....")

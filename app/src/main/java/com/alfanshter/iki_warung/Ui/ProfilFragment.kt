@@ -32,7 +32,7 @@ class ProfilFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
+        sessionManager = SessionManager(context!!.applicationContext)
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_profil, container, false)
         profilviewmodel = ViewModelProviders.of(this).get(UsersViewModel::class.java)

@@ -49,7 +49,7 @@ class UsersViewModel : ViewModel(), AnkoLogger {
     //ambil data warung
     fun ProfilWarung() {
         inisialisasidatabase()
-        val docref = firestoreuser.collection("Warung_Akun").document(UserId.toString()).get()
+        val docref = firestoreuser.collection(Constant.warung_akun).document(UserId.toString()).get()
             .addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists() && documentSnapshot != null) {
                     var profil = documentSnapshot.toObject(UsersModel::class.java)
@@ -84,7 +84,7 @@ class UsersViewModel : ViewModel(), AnkoLogger {
     fun cekstatusaktifasi() {
         inisialisasidatabase()
         state.value = UserState.Isloading(true)
-        var docref = firestoreuser.collection("Warung_Akun").document(UserId.toString()).get()
+        var docref = firestoreuser.collection(Constant.warung_akun).document(UserId.toString()).get()
         docref.addOnSuccessListener { documentSnapshot ->
             if (documentSnapshot.exists() && documentSnapshot != null) {
                 var user = documentSnapshot.toObject(UsersModel::class.java)
@@ -137,7 +137,7 @@ class UsersViewModel : ViewModel(), AnkoLogger {
                     usermap["jam_tutup"] = jamtutupwarung.toString()
                     usermap["status_aktivasi"] = true
                     val docref =
-                        firestoreuser.collection("Warung_Akun").document(UserId.toString()).update(
+                        firestoreuser.collection(Constant.warung_akun).document(UserId.toString()).update(
                             usermap
                         ).addOnCompleteListener {
                             if (it.isSuccessful) {
@@ -163,7 +163,7 @@ class UsersViewModel : ViewModel(), AnkoLogger {
         state.value = UserState.Isloading(true)
         if (EditRestoActivity.data==null
         ) {
-            val docref = firestoreuser.collection("Warung_Akun")
+            val docref = firestoreuser.collection(Constant.warung_akun)
                 .document(UserId.toString()).update(
                     "jam_buka",
                     EditRestoActivity.jambukawarung,
@@ -198,7 +198,7 @@ class UsersViewModel : ViewModel(), AnkoLogger {
                         mFirebaseStorage.getReferenceFromUrl(datauser.value!!.foto_icon.toString())
                     photoRef.delete()
 
-                    val docref = firestoreuser.collection("Warung_Akun")
+                    val docref = firestoreuser.collection(Constant.warung_akun)
                         .document(UserId.toString()).update(
                             "jam_buka",
                             EditRestoActivity.jambukawarung,

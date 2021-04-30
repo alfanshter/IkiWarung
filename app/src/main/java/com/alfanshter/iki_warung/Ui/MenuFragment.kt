@@ -192,7 +192,7 @@ class MenuFragment : Fragment(), AnkoLogger {
 
     private fun getswitch() {
         inisialisasifirebase()
-        val docref = firestore.collection("Warung_Akun").document(userID.toString()).get()
+        val docref = firestore.collection(Constant.warung_akun).document(userID.toString()).get()
             .addOnSuccessListener { document ->
                 if (document != null && document.exists()) {
                     val data = document.toObject(UsersModel::class.java)
@@ -212,7 +212,7 @@ class MenuFragment : Fragment(), AnkoLogger {
         switch.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 //ubah ke posisi buka
-                firestore.collection("Warung_Akun").document(userID.toString())
+                firestore.collection(Constant.warung_akun).document(userID.toString())
                     .update("status", true).addOnCompleteListener {
                         if (it.isSuccessful) {
                         }
@@ -222,7 +222,7 @@ class MenuFragment : Fragment(), AnkoLogger {
 
             } else {
                 //ubah ke posisi tutup
-                firestore.collection("Warung_Akun").document(userID.toString())
+                firestore.collection(Constant.warung_akun).document(userID.toString())
                     .update("status", false).addOnCompleteListener {
                         if (it.isSuccessful) {
                             toast("berhasil")

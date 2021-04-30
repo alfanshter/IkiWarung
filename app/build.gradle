@@ -11,7 +11,7 @@ android {
     buildToolsVersion "30.0.1"
 
     defaultConfig {
-        applicationId "com.alfanshter.IKI_Warung"
+        applicationId "com.alfanshter.iki_warung"
         minSdkVersion 17
         targetSdkVersion 30
         versionCode 9
@@ -80,12 +80,13 @@ dependencies {
     implementation 'com.google.android.gms:play-services-places:17.0.0'
 
     //analytic
-    implementation platform('com.google.firebase:firebase-bom:26.1.0')
+    implementation platform('com.google.firebase:firebase-bom:27.1.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
 
     implementation 'com.google.firebase:firebase-storage:19.2.0'
     implementation 'com.google.firebase:firebase-firestore:22.1.2'
+    implementation 'com.google.firebase:firebase-messaging:21.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -99,4 +100,8 @@ dependencies {
     //firestore
      implementation "com.firebaseui:firebase-ui-auth:3.0.0"
     implementation 'com.firebaseui:firebase-ui-firestore:6.2.1'
+
+    implementation ('com.github.nkzawa:socket.io-client:0.4.1'){
+        exclude group: 'org.json', module: 'json'
+    }
 }
