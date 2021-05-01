@@ -37,6 +37,15 @@
             android:fontFamily="@font/alegreya_regular"
             />
 
+        <TextView
+            android:layout_marginTop="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Klik untuk lihat rincian harga"
+            android:textColor="@color/black"
+
+            android:fontFamily="@font/alegreya_regular"
+            />
 
 
     </LinearLayout>

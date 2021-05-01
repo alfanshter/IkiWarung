@@ -57,7 +57,13 @@ class ProsesPesananAdapter(
         holder.tanggal_order.text = date
 
         holder.itemView.setOnClickListener {
-            context.startActivity(context.intentFor<Rincian_Proses>().newTask())
+            context.startActivity(context.intentFor<Rincian_Proses>(
+                "nama_customer" to note.nama_customer.toString(),
+                "kode_order" to note.kode_order.toString(),
+                "uid_pelanggan" to note.uidpelanggan.toString(),
+                "uid_driver" to note.uid_driver.toString()
+
+            ).newTask())
         }
 
 

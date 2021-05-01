@@ -9,4 +9,6 @@ object Constant {
     val input_sukses = "Input Sukses"
     val warung_akun = "Warung_akun"
     val booking = "Booking_Warung"
+    val keranjang = "Keranjang"
+    val data_driver = "Ojek_Akun"
 }

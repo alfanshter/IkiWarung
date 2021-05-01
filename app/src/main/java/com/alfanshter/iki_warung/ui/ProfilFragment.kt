@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.alfanshter.iki_warung.BuildConfig
+
 import com.alfanshter.iki_warung.R
 import com.alfanshter.iki_warung.auth.LoginActivity
 import com.alfanshter.iki_warung.databinding.FragmentProfilBinding
@@ -49,8 +49,6 @@ class ProfilFragment : Fragment() {
 
         }
 
-        val versionName = BuildConfig.VERSION_NAME.toFloat()
-        binding.version.text = "Versi Aplikasi ${versionName}"
 
         return binding.root
     }

@@ -19,7 +19,7 @@
             android:src="@drawable/tulisaniki"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
-            android:id="@+id/tuilsan" />firestore
+            android:id="@+id/tuilsan" />
 
         <ImageView
             android:layout_width="100dp"
