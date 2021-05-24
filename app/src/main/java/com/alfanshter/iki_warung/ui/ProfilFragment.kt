@@ -1,5 +1,7 @@
 package com.alfanshter.iki_warung.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -39,6 +41,15 @@ class ProfilFragment : Fragment() {
         profilviewmodel.ProfilWarung()
         profilviewmodel.getProfilWarung().observe(this, Observer {
             binding.txtNamawarung.text = it.namatoko
+            binding.gambar.setOnClickListener {petekan->
+                val gmmIntentUri = Uri.parse("geo:${it.latitude},${it.longitude}")
+                val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+                mapIntent.setPackage("com.google.android.apps.maps")
+                mapIntent.resolveActivity(activity!!.packageManager)?.let {
+                    startActivity(mapIntent)
+                }
+            }
+
         })
         binding.btnLogout.setOnClickListener {
             FirebaseAuth.getInstance().signOut()
@@ -48,6 +59,7 @@ class ProfilFragment : Fragment() {
             activity!!.finish()
 
         }
+
 
 
         return binding.root

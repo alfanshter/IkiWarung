@@ -7,6 +7,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="google_maps_key">AIzaSyADQdBkk1SNyX7jWXRZFlJQz8TWT-M-TeE</string>
     <string name="error_field_required">jangan kosong</string>
+    <string name="default_notification_channel_id">Tvac_CH_01</string>
     <string-array name="hari">
         <item>-</item>
         <item>Senin</item>

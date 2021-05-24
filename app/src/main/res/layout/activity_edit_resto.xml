@@ -29,10 +29,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sesuaikan warung kamu ?"
+                    android:text="Pengaturan Warung"
                     android:layout_gravity="center_horizontal"
                     android:textColor="#000"
-                    android:fontFamily="@font/aleo_bold"
+                    android:fontFamily="@font/poppins_semibold"
                     android:id="@+id/judul"
                     android:textSize="24dp"
 
@@ -42,9 +42,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Warung buka Jam ?"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="30dp"
                     android:textSize="14dp"
-                    android:fontFamily="@font/aleo_bold"
+                    android:fontFamily="@font/poppins"
 
                     />
 
@@ -67,7 +67,7 @@
                     android:text="Warung tutup hari apa ?"
                     android:layout_marginTop="10dp"
                     android:textSize="14dp"
-                    android:fontFamily="@font/aleo_bold"
+                    android:fontFamily="@font/poppins"
 
                     />
 
@@ -83,7 +83,7 @@
                     android:text="Warung tutup jam berapa ?"
                     android:layout_marginTop="10dp"
                     android:textSize="14dp"
-                    android:fontFamily="@font/aleo_bold"
+                    android:fontFamily="@font/poppins"
 
                     />
 
@@ -105,7 +105,8 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/baris1"
                     android:layout_gravity="center"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="30dp"
+
 
                     >
 
@@ -149,7 +150,7 @@
             android:layout_height="wrap_content"
             android:text="TAMBAHKAN"
             android:id="@+id/btnUpload"
-            android:fontFamily="@font/alef_bold"
+            android:fontFamily="@font/poppins_semibold"
             android:textColor="@color/colordongker"
             android:onClick="@{viewmodel::btn_editwarung}"
             android:layout_alignParentBottom="true" />

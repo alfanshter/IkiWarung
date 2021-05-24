@@ -57,7 +57,7 @@ class DetailActivity : AppCompatActivity(), AnkoLogger {
         mFirebaseStorage = FirebaseStorage.getInstance()
         
         //Tampilkan Data dari MenuFragment
-        Picasso.get().load(gambar).into(gambar_detail)
+        Picasso.get().load(gambar).fit().centerCrop().into(gambar_detail)
         name.text = nama.toString()
         price.text = harga.toString()
 

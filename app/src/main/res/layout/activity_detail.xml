@@ -21,9 +21,7 @@
         android:id="@+id/gambar_detail"
         android:layout_width="0dp"
         android:layout_height="200dp"
-        android:layout_marginLeft="10dp"
         android:layout_marginTop="16dp"
-        android:layout_marginRight="10dp"
         android:adjustViewBounds="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,51 +32,65 @@
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/open_sans_bold"
-        android:text="Nasi Padang"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="25dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Nama Makanan"
         android:textColor="#333333"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gambar_detail" />
 
+
     <TextView
-        android:id="@+id/price"
+        android:id="@+id/rp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="30dp"
         android:fontFamily="@font/open_sans_bold"
         android:text="Rp."
-        android:textColor="#3F9785"
+        android:textColor="#F3B11A"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/name" />
 
-
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:fontFamily="@font/open_sans_bold"
+        android:text="0"
+        android:textColor="#F3B11A"
+        android:textSize="30sp"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintStart_toStartOf="@+id/rp"
+        app:layout_constraintTop_toBottomOf="@+id/name" />
 
     <Switch
         android:id="@+id/switch1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="70dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="256dp"
+        android:layout_marginTop="36dp"
+        android:fontFamily="@font/poppins"
         android:gravity="center_vertical"
         android:text="Tersedia"
-        android:textSize="24dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/price" />
+        android:textSize="14dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginRight="30dp"
+        app:layout_constraintStart_toStartOf="@+id/name"
+        app:layout_constraintTop_toBottomOf="@+id/gambar_detail" />
 
     <ImageView
         android:id="@+id/btn_delete"
-        android:layout_width="30dp"
-        android:layout_height="38dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="20dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="184dp"
+        android:layout_marginTop="28dp"
         android:background="@drawable/ic_baseline_delete_24"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/switch1"
-        app:layout_constraintTop_toBottomOf="@+id/price" />
+        app:layout_constraintStart_toEndOf="@+id/price"
+        app:layout_constraintTop_toBottomOf="@+id/name" />
 
     <RelativeLayout
         android:id="@+id/editmakanan"
@@ -88,9 +100,10 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/switch1"
-        app:layout_constraintVertical_bias="0.100000024">
+        app:layout_constraintVertical_bias="0.292">
 
         <TextView
             android:id="@+id/txtedit"

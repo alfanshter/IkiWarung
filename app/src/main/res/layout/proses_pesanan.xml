@@ -8,9 +8,9 @@
         android:id="@+id/lv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="5dp"
+        android:layout_marginLeft="30dp"
         android:orientation="vertical"
         android:layout_toLeftOf="@+id/tanggalan"
         android:layout_alignParentStart="true"
@@ -24,8 +24,8 @@
             android:textColor="@color/black"
             android:id="@+id/txt_namacustomer"
             android:maxLength="20"
-            android:textSize="17sp"
-            android:fontFamily="@font/alegreya_bold"
+            android:textSize="18sp"
+            android:fontFamily="@font/poppins_medium"
             />
         <TextView
             android:layout_marginTop="4dp"
@@ -34,7 +34,8 @@
             android:text="Harga Pesanan"
             android:textColor="@color/black"
             android:id="@+id/txt_harga_pesanan"
-            android:fontFamily="@font/alegreya_regular"
+            android:fontFamily="@font/poppins"
+            android:textSize="14dp"
             />
 
         <TextView
@@ -43,8 +44,8 @@
             android:layout_height="wrap_content"
             android:text="Klik untuk lihat rincian harga"
             android:textColor="@color/black"
-
-            android:fontFamily="@font/alegreya_regular"
+            android:textSize="14dp"
+            android:fontFamily="@font/poppins"
             />
 
 
@@ -57,6 +58,7 @@
         android:layout_centerVertical="true"
         android:textColor="@color/black"
         android:id="@+id/txt_tanggalorder"
-        android:text="20:00" />
+        android:text="00:00"
+        android:layout_marginRight="30dp"/>
 
 </RelativeLayout>

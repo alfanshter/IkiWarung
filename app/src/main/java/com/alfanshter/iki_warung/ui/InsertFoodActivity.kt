@@ -1,13 +1,21 @@
 package com.alfanshter.iki_warung.ui
 
+import android.Manifest
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.ContentValues
+import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.RadioButton
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -19,9 +27,10 @@ import com.alfanshter.iki_warung.databinding.ActivityInsertFoodBinding
 import com.alfanshter.iki_warung.viewmodel.FoodViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_insert_food.gambar_makanan
+import kotlinx.android.synthetic.main.activity_insert_food.*
 import org.jetbrains.anko.*
 import java.io.ByteArrayOutputStream
+
 
 class InsertFoodActivity : AppCompatActivity(),AnkoLogger {
     var nama: String? = null
@@ -87,6 +96,33 @@ class InsertFoodActivity : AppCompatActivity(),AnkoLogger {
     }
 
     private fun pilihfile() {
+        val currentAPIVersion = Build.VERSION.SDK_INT
+        if (currentAPIVersion >= Build.VERSION_CODES.M) {
+             if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        this,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    )
+                ) {
+                    dialog_permis(
+                        "External storage",  Manifest.permission.READ_EXTERNAL_STORAGE
+
+                    )
+                } else {
+                    ActivityCompat
+                        .requestPermissions(
+                           this,
+                            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                            REQUEST_PICK_IMAGE
+                        )
+                }
+
+            }
+        }
         //Intent to pick image
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
@@ -94,16 +130,34 @@ class InsertFoodActivity : AppCompatActivity(),AnkoLogger {
 
     }
 
+    fun dialog_permis(
+        msg: String,
+        permission: String
+    ) {
+        val alertBuilder: AlertDialog.Builder = AlertDialog.Builder(this)
+        alertBuilder.setCancelable(true)
+        alertBuilder.setTitle("Permission necessary")
+        alertBuilder.setMessage("$msg permission is necessary")
+        alertBuilder.setPositiveButton(android.R.string.yes,
+            DialogInterface.OnClickListener { dialog, which ->
+                ActivityCompat.requestPermissions(
+                    (this as Activity?)!!, arrayOf(permission),
+                    REQUEST_PICK_IMAGE
+                )
+            })
+        val alert: AlertDialog = alertBuilder.create()
+        alert.show()
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_IMAGE_CAPTURE) {
-                Picasso.get().load(filePath).fit().into(gambar_makanan)
+                Picasso.get().load(filePath).fit().centerCrop().into(gambar_makanan)
                 convert()
             } else if (requestCode == REQUEST_PICK_IMAGE) {
                 filePath = data?.data
-                Picasso.get().load(filePath).fit().into(gambar_makanan)
+                Picasso.get().load(filePath).fit().centerCrop().into(gambar_makanan)
                 convert()
             }
         }

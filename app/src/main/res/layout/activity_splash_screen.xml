@@ -18,8 +18,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/alef_bold"
-        android:text="IKI WARUNG"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="WARUNGKU"
         android:layout_below="@+id/logo"
         android:layout_marginTop="20dp"
         android:textAlignment="center"

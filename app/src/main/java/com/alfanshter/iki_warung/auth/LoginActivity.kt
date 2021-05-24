@@ -80,10 +80,20 @@ class LoginActivity : AppCompatActivity(), AnkoLogger {
                                 }
                             }
                     }
+                    else if (!doc.exists()){
+                        progressdialog.dismiss()
+                        toast("Password Salah")
+                    }
+
+
+                }
+                if (document.isEmpty){
                     progressdialog.dismiss()
+                    toast("Password Salah")
                 }
             }.addOnFailureListener {
-                info { "tester ${it.message}" }
+                progressdialog.dismiss()
+                toast("Password Salah")
             }
 
         }

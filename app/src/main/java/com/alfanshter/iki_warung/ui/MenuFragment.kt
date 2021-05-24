@@ -2,6 +2,7 @@ package com.alfanshter.iki_warung.ui
 
 import android.app.AlertDialog
 import android.app.Dialog
+import android.app.ProgressDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -45,7 +46,6 @@ class MenuFragment : Fragment(), AnkoLogger {
     var refid: String? = null
 
     lateinit var foodViewModel: FoodViewModel
-    private var progressdialog = CustomProgressDialog()
 
     private lateinit var adapter: MakananAdapter
     private lateinit var adapterminuman: MakananAdapter
@@ -59,6 +59,7 @@ class MenuFragment : Fragment(), AnkoLogger {
     var userID: String? = null
     lateinit var firestore: FirebaseFirestore
 
+    lateinit var progressDialog: ProgressDialog
     companion object {
         var status_switch: Boolean? = null
     }
@@ -67,6 +68,7 @@ class MenuFragment : Fragment(), AnkoLogger {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        progressDialog = ProgressDialog(activity)
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_menu, container, false)
         foodViewModel = ViewModelProviders.of(this).get(FoodViewModel::class.java)
@@ -116,9 +118,9 @@ class MenuFragment : Fragment(), AnkoLogger {
         val setiings = firestore.firestoreSettings.isPersistenceEnabled
         val docref = firestore.collection("Warung_Resep").whereEqualTo("uid", userId.toString())
             .whereEqualTo("kategori", "Makanan").get().addOnSuccessListener { doc ->
-                if (doc.isEmpty){
+                if (doc.isEmpty) {
 
-                }else{
+                } else {
                     for (document in doc) {
                         try {
                             val data = document.toObject(MakananModels::class.java)
@@ -133,7 +135,7 @@ class MenuFragment : Fragment(), AnkoLogger {
                             rvMakanan.adapter = adapter
                             adapter.notifyDataSetChanged()
 
-                        }catch (e: Exception){
+                        } catch (e: Exception) {
 
                         }
 
@@ -142,6 +144,7 @@ class MenuFragment : Fragment(), AnkoLogger {
             }.addOnFailureListener {
 
             }
+
     }
 
     //ambil data minuman
@@ -164,16 +167,17 @@ class MenuFragment : Fragment(), AnkoLogger {
                     mylist.setname(data.nama.toString())
                     mylist.setprice(data.harga)
                     mylist.setidmakanan(data.id_makanan.toString())
-                try {
-                    arrayListMinuman.add(mylist)
-                    adapterminuman = MakananAdapter(arrayListMinuman, context!!.applicationContext)
+                    try {
+                        arrayListMinuman.add(mylist)
+                        adapterminuman =
+                            MakananAdapter(arrayListMinuman, context!!.applicationContext)
 
-                    rvMinuman.adapter = adapterminuman
-                    adapterminuman.notifyDataSetChanged()
+                        rvMinuman.adapter = adapterminuman
+                        adapterminuman.notifyDataSetChanged()
 
-                }catch (e:Exception){
+                    } catch (e: Exception) {
 
-                }
+                    }
 
                 }
             }.addOnFailureListener {
@@ -207,21 +211,31 @@ class MenuFragment : Fragment(), AnkoLogger {
         inisialisasifirebase()
         switch.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
+                progressDialog.setTitle("Tunggu sebentar")
+                progressDialog.setCanceledOnTouchOutside(false)
+                progressDialog.show()
                 //ubah ke posisi buka
                 firestore.collection(Constant.warung_akun).document(userID.toString())
                     .update("status", true).addOnCompleteListener {
                         if (it.isSuccessful) {
+                            switch.text = "Buka"
+                            progressDialog.dismiss()
                         }
                     }.addOnFailureListener {
                         toast(it.message.toString())
                     }
 
             } else {
+                progressDialog.setTitle("Tunggu sebentar")
+                progressDialog.setCanceledOnTouchOutside(false)
+                progressDialog.show()
+
                 //ubah ke posisi tutup
                 firestore.collection(Constant.warung_akun).document(userID.toString())
                     .update("status", false).addOnCompleteListener {
                         if (it.isSuccessful) {
-                            toast("berhasil")
+                            switch.text = "Tutup"
+                            progressDialog.dismiss()
                         }
                     }.addOnFailureListener {
                         toast(it.message.toString())
@@ -234,7 +248,6 @@ class MenuFragment : Fragment(), AnkoLogger {
         super.onDestroy()
 
     }
-
 
 
 }

@@ -1,13 +1,21 @@
 package com.alfanshter.iki_warung
 
+import android.Manifest
+import android.app.Activity
+import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.ContentValues
+import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -52,11 +60,14 @@ class EditActivity : AppCompatActivity(), AnkoLogger {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        progressDialog = ProgressDialog(this)
+        progressDialog.setTitle(Constant.tunggu)
+        progressDialog.setCanceledOnTouchOutside(false)
+        progressDialog.show()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_edit)
         foodViewModel = ViewModelProviders.of(this).get(FoodViewModel::class.java)
         binding.viewmodel = foodViewModel
 
-        progressDialog = ProgressDialog(this)
         val bundle: Bundle? = intent.extras
         id_makanan = bundle!!.getString("id_makanan")
         mFirebaseStorage = FirebaseStorage.getInstance()
@@ -67,6 +78,7 @@ class EditActivity : AppCompatActivity(), AnkoLogger {
         })
 
         foodViewModel.getMakanan_Id().observe(this, Observer {
+            progressDialog.dismiss()
             binding.edtNama.setText(it.nama.toString())
             binding.edtHarga.setText(it.harga.toString())
             binding.edtKeterangan.setText(it.keterangan)
@@ -114,11 +126,57 @@ class EditActivity : AppCompatActivity(), AnkoLogger {
     }
 
     private fun pilihfile() {
+        val currentAPIVersion = Build.VERSION.SDK_INT
+        if (currentAPIVersion >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        this,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
+                    )
+                ) {
+                    dialog_permis(
+                        "External storage",  Manifest.permission.READ_EXTERNAL_STORAGE
+
+                    )
+                } else {
+                    ActivityCompat
+                        .requestPermissions(
+                            this,
+                            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                            REQUEST_PICK_IMAGE
+                        )
+                }
+
+            }
+        }
         //Intent to pick image
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
         startActivityForResult(intent, REQUEST_PICK_IMAGE)
 
+    }
+
+    fun dialog_permis(
+        msg: String,
+        permission: String
+    ) {
+        val alertBuilder: AlertDialog.Builder = AlertDialog.Builder(this)
+        alertBuilder.setCancelable(true)
+        alertBuilder.setTitle("Permission necessary")
+        alertBuilder.setMessage("$msg permission is necessary")
+        alertBuilder.setPositiveButton(android.R.string.yes,
+            DialogInterface.OnClickListener { dialog, which ->
+                ActivityCompat.requestPermissions(
+                    (this as Activity?)!!, arrayOf(permission),
+                    REQUEST_PICK_IMAGE
+                )
+            })
+        val alert: AlertDialog = alertBuilder.create()
+        alert.show()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

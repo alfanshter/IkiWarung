@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.alfanshter.iki_warung.Model.Proses
 import com.alfanshter.iki_warung.R
-import com.alfanshter.iki_warung.ui.Riwayat.DetailRiwayatActivity
+import com.alfanshter.iki_warung.ui.riwayat.DetailRiwayatActivity
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth

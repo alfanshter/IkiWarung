@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.alfanshter.iki_warung.ui.history.HistoryFragment
 import com.alfanshter.iki_warung.ui.MenuFragment
 import com.alfanshter.iki_warung.ui.ProfilFragment
-import com.alfanshter.iki_warung.ui.Riwayat.RiwayatFragment
+import com.alfanshter.iki_warung.ui.riwayat.RiwayatFragment
 import com.alfanshter.iki_warung.Utils.Constant
 import com.alfanshter.iki_warung.viewmodel.UsersViewModel
 import com.alfanshter.udinlelangfix.Session.SessionManager

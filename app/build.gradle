@@ -14,8 +14,8 @@ android {
         applicationId "com.alfanshter.iki_warung"
         minSdkVersion 17
         targetSdkVersion 30
-        versionCode 9
-        versionName "1.8"
+        versionCode 1
+        versionName "1.0"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -100,6 +100,7 @@ dependencies {
     //firestore
      implementation "com.firebaseui:firebase-ui-auth:3.0.0"
     implementation 'com.firebaseui:firebase-ui-firestore:6.2.1'
+
 
     implementation ('com.github.nkzawa:socket.io-client:0.4.1'){
         exclude group: 'org.json', module: 'json'

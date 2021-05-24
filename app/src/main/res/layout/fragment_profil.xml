@@ -18,7 +18,7 @@
             android:layout_height="25dp"
             android:src="@drawable/tulisaniki"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="30dp"
             android:id="@+id/tuilsan" />
 
         <ImageView
@@ -36,10 +36,23 @@
             android:id="@+id/txt_namawarung"
             android:layout_below="@+id/gambar"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="50dp"
-            android:textSize="17sp"
+            android:layout_marginTop="20dp"
+            android:textSize="24dp"
             android:text="@={viewmodels.namawarung}"
-            android:fontFamily="@font/aleo_bold" />
+            android:fontFamily="@font/poppins_semibold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_tampilkanpeta"
+            android:layout_below="@+id/txt_namawarung"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:text="Tekan lihat lokasi warung anda"
+            android:fontFamily="@font/poppins_semibold" />
+
 
         <TextView
             android:layout_width="wrap_content"
@@ -54,10 +67,11 @@
             android:layout_width="330dp"
             android:layout_height="40dp"
             android:layout_marginBottom="16dp"
+            android:fontFamily="@font/poppins_medium"
             android:background="@drawable/kotakmerahbutto"
             android:text="LOGOUT"
             android:textColor="#ffffff"
-            android:textSize="24dp"
+            android:textSize="18dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true" />
 

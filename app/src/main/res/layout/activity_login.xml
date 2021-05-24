@@ -24,8 +24,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="WARUNGKU"
-            android:fontFamily="@font/alef_bold"
-            android:textSize="18dp"
+            android:fontFamily="@font/poppins"
+            android:textSize="24dp"
+            android:textStyle="bold"
             android:textColor="@color/colordongker"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
@@ -49,7 +50,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="MASUK"
-                    android:fontFamily="@font/alef_bold"
+                    android:fontFamily="@font/poppins"
                     android:textSize="18dp"
                     android:textColor="@color/colordongker"
                     android:layout_gravity="center_horizontal"
@@ -63,6 +64,7 @@
                     android:textSize="12sp"
                     android:paddingLeft="17dp"
                     android:paddingTop="15dp"
+                    android:fontFamily="fon"
                     android:paddingBottom="15dp"
                     android:maxLines="1"
                     android:textColorHint="@color/colordongker"
@@ -125,7 +127,7 @@
         android:layout_marginBottom="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="2020 IKI-Online"
+        android:text="2021 IKI-Online"
 
         />
 
